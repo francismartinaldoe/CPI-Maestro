@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAP Brand — Claude Prompt Guide</title>
+<style>
+@font-face {
+  font-family: '72'; font-weight: 400;
+  src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: '72'; font-weight: 700;
+  src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Bold.woff2') format('woff2');
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --tx:#12171c; --ts:#8ea4b8; --tm:#556475; --br:#0070f2; }
+body { font-family:'72',Arial,Helvetica,sans-serif; background:#f5f6f7; color:var(--tx); padding-top:56px; font-size:16px; }
+
+/* ── Shell Bar ── */
+.top-bar { position:fixed; top:0; left:0; right:0; z-index:100; height:56px; display:flex; align-items:center; background:#f5f6f7; border-bottom:1px solid #e8eaed; transition:transform 220ms ease-in-out; }
+.top-bar__inner { width:100%; max-width:1200px; margin:0 auto; padding:0 40px; display:flex; align-items:center; }
+.top-bar__logo { height:32px; width:auto; display:block; flex-shrink:0; }
+.top-bar__divider { width:1px; height:22px; background:#d5dadd; margin:0 16px; flex-shrink:0; }
+.top-bar__title-group { display:flex; align-items:baseline; gap:14px; }
+.top-bar__product { font-size:17px; font-weight:700; color:#12171c; white-space:nowrap; }
+.top-bar__app { font-size:17px; font-weight:400; color:#354a5f; white-space:nowrap; }
+.top-bar__pi { display:inline-block; font-size:14px; font-weight:700; color:#0040b0; background:#ebf8ff; border:1px solid #a6e0ff; border-radius:4px; padding:1px 6px; margin-left:7px; vertical-align:middle; }
+.top-bar__date { margin-left:auto; font-size:12px; color:#8ea4b8; white-space:nowrap; }
+
+/* ── Layout ── */
+.lead { max-width:1200px; margin:0 auto; padding:40px 40px 80px; display:flex; flex-direction:column; gap:24px; }
+
+/* ── Section Cards ── */
+.section-card { background:#fff; border:1px solid #d9dde0; border-radius:12px; padding:32px 40px; box-shadow:0 1px 4px rgba(0,50,165,.06); }
+.section-card__header { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+.section-card__label { font-size:14px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#002a86; margin-bottom:20px; }
+.section-card__header .section-card__label { margin-bottom:0; }
+
+/* ── Accent Bar Label ── */
+.chip { display:inline-flex; align-items:center; gap:.4rem; font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#5b738b; margin-bottom:.65rem; }
+.chip::before { content:''; display:inline-block; width:3px; height:11px; border-radius:2px; background:#002a86; flex-shrink:0; }
+
+/* ── How-to Steps ── */
+.steps { display:flex; flex-direction:column; gap:14px; }
+.step { display:flex; align-items:flex-start; gap:14px; }
+.step-num { flex-shrink:0; width:28px; height:28px; border-radius:50%; background:#0070f2; color:#fff; font-size:.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+.step-body { display:flex; flex-direction:column; gap:3px; }
+.step-title { font-size:.85rem; font-weight:700; color:var(--tx); }
+.step-desc { font-size:.78rem; color:var(--tm); line-height:1.5; }
+.step-desc code { font-family:monospace; font-size:.75rem; background:#f5f6f7; padding:1px 5px; border-radius:4px; color:#0040b0; }
+
+/* ── Prompt Blocks ── */
+.prompt-card { display:flex; flex-direction:column; gap:10px; }
+.prompt-meta { font-size:.75rem; color:var(--tm); line-height:1.5; margin-bottom:4px; }
+.prompt-meta strong { color:var(--tx); }
+.prompt-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.copy-btn { display:inline-flex; align-items:center; gap:6px; font-size:.7rem; font-weight:700; padding:5px 14px; border-radius:6px; border:1px solid rgba(0,112,242,.3); background:#fff; color:#0040b0; cursor:pointer; font-family:'72',Arial,sans-serif; transition:background .12s, color .12s; white-space:nowrap; }
+.copy-btn:hover { background:#ebf8ff; }
+.copy-btn.copied { background:#e8f5ec; border-color:rgba(24,137,24,.3); color:#188918; }
+.prompt-pre { background:#f9fafb; border:1px solid rgba(0,112,242,.1); border-radius:10px; padding:20px 24px; overflow-x:auto; font-family:'Cascadia Code','Fira Code','Consolas',monospace; font-size:.7rem; line-height:1.65; color:#223548; white-space:pre; tab-size:2; max-height:420px; overflow-y:auto; }
+
+/* ── Tier label ── */
+.tier-badge { display:inline-flex; align-items:center; font-size:.58rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:.15rem .5rem; border-radius:2rem; margin-left:.5rem; vertical-align:middle; }
+.tier-1 { background:#e8f5ec; color:#188918; border:1px solid rgba(24,137,24,.22); }
+.tier-2 { background:rgba(0,112,242,.06); color:#0040b0; border:1px solid rgba(0,112,242,.18); }
+
+/* ── Divider between prompts ── */
+.prompt-sep { border:none; border-top:1px solid rgba(0,112,242,.08); margin:28px 0; }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar__inner">
+    <div class="top-bar__title-group">
+      <span class="top-bar__product">SAP Brand</span>
+      <span class="top-bar__app">Claude Prompt Guide</span>
+    </div>
+    <span class="top-bar__date">May 2026</span>
+  </div>
+</header>
+
+<main class="lead">
+
+  <!-- ── How to Use ── -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">How to Use</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <span class="step-title">Attach sap-brand.md</span>
+          <span class="step-desc">In Claude, attach <code>sap-brand.md</code> from the SAP Brandspace SharePoint before pasting any prompt. This file links to all other brand references — Claude will retrieve specific files (charts, tables, shell, etc.) from it as needed.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <span class="step-title">Start with Prompt 1, then add components</span>
+          <span class="step-desc">Prompt 1 creates the full page scaffold (shell bar, fonts, CSS variables, section cards). Use it first for any new file. Prompts 2–5 add components — paste them in follow-up messages to the same conversation.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <span class="step-title">Fill in the placeholders</span>
+          <span class="step-desc">Replace all <code>[BRACKETED]</code> values with your actual data — titles, section descriptions, column definitions, numbers. Everything else in the prompts is a fixed specification and should not be changed.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Prompt 1 ── -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Prompt 1 — Page Scaffold <span class="tier-badge tier-1">Always first</span></p>
+    </div>
+    <div class="prompt-card">
+      <div class="chip">Foundation</div>
+      <p class="prompt-meta">Creates a complete, self-contained HTML page with <strong>shell bar</strong>, scroll-hide behavior, font loading, CSS variables, and empty section cards. Every SAP dashboard starts here.</p>
+      <div class="prompt-header">
+        <span style="font-size:.68rem;color:var(--ts);">Replace all <code style="font-size:.67rem;background:#f5f6f7;padding:1px 4px;border-radius:3px;color:#0040b0">[BRACKETED]</code> values with your content</span>
+        <button class="copy-btn" onclick="copyPrompt(this,1)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M3 8H2a1 1 0 01-1-1V2a1 1 0 011-1h5a1 1 0 011 1v1"/></svg>
+          Copy prompt
+        </button>
+      </div>
+<pre class="prompt-pre" id="p1">Create a self-contained, single-file HTML dashboard page in the SAP Morning design system.
+
+CONSTRAINTS
+- No CSS frameworks (no Bootstrap, Tailwind, etc.)
+- No external CSS files — all styles in one &lt;style&gt; block inside &lt;head&gt;
+- Allowed external resources ONLY: '72' font (SAP CDN) and optionally Chart.js
+
+FONT — load via @font-face (both weights required):
+  font-family: '72'; font-weight: 400;
+  src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Regular.woff2') format('woff2');
+
+  font-family: '72'; font-weight: 700;
+  src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Bold.woff2') format('woff2');
+
+CSS VARIABLES (define in :root)
+  --tx: #12171c;   /* primary text */
+  --ts: #8ea4b8;   /* muted / secondary */
+  --tm: #556475;   /* mid-tone */
+  --br: #0070f2;   /* brand blue */
+
+BODY
+  font-family: '72', Arial, Helvetica, sans-serif;
+  background: #fff; color: var(--tx); padding-top: 56px;
+
+CONTENT WRAPPER (.lead)
+  max-width: 1200px; margin: 0 auto; padding: 40px 40px 80px;
+  display: flex; flex-direction: column; gap: 24px;
+
+SHELL BAR (.top-bar)
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px; background: #f5f6f7; border-bottom: 1px solid #e8eaed;
+  transition: transform 220ms ease-in-out;
+
+  Inner (.top-bar__inner): max-width 1200px; margin 0 auto; padding 0 40px; display flex; align-items center;
+
+  Slots (left → right):
+  1. SAP logo SVG inline (height 32px — use standard SAP red/gold gradient logo)
+  2. Divider: 1px wide × 22px tall; background #d5dadd; margin 0 16px; flex-shrink 0
+  3. Product name: 17px, weight 700, color #12171c
+  4. App name: 17px, weight 400, color #354a5f, margin-left 14px (baseline-aligned with product name)
+  5. PI badge (optional): display inline-block; font-size 14px; font-weight 700; color #0040b0;
+                          background #ebf8ff; border 1px solid #a6e0ff; border-radius 4px;
+                          padding 1px 6px; margin-left 7px; vertical-align middle;
+  6. Date: margin-left auto; font-size 12px; color #8ea4b8; white-space nowrap;
+
+  Scroll-hide JS (add before &lt;/body&gt;):
+    let lastY = 0, upCount = 0;
+    const bar = document.querySelector('.top-bar');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y &lt; 10)         { bar.style.transform = ''; upCount = 0; }
+      else if (y &lt; lastY) { if (++upCount &gt;= 2) bar.style.transform = ''; }
+      else                 { bar.style.transform = 'translateY(-100%)'; upCount = 0; }
+      lastY = y;
+    }, { passive: true });
+
+SECTION CARDS (.section-card)
+  background: #fff; border: 1px solid #d9dde0; border-radius: 12px;
+  padding: 32px 40px; box-shadow: 0 1px 4px rgba(0,50,165,.06);
+  Use min-height: 180px for content cards; omit for chart sections.
+
+  Header (.section-card__header): display flex; align-items center; gap 8px; margin-bottom 20px;
+  Optional icon slot (.section-card__icon): width 32px; height 32px; display block;
+  Label (.section-card__label):
+    font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #002a86;  ← ALWAYS Blue/10 #002a86, NEVER the brand blue #0070f2
+    margin-bottom: 20px; (set to 0 when inside .section-card__header)
+
+ACCENT BAR LABELS (.chip) — sub-section titles within cards
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+  color: #5b738b; margin-bottom: 0.65rem;
+  .chip::before {
+    content: ''; display: inline-block; width: 3px; height: 11px;
+    border-radius: 2px; background: #002a86; flex-shrink: 0;
+  }
+  ← Bar color is #002a86, NOT #0070f2 — bright blue is reserved for interactive fills
+
+TYPOGRAPHY RULES
+  All body text in rem. No h1–h6 in main content — use .section-card__label and .chip instead.
+  Key sizes: 1.85rem (KPI values) · 0.78rem (table cells) · 0.72rem (labels)
+             0.68rem (small labels) · 0.62rem (badges)
+
+OUTPUT
+  A complete, valid HTML5 file. All CSS written — no placeholder comments for styles.
+
+  Page title:    [PAGE_TITLE]
+  Product name:  [PRODUCT_NAME]
+  App name:      [APP_NAME]
+  PI badge:      [PI_VERSION]   ← omit the badge element if not applicable
+  Date:          [DATE]
+
+  Sections (add one .section-card per item):
+  [SECTION_1: describe what goes here]
+  [SECTION_2: describe what goes here]
+  [add more as needed]</pre>
+    </div>
+  </div>
+
+  <!-- ── Prompt 2 ── -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Prompt 2 — KPI Summary Strip <span class="tier-badge tier-2">Component</span></p>
+    </div>
+    <div class="prompt-card">
+      <div class="chip">KPI Tiles</div>
+      <p class="prompt-meta">Adds a <strong>4-tile summary grid</strong> inside an existing section card. Covers the simple, progress bar, two-number, and stacked bars tile variants.</p>
+      <div class="prompt-header">
+        <span style="font-size:.68rem;color:var(--ts);">Paste in a follow-up message after Prompt 1</span>
+        <button class="copy-btn" onclick="copyPrompt(this,2)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M3 8H2a1 1 0 01-1-1V2a1 1 0 011-1h5a1 1 0 011 1v1"/></svg>
+          Copy prompt
+        </button>
+      </div>
+<pre class="prompt-pre" id="p2">Add a KPI summary strip inside a section card.
+
+STRIP LAYOUT
+  .kpi-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 28px; }
+
+TILE CARD SHELL
+  padding: 0.8rem 1.1rem; background: #fff; border-radius: 0.65rem;
+  border: 1px solid rgba(0,112,242,.09); box-shadow: 0 1px 4px rgba(0,50,165,.06);
+  display: flex; flex-direction: column; gap: 0.25rem;
+
+TILE LAYER STACK (top → bottom)
+  1. Sub-label (.kpi-l): use the .chip accent bar style; margin-bottom: 0.75rem
+  2. Main value (.kpi-v): font-size 1.85rem; font-weight 900; color #12171c; line-height 1;
+  3. Body area (.kpi-body): min-height 3.2rem — holds variant-specific content
+  4. Bottom pill (.kpi-pill):
+       font-size: 0.65rem; color: #8ea4b8; margin-top: auto; width: 100%;
+       border: 1px solid rgba(0,112,242,.14); border-radius: 0.35rem; padding: 0.42rem 0.55rem;
+       &lt;strong&gt; inside pill: color #556475; font-weight 700;
+
+TILE VARIANTS — choose per tile:
+
+  SIMPLE: big number only + optional pill text.
+
+  PROGRESS (e.g. "X of Y executed"):
+    Fraction: big number + " / " + total (0.95rem, 700, #556475, baseline-aligned)
+    Bar track: height 10.5px; border-radius 5.25px; background rgba(0,112,242,.1);
+    Bar fill:  height 100%; background #0070f2; border-radius 5.25px;
+               Width via CSS custom property: &lt;div class="kpi-bar-fill" style="--w:87%"&gt;&lt;/div&gt;
+               CSS: .kpi-bar-fill { width: var(--w, 0%); }
+
+  TWO-NUMBER (e.g. Very High vs High bug counts):
+    Grid: grid-template-columns: max-content 1px max-content; column-gap: 0.9rem; align-items: end;
+    Center divider: height 1.85rem; background rgba(0,0,0,.08); margin-bottom 0.35rem; align-self end;
+    Each number: big value (.kpi-v) + small SVG priority icon (12×16px) + label (0.68rem, #556475)
+
+  STACKED BARS (e.g. execution windows / sprint periods):
+    Each sub-row: background rgba(0,112,242,.04); border 1px solid rgba(0,112,242,.13);
+                  border-radius 0.45rem; padding 0.45rem 0.55rem;
+    Row header: flex; space-between; label (11px, #556475) + small badge
+    Badge: font-size 0.54rem; font-weight 700; background #0070f2; color #fff;
+           border-radius 2rem; padding 0.07rem 0.38rem;
+    Mini bar: height 4px; border-radius 2px; background rgba(0,112,242,.1);
+              fill: background #0070f2; width via --w pattern
+
+DEFINE TILES
+  Tile 1: [label] | [main value] | [variant: simple/progress/two-number/stacked] | [pill text]
+  Tile 2: [label] | [main value] | [variant] | [pill text]
+  Tile 3: [label] | [main value] | [variant] | [pill text]
+  Tile 4: [label] | [main value] | [variant] | [pill text]</pre>
+    </div>
+  </div>
+
+  <!-- ── Prompt 3 ── -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Prompt 3 — Data Table <span class="tier-badge tier-2">Component</span></p>
+    </div>
+    <div class="prompt-card">
+      <div class="chip">Tables &amp; Badges</div>
+      <p class="prompt-meta">Adds a <strong>styled data table</strong> with exact header/cell specs, Blue/1 hover, status badges (feature, test result, bug priority), assignee avatars, and optional collapsible secondary rows.</p>
+      <div class="prompt-header">
+        <span style="font-size:.68rem;color:var(--ts);">Attach sap-brand-tables.md for full context</span>
+        <button class="copy-btn" onclick="copyPrompt(this,3)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M3 8H2a1 1 0 01-1-1V2a1 1 0 011-1h5a1 1 0 011 1v1"/></svg>
+          Copy prompt
+        </button>
+      </div>
+<pre class="prompt-pre" id="p3">Add a data table section inside a section card.
+
+TABLE STRUCTURE
+  &lt;table&gt; width: 100%; border-collapse: collapse; font-family: '72', Arial, sans-serif;
+
+COLUMN HEADERS (&lt;th&gt;)
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  color: #223548; background: #fff; padding: 0.55rem 1rem;
+  border-bottom: 2px solid rgba(0,112,242,.12); text-align: left; white-space: nowrap;
+
+TABLE CELLS (&lt;td&gt;)
+  padding: 0.65rem 1rem; border-bottom: 1px solid rgba(0,112,242,.07);
+  vertical-align: middle; font-size: 0.78rem; color: var(--tx);
+
+ROW HOVER
+  tr:hover td { background: #ebf8ff; }   ← Blue/1 — NOT Grey/1 (#f5f6f7)
+
+FEATURE STATUS BADGES (.fs) — pill: display inline-flex; font-size 0.62rem; font-weight 700;
+  padding 0.2rem 0.55rem; border-radius 2rem; white-space nowrap;
+  In Validation:           bg rgba(0,112,242,.08);  color #0070f2; border 1px solid rgba(0,112,242,.22);
+  Ready for Deployment:    bg #e8f5ec;              color #188918; border 1px solid rgba(24,137,24,.22);
+  Ready for In Validation: bg rgba(0,112,242,.05);  color #5b738b; border 1px solid rgba(0,112,242,.14);
+  In Development:          bg #fff4e0;              color #e76500; border 1px solid rgba(231,101,0,.22);
+  Dev Completed:           bg rgba(0,112,242,.05);  color #0040b0; border 1px solid rgba(0,112,242,.18);
+  Obsolete:                bg rgba(142,164,184,.1); color #8ea4b8; border 1px solid rgba(142,164,184,.28);
+  Ready for Development:   bg #f5f6f7;              color #5b738b; border 1px solid #d5dadd;
+
+TEST RESULT BADGES (.fw-er) — compact: font-size 0.58rem; padding 0.1rem 0.32rem; border-radius 2rem;
+  Passed (P): bg #e8f5ec;          color #188918;
+  Failed  (F): bg #fce8e8;         color #aa0808;
+  Blocked (B): bg #fff4e0;         color #e76500;
+  Aborted (A): bg rgba(0,0,0,.07); color #475e75;
+
+BUG PRIORITY ICONS — inline SVG, 12×16px viewBox, stroke-width 2.4, stroke-linecap round:
+  Very High (↑↑): two chevrons pointing up, stroke #C9372C
+  High      (↑):  one chevron pointing up,  stroke #E2483D
+  Medium    (=):  two horizontal lines (fill only, no stroke), fill #FF8B00
+  Low       (↓):  one chevron pointing down, stroke #5b738b
+
+ASSIGNEE AVATARS (include only if table has an assignee column)
+  Circle: width/height 22px; border-radius 50%; font-size 0.5rem; font-weight 700; color #fff;
+  Pair with name: display inline-flex; align-items center; gap 0.42rem;
+  Background color — deterministic, assigned by: charCodeSum % 20 from this palette:
+    ['#0040b0','#0F828F','#2D7F5E','#5040A0','#B03060','#6B3A2A','#A04000','#007070',
+     '#004060','#603080','#406020','#802040','#205080','#706020','#304090',
+     '#508030','#702060','#304830','#506870','#703020']
+  Initials: handle "Last, First" (Jira format) and "First Last" — always 2 chars, uppercase.
+
+PROGRESSIVE DISCLOSURE (include only if [HAS_SECONDARY_GROUP: yes])
+  Add a separator row between primary and secondary groups:
+    Full-width &lt;td&gt;; background #f5f6f7; display flex; gap 0.35rem; padding 0.42rem 0.6rem;
+    cursor pointer; font-size 0.68rem; color #8ea4b8; user-select none;
+    On hover: color #556475;
+    Left icon: 14px circle, border 1.5px solid #0070f2, color #0070f2, text "+" or "−"
+  Secondary rows: start display:none; toggle to display:table-row on click; opacity 0.62 when visible.
+  For "resolved / completed" variant: add border-top: 1px dashed rgba(142,164,184,.35) on separator.
+
+DEFINE TABLE
+  Columns: [list each column name and what it contains, e.g. "Priority | bug priority icon"]
+  Rows:    [describe data rows or paste raw data]
+  Secondary group: [HAS_SECONDARY_GROUP: yes — describe group | no]</pre>
+    </div>
+  </div>
+
+  <!-- ── Prompt 4 ── -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Prompt 4 — Line Chart <span class="tier-badge tier-2">Component</span></p>
+    </div>
+    <div class="prompt-card">
+      <div class="chip">Chart.js Line Chart</div>
+      <p class="prompt-meta">Adds a <strong>Chart.js line chart</strong> in a split left/right panel layout. Includes exact dataset colors for burnup and bug trend variants, a "TODAY" dashed reference line plugin, and a custom HTML legend.</p>
+      <div class="prompt-header">
+        <span style="font-size:.68rem;color:var(--ts);">Attach sap-brand-charts.md for full context</span>
+        <button class="copy-btn" onclick="copyPrompt(this,4)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M3 8H2a1 1 0 01-1-1V2a1 1 0 011-1h5a1 1 0 011 1v1"/></svg>
+          Copy prompt
+        </button>
+      </div>
+<pre class="prompt-pre" id="p4">Add a line chart section using Chart.js.
+
+CHART.JS CDN — add before &lt;/body&gt;:
+  &lt;script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"&gt;&lt;/script&gt;
+
+SECTION LAYOUT (flex, gap 28px)
+  Left panel  (.chart-left):  flex 3; background #fff; border-radius 0.65rem;
+    border 1px solid rgba(0,112,242,.09); box-shadow 0 1px 4px rgba(0,50,165,.06);
+    padding 1.2rem 1.4rem; display flex; flex-direction column; gap 14px;
+  Right panel (.chart-right): flex 1; same card style as left;
+    display flex; flex-direction column; align-items center; gap 16px;
+
+CANVAS CONTAINER (inside left panel)
+  position: relative; flex: 1; min-height: 240px; width: 100%;
+  &lt;canvas id="[CHART_ID]"&gt;&lt;/canvas&gt; inside this container.
+
+DATASET COLORS — use the set matching your chart type:
+  Burnup / execution progress:
+    Series 1 (Planned):  borderColor '#89d1ff'  (Blue/4 — lighter)
+    Series 2 (Actual):   borderColor '#0040b0'  (Blue/9 — darker)
+  Bug trend:
+    Series 1 (Added):    borderColor '#000000'  (black)
+    Series 2 (Resolved): borderColor '#188918'  (Green/7)
+
+CHART.JS CONFIG
+  type: 'line',
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },   ← always false — use custom HTML legend below
+    datasets: { line: { tension: 0.35, borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, fill: false } },
+    scales: {
+      x: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { font: { size: 11 } },
+           min: 0, max: [Y_MAX], ticks: { stepSize: [Y_STEP] } }
+    }
+  }
+
+TODAY LINE PLUGIN — include on all time-series charts:
+  const todayPlugin = {
+    id: 'todayLine',
+    afterDraw(chart) {
+      const x = chart.scales.x.getPixelForIndex([TODAY_INDEX]);
+      const { ctx, chartArea: { top, bottom } } = chart;
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(0,112,242,0.45)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+      ctx.fillStyle = '#0070f2';
+      ctx.beginPath(); ctx.roundRect(x - 24, top - 22, 48, 18, 4); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = '700 10px "72",Arial';
+      ctx.textAlign = 'center'; ctx.fillText('TODAY', x, top - 9);
+      ctx.restore();
+    }
+  };
+  Pass as: new Chart(canvas, { plugins: [todayPlugin], data: ..., options: ... })
+
+CUSTOM HTML LEGEND (below canvas, inside left panel)
+  Container: display flex; gap 20px; align-items center;
+  Each legend item: a 20×2px colored &lt;div&gt; (border-radius 1px) + &lt;span&gt; label (11px, color #556475)
+  Colors must exactly match the borderColor values of each dataset.
+
+DEFINE CHART
+  Chart type:      [CHART_TYPE: burnup | bugtrend | custom]
+  X-axis labels:   [X_LABELS: e.g. '1st','2nd','3rd',...]
+  Y-axis max:      [Y_MAX]
+  Y-axis step:     [Y_STEP]
+  Today index:     [TODAY_INDEX: 0-based position of today in X_LABELS]
+  Dataset 1 name:  [DATASET_1_NAME]
+  Dataset 1 data:  [DATASET_1_DATA: e.g. 0,20,45,60,...]
+  Dataset 2 name:  [DATASET_2_NAME]
+  Dataset 2 data:  [DATASET_2_DATA: e.g. 0,18,40,55,...]
+  Right panel:     [RIGHT_PANEL: describe what goes in the right panel, e.g. "donut chart" or "summary stats"]</pre>
+    </div>
+  </div>
+
+  <!-- ── Prompt 5 ── -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Prompt 5 — Execution Status Donut <span class="tier-badge tier-2">Component</span></p>
+    </div>
+    <div class="prompt-card">
+      <div class="chip">Inline SVG Donut</div>
+      <p class="prompt-meta">Adds an <strong>inline SVG donut chart</strong> (no Chart.js) showing test execution status breakdown. Uses semantic status colors (overrides blue-monochrome rule). Includes hover interaction and a color legend.</p>
+      <div class="prompt-header">
+        <span style="font-size:.68rem;color:var(--ts);">Attach sap-brand-charts.md for arc math reference</span>
+        <button class="copy-btn" onclick="copyPrompt(this,5)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M3 8H2a1 1 0 01-1-1V2a1 1 0 011-1h5a1 1 0 011 1v1"/></svg>
+          Copy prompt
+        </button>
+      </div>
+<pre class="prompt-pre" id="p5">Add an execution status donut chart as inline SVG. Do NOT use Chart.js for this.
+
+SVG ELEMENT
+  &lt;svg viewBox="0 0 160 160" width="160" height="160" class="exec-donut"&gt;
+  All circles: cx="80" cy="80" r="60" stroke-width="20" fill="none" stroke-linecap="butt"
+  All segment circles: add transform="rotate(-90 80 80)" — starts arc at 12 o'clock
+
+TRACK CIRCLE (render first, sits behind all segments)
+  &lt;circle cx="80" cy="80" r="60" fill="none" stroke="#eaecee" stroke-width="20"
+          stroke-linecap="butt" class="exec-track"/&gt;
+
+ARC MATH (compute for each segment in order)
+  Circumference C = 376.99  (= 2π × 60)
+  Per segment:
+    geometric_arc = C × (segment_count / total_count)
+    visual_arc    = geometric_arc − 1.5              ← gap = 1.5 arc units
+    offset        = −(sum of ALL prior geometric_arcs) − 0.75
+  stroke-dasharray  = "{visual_arc} {C}"
+  stroke-dashoffset = "{offset}"
+
+STATUS COLORS — semantic override (permitted exception to blue-monochrome rule):
+  Passed:      stroke="#256f3a"
+  Failed:      stroke="#aa0808"
+  Blocked:     stroke="#e76500"
+  Aborted:     stroke="#475e75"
+  Not Started: stroke="#eaecee"  ← same as track, visually blends in
+
+RENDER ORDER (first = bottom layer): Not Started → Aborted → Blocked → Failed → Passed
+
+CENTER OVERLAY
+  Wrapper: position relative; width 160px; height 160px; flex-shrink 0;
+  &lt;div class="exec-donut-wrap"&gt; containing the SVG + a center overlay:
+  Overlay: position absolute; inset 0; display flex; flex-direction column;
+           align-items center; justify-content center; pointer-events none;
+  Big %:   font-size 1.9rem; font-weight 900; color #12171c; line-height 1;
+           Value = Math.round(passed / total * 100) + '%'
+  Label:   font-size 0.6rem; font-weight 600; color #8ea4b8;
+           text-transform uppercase; letter-spacing 0.06em; margin-top 3px;
+           Text: "EXECUTED"
+
+HOVER BEHAVIOR
+  CSS:
+    .exec-donut.is-hovering circle:not(.exec-track) { opacity: .22; transition: opacity .15s; }
+  JS per segment circle:
+    mouseenter → add .is-hovering to &lt;svg&gt;, set this circle opacity to 1,
+                 update center to show hovered count + status label (e.g. "142 Passed")
+    mouseleave on &lt;svg&gt; → remove .is-hovering, restore center to total % + "EXECUTED"
+  Mirror same hover on corresponding legend rows.
+
+LEGEND (below or beside donut)
+  Each row: flex; align-items center; gap 0.55rem;
+  Color dot: 12×12px square, border-radius 3px (NOT a circle) — match segment stroke color
+  Label text: 11px, color #556475
+  Count: same size, color #12171c, font-weight 700
+
+DEFINE
+  Total TC count:      [TOTAL]
+  Passed count:        [PASSED]
+  Failed count:        [FAILED]
+  Blocked count:       [BLOCKED]
+  Aborted count:       [ABORTED]
+  Not Started count:   [NOT_STARTED]</pre>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── Scroll-hide shell bar ──
+(function() {
+  let lastY = 0, upCount = 0;
+  const bar = document.querySelector('.top-bar');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < 10)         { bar.style.transform = ''; upCount = 0; }
+    else if (y < lastY) { if (++upCount >= 2) bar.style.transform = ''; }
+    else                { bar.style.transform = 'translateY(-100%)'; upCount = 0; }
+    lastY = y;
+  }, { passive: true });
+})();
+
+// ── Copy buttons ──
+function copyPrompt(btn, n) {
+  const pre = document.getElementById('p' + n);
+  // Decode HTML entities for clean clipboard copy
+  const txt = pre.textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6l3 3 5-5"/></svg> Copied ✓';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M3 8H2a1 1 0 01-1-1V2a1 1 0 011-1h5a1 1 0 011 1v1"/></svg> Copy prompt';
+    }, 1800);
+  });
+}
+</script>
+</body>
+</html>

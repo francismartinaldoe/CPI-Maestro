@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAP Jira MCP — Authentication Guide</title>
+<style>
+  :root {
+    --br: #0070f2;
+    --dk: #0050c8;
+    --sky: #4db1ff;
+    --fog: #bae8ff;
+    --t: #e8f2ff;
+    --n950: #000d2e;
+    --pos: #256f3a;
+    --wrn: #e76500;
+    --err: #aa0808;
+    --ts: #6e7d9a;
+    --s1: 0 2px 8px rgba(0,112,242,.10);
+    --s2: 0 4px 16px rgba(0,112,242,.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: '72', Arial, Helvetica, sans-serif; background: #f5f6f7; color: #12171c; font-size: .875rem; line-height: 1.6; padding-top: 56px; }
+  .top-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 56px; display: flex; align-items: center; background: #f5f6f7; border-bottom: 1px solid #e8eaed; transition: transform 220ms ease-in-out; }
+  .top-bar__inner { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; }
+  .top-bar__logo { height: 32px; width: auto; display: block; flex-shrink: 0; }
+  .top-bar__divider { width: 1px; height: 22px; background: #d5dadd; margin: 0 16px; flex-shrink: 0; }
+  .top-bar__title-group { display: flex; align-items: baseline; gap: 14px; }
+  .top-bar__product { font-size: 17px; font-weight: 700; color: #12171c; white-space: nowrap; }
+  .top-bar__app { font-size: 17px; font-weight: 400; color: #354a5f; white-space: nowrap; }
+  .top-bar__date { margin-left: auto; font-size: 12px; color: #8ea4b8; white-space: nowrap; }
+  .hero { background: linear-gradient(160deg,#eef4ff 0%,#f5f9ff 55%,#fff 100%); border-bottom: 1px solid #dde8f8; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 2rem; }
+  .hero-tag { display: inline-flex; align-items: center; gap: .4rem; background: var(--t); color: var(--dk); border-radius: 2rem; padding: .25rem .85rem; font-size: .72rem; font-weight: 700; letter-spacing: .04em; margin-bottom: .75rem; }
+  .hero h1 { font-size: 1.75rem; font-weight: 800; color: var(--n950); line-height: 1.2; }
+  .hero p { color: var(--ts); margin-top: .5rem; max-width: 52ch; font-size: .875rem; }
+  .content { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .card { background: #fff; border-radius: .75rem; padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: var(--s1); overflow: hidden; }
+  .card-h { display: flex; align-items: center; gap: .6rem; font-size: .95rem; font-weight: 700; color: var(--dk); margin-bottom: 1rem; }
+  .step-num { background: var(--br); color: #fff; width: 1.6rem; height: 1.6rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 800; flex-shrink: 0; }
+  .step { display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f0f4fb; }
+  .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .step-body { flex: 1; min-width: 0; }
+  .step-title { font-weight: 700; color: #1a2540; margin-bottom: .35rem; }
+  .step-desc { color: #3a4a6a; font-size: .84rem; }
+  code { background: #f0f4fb; color: var(--dk); padding: .15em .45em; border-radius: .3rem; font-size: .82rem; font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+  pre { background: var(--n950); color: #e2ecff; padding: 1rem 1.25rem; border-radius: .6rem; font-size: .8rem; overflow-x: auto; line-height: 1.7; margin: .75rem 0; font-family: 'Cascadia Code', Consolas, monospace; max-width: 100%; word-break: break-all; }
+  pre .cm { color: #5a7a9a; }
+  pre .kw { color: var(--sky); }
+  pre .str { color: #a8e8b0; }
+  .al { border-radius: .5rem; padding: .75rem 1rem; margin: .75rem 0; font-size: .82rem; display: flex; gap: .6rem; align-items: flex-start; max-width: 100%; word-break: break-word; }
+  .al-i { background: var(--t); color: var(--dk); border-left: 3px solid var(--br); }
+  .al-w { background: #fff8ed; color: #7a4500; border-left: 3px solid var(--wrn); }
+  .al-s { background: #edfbf2; color: #1a4a2a; border-left: 3px solid var(--pos); }
+  .al-e { background: #ffeaf4; color: #6a0020; border-left: 3px solid var(--err); }
+  .tag { display: inline-block; background: var(--t); color: var(--dk); border-radius: .3rem; padding: .1em .5em; font-size: .75rem; font-weight: 700; }
+  .tag-ok { background: #edfbf2; color: #1a4a2a; }
+  .tag-warn { background: #fff8ed; color: #7a4500; }
+  table { width: 100%; border-collapse: collapse; font-size: .8rem; margin: .75rem 0; }
+  th { background: var(--t); color: var(--dk); font-weight: 700; text-align: left; padding: .5rem .75rem; }
+  td { padding: .5rem .75rem; border-bottom: 1px solid #e8f0ff; }
+  .divider { border: none; border-top: 1px solid #e4eaf8; margin: 1.5rem 0; }
+  .footer { text-align: center; color: var(--ts); font-size: .75rem; padding: 1.5rem; }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar__inner">
+    <svg class="top-bar__logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412.38 204" aria-label="SAP"><defs><style>.cls-1,.cls-2{fill-rule:evenodd}.cls-1{fill:url(#mg)}.cls-2{fill:#fff}</style><linearGradient id="mg" x1="206.19" x2="206.19" y2="204" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00b8f1"/><stop offset=".02" stop-color="#01b6f0"/><stop offset=".31" stop-color="#0d90d9"/><stop offset=".58" stop-color="#1775c8"/><stop offset=".82" stop-color="#1c65bf"/><stop offset="1" stop-color="#1e5fbb"/></linearGradient></defs><polyline class="cls-1" points="0 204 208.41 204 412.38 0 0 0 0 204"/><path class="cls-2" d="M244.73,38.36l-40.6,0v96.52L168.67,38.33H133.51l-30.27,80.72C100,98.7,79,91.67,62.4,86.4,51.46,82.89,39.85,77.72,40,72c.09-4.68,6.23-9,18.38-8.38,8.17.43,15.37,1.09,29.71,8l14.1-24.55C89.06,40.42,71,36.21,56.17,36.19h-.09c-17.28,0-31.68,5.6-40.6,14.83A34.23,34.23,0,0,0,5.77,74.7C5.54,87.15,10.11,96,19.71,103c8.1,5.94,18.46,9.79,27.6,12.62,11.27,3.49,20.47,6.53,20.36,13A9.57,9.57,0,0,1,65,135c-2.81,2.9-7.13,4-13.09,4.1-11.49.24-20-1.56-33.61-9.59L5.77,154.42a93.77,93.77,0,0,0,46,12.22l2.11,0c14.24-.25,25.74-4.31,34.92-11.71.53-.41,1-.84,1.49-1.28L86.17,164.5H123l6.19-18.82a67.46,67.46,0,0,0,21.68,3.43,68.33,68.33,0,0,0,21.16-3.25l6,18.64h60.14v-39h13.11c31.71,0,50.46-16.15,50.46-43.2C301.74,52.19,283.52,38.36,244.73,38.36ZM150.91,121a36.93,36.93,0,0,1-13-2.28l12.87-40.59H151l12.65,40.71A38.5,38.5,0,0,1,150.91,121Zm96.2-23.33h-8.94V64.91h8.94c11.93,0,21.44,4,21.44,16.14,0,12.6-9.51,16.57-21.44,16.57"/></svg>
+    <div class="top-bar__divider"></div>
+    <div class="top-bar__title-group">
+      <span class="top-bar__product">Program</span>
+      <span class="top-bar__app">SAP Jira MCP — Auth Guide</span>
+    </div>
+    <span class="top-bar__date">02 Jun 2026</span>
+  </div>
+</header>
+<div style="background:#eef4ff;border-bottom:1px solid #dde8f8;position:sticky;top:56px;z-index:99;">
+  <div style="width:100%;max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:1.5rem;height:2rem;font-size:.75rem;font-weight:600;">
+    <a href="../Claude_Overview.html" style="color:#0070f2;text-decoration:none;">Overview</a>
+    <a href="../Central_Claude_System.html" style="color:#0070f2;text-decoration:none;">Central System</a>
+    <a href="../Knowledge_Base.html" style="color:#0070f2;text-decoration:none;">Knowledge Base</a>
+    <span style="color:#0050c8;font-weight:700;">&#9654; MCP Auth Guide</span>
+    <a href="https://pages.github.<YOUR-DOMAIN>/public/changelog/" target="_blank" style="color:#0070f2;text-decoration:none;margin-left:auto;">🆕 What's New</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude/blob/main/ONBOARDING.md" target="_blank" style="color:#0070f2;text-decoration:none;">Onboarding</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude" target="_blank" style="color:#0070f2;text-decoration:none;">&#128279; Git Repository</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">🔑 MCP Setup</div>
+    <h1>SAP Jira MCP Authentication</h1>
+    <p>Step-by-step guide to authenticate the SAP Jira MCP server in Claude Code. Required once per machine — credentials persist across sessions.</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- What is it -->
+  <div class="card">
+    <div class="card-h">📡 What Is the SAP Jira MCP?</div>
+    <p style="color:#3a4a6a;font-size:.84rem;margin-bottom:.75rem">
+      The <strong>SAP Jira MCP</strong> (Model Context Protocol) server connects Claude Code directly to your SAP Jira instance. Once authenticated, Claude can read and query Jira issues, capabilities, features, bugs, and test cases — without you copying data manually.
+    </p>
+    <table>
+      <tr><th>Detail</th><th>Value</th></tr>
+      <tr><td>MCP Server</td><td><code>sap-jira</code></td></tr>
+      <tr><td>Endpoint</td><td><code>https://mcp.jira.<YOUR-DOMAIN>/mcp</code></td></tr>
+      <tr><td>Type</td><td>HTTP (OAuth 2.0)</td></tr>
+      <tr><td>Auth Method</td><td>SAP SSO / Corporate credentials</td></tr>
+      <tr><td>Config location</td><td><code>.claude/settings.json</code> (pre-configured)</td></tr>
+    </table>
+    <div class="al al-i">ℹ️ The MCP server is already configured in <code>.claude/settings.json</code>. You only need to authenticate — no manual configuration required.</div>
+  </div>
+
+  <!-- Prerequisites -->
+  <div class="card">
+    <div class="card-h">✅ Prerequisites</div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Claude Code installed and running</div>
+        <div class="step-desc">Claude Code VSCode extension must be active. Verify by pressing <code>Ctrl+Shift+P</code> → "Claude Code: Open".</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Claude repo opened in VSCode</div>
+        <div class="step-desc">Open the cloned <code>~/Claude</code> folder in VSCode. Claude Code reads the MCP config from <code>.claude/settings.json</code> in the workspace root.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">SAP corporate network / VPN active</div>
+        <div class="step-desc">You must be on the SAP corporate network or connected via VPN. The MCP endpoint <code>https://mcp.jira.<YOUR-DOMAIN></code> is internal-only.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authentication Steps -->
+  <div class="card">
+    <div class="card-h">🔐 Authentication — Step by Step</div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Open Claude Code in VSCode</div>
+        <div class="step-desc">Click the Claude Code icon in the sidebar, or press <code>Ctrl+Shift+P</code> → "Claude Code: Focus on Claude Code View".</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Trigger MCP authentication</div>
+        <div class="step-desc">Type the following in the Claude Code chat and press Enter:</div>
+        <pre><span class="kw">authenticate with SAP Jira</span></pre>
+        <div class="step-desc">Alternatively, type <code>/_tech-update</code> — it will detect unauthenticated MCP and guide you through setup.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Claude triggers OAuth flow</div>
+        <div class="step-desc">Claude will call <code>mcp__sap-jira__authenticate</code> and return an authorization URL. It looks like:</div>
+        <pre>https://mcp.jira.<YOUR-DOMAIN>/oauth/authorize?client_id=...&amp;state=...&amp;redirect_uri=http://localhost:PORT/callback</pre>
+        <div class="al al-w">⚠️ The URL contains a one-time <code>state</code> parameter. Do not reload or share it.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Open the URL in your browser</div>
+        <div class="step-desc">Click or paste the authorization URL into your browser. Log in with your SAP corporate credentials (SSO).</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Authorize the application</div>
+        <div class="step-desc">The browser will show a consent screen for the SAP Jira MCP. Click <strong>Authorize</strong> / <strong>Allow</strong>.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Copy the callback URL</div>
+        <div class="step-desc">After authorizing, the browser redirects to a <code>localhost</code> page that may fail to load. That is expected on remote/WSL setups.<br><br>
+        Copy the <strong>full URL from the browser address bar</strong>. It looks like:</div>
+        <pre>http://localhost:PORT/callback?code=AUTH_CODE&amp;state=STATE_VALUE</pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <div class="step-title">Return the callback URL to Claude</div>
+        <div class="step-desc">Paste the full callback URL into Claude Code and say:</div>
+        <pre><span class="kw">Here is the callback URL:</span> <span class="str">http://localhost:PORT/callback?code=...&amp;state=...</span></pre>
+        <div class="step-desc">Claude will call <code>mcp__sap-jira__complete_authentication</code> with the callback URL to finish the OAuth flow.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <div class="step-title">Verify authentication</div>
+        <div class="step-desc">Claude will confirm: <em>"SAP Jira MCP authenticated successfully."</em><br>
+        Verify by running <code>/-status</code> — it should pull live data from Jira.</div>
+        <div class="al al-s">✓ Authentication complete. Claude can now read Jira issues, run JQL queries, and access program data directly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Troubleshooting -->
+  <div class="card">
+    <div class="card-h">🛠️ Troubleshooting</div>
+    <table>
+      <tr><th>Problem</th><th>Solution</th></tr>
+      <tr><td>Authorization URL not generated</td><td>Ensure you are on SAP VPN / corporate network and the workspace contains <code>.claude/settings.json</code>. Run <code>/_tech-update</code> first.</td></tr>
+      <tr><td>Callback page shows error / doesn't load</td><td>Expected behaviour — copy the URL from address bar anyway; the code is embedded in the URL parameters.</td></tr>
+      <tr><td>Authentication expires / re-authentication needed</td><td>Repeat from Step 2. SAP OAuth tokens expire; re-authenticate when Claude reports MCP connection errors.</td></tr>
+      <tr><td>MCP not listed in Claude Code</td><td>Ensure theClaude folder (not a subfolder) is open in VSCode. The <code>.claude/</code> folder must be at workspace root.</td></tr>
+      <tr><td>VPN not connected</td><td>Connect to SAP VPN (GlobalProtect or equivalent). The <code>mcp.jira.<YOUR-DOMAIN></code> endpoint is not reachable from public internet.</td></tr>
+    </table>
+  </div>
+
+  <!-- Post-auth capabilities -->
+  <div class="card">
+    <div class="card-h">🚀 What You Can Do After Authentication</div>
+    <p style="color:#3a4a6a;font-size:.84rem;margin-bottom:.75rem">Once authenticated, Claude can directly access your Jira data:</p>
+    <table>
+      <tr><th>Task</th><th>How</th></tr>
+      <tr><td>Check capability DoR</td><td><code>/-capability-check SP-XXXX</code></td></tr>
+      <tr><td>Check feature DoR</td><td><code>/-feature-check YOUR_JIRA_PROJECT-XXXX</code></td></tr>
+      <tr><td>Get bug counts for current sprint</td><td><code>/-bug-query</code></td></tr>
+      <tr><td>Get program snapshot</td><td><code>/-status</code></td></tr>
+      <tr><td>Query any Jira issue</td><td>Ask Claude: "Show me YOUR_JIRA_PROJECT-1234"</td></tr>
+      <tr><td>Run custom JQL</td><td>Ask Claude: "Run this JQL: project = YOUR_JIRA_PROJECT AND ..."</td></tr>
+    </table>
+  </div>
+
+  <div class="al al-i">ℹ️ Credentials are stored securely by Claude Code. You do not need to re-authenticate each session, but tokens may expire after extended inactivity or token rotation.</div>
+
+  <hr class="divider">
+
+  <div class="footer">
+    Claude Code · SAP + Accenture ·
+    <a href="https://github.<YOUR-DOMAIN>//Claude" style="color:var(--br)">github.<YOUR-DOMAIN>//Claude</a>
+    · Maintained by C5199126
+  </div>
+</div>
+</body>
+</html>

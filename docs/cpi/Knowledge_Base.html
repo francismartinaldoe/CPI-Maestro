@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Central Knowledge Base — v3.0 — 26 May 2026</title>
+<style>
+@font-face{font-family:'72Brand';
+  src:url('../02_SAP Style guide md/Brand Master/Typography/Web/72BrandVariable-Th-Blk.woff2') format('woff2'),
+      url('../02_SAP Style guide md/Brand Master/Typography/Web/72BrandVariable-Th-Blk.woff') format('woff');
+  font-weight:100 900;font-style:normal;font-display:swap}
+:root{
+  --br:#0070f2;--br8:#0057d2;--br9:#0040b0;--br10:#002a86;
+  --br1:#ebf8ff;--br3:#a6e0ff;--br5:#4db1ff;
+  --pg:#f5f6f7;--g2:#eaecee;--g3:#d5dadd;--g4:#a9b4be;
+  --g6:#5b738b;--g7:#475e75;--g8:#354a5f;--g9:#223548;--g11:#12171c;
+  --pos:#256f3a;--posb:#e8f5ec;--wrn:#e76500;--wrnb:#fff4e0;
+  --err:#d20a0a;--err8:#aa0808;--errb:#ffeaf4;--bg:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'72Brand','72',Arial,Helvetica,sans-serif;font-size:.875rem;
+  background:var(--pg);color:var(--g9);line-height:1.5;
+  -webkit-font-smoothing:antialiased;padding-top:56px}
+a{color:var(--br);text-decoration:none}
+a:hover{text-decoration:underline}
+.shell{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;
+  display:flex;align-items:center;
+  background:var(--pg);border-bottom:1px solid var(--g2)}
+.shell-inner{width:100%;max-width:1400px;margin:0 auto;padding:0 40px;
+  height:56px;display:flex;align-items:center}
+.sh-logo{height:32px;width:auto;display:block;flex-shrink:0}
+.sh-div{width:1px;height:22px;background:var(--g3);margin:0 16px;flex-shrink:0}
+.sh-prod{font-size:17px;font-weight:700;color:var(--g11);white-space:nowrap}
+.sh-app{font-size:17px;font-weight:400;color:var(--g8);margin-left:0;white-space:nowrap}
+.sh-date{font-size:.75rem;color:var(--g6);margin-left:auto}
+.layout{display:flex;min-height:calc(100vh - 56px);max-width:1400px;margin:0 auto}
+.sidebar{width:220px;min-width:220px;flex-shrink:0;position:sticky;top:56px;
+  height:calc(100vh - 56px);overflow-y:auto;background:var(--bg);
+  border-right:1px solid var(--g2);padding:1rem .75rem}
+.sb-gr{margin-bottom:1.1rem}
+.sb-gl{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g6);padding:.2rem .4rem;margin-bottom:.3rem;display:block}
+.sb-lk{display:block;font-size:.75rem;padding:.3rem .6rem;border-radius:.4rem;
+  color:var(--g7);transition:background .15s,color .15s}
+.sb-lk:hover{background:var(--br1);color:var(--br);text-decoration:none}
+.sb-lk.active{background:var(--br1);color:var(--br10);font-weight:700;
+  border-left:3px solid var(--br);padding-left:.4rem}
+.main{flex:1;padding:2rem 2.5rem 4rem;min-width:0}
+.hero{background:linear-gradient(160deg,#eef4ff 0%,#f5f9ff 55%,#fff 100%);
+  border-radius:12px;border:1px solid rgba(0,112,242,.1);
+  padding:1.75rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 55% 100% at 90% 50%,rgba(0,112,242,.04) 0%,transparent 70%)}
+.hero-eye{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--br);margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem;position:relative}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--br);animation:blink 2.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-size:1.75rem;font-weight:900;color:var(--br10);line-height:1.1;
+  margin-bottom:.4rem;position:relative}
+.hero-sub{font-size:.84rem;color:var(--g7);position:relative;max-width:60ch}
+.hero-meta{display:flex;gap:.5rem;margin-top:.875rem;flex-wrap:wrap;position:relative}
+.ph-b{font-size:.68rem;font-weight:600;padding:.22rem .65rem;border-radius:2rem;
+  background:var(--br1);color:var(--br10);border:1px solid var(--br3)}
+.sect{background:var(--bg);border-radius:12px;border:1px solid var(--g3);
+  box-shadow:0 1px 4px rgba(0,50,165,.06);margin-bottom:1.25rem;
+  overflow:hidden;scroll-margin-top:72px}
+.sect-h{display:flex;align-items:center;gap:8px;font-size:.875rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--br10);
+  padding:1.1rem 2.5rem;border-bottom:1px solid var(--g2);
+  background:linear-gradient(90deg,rgba(0,112,242,.03) 0%,transparent 60%)}
+.sect-b{padding:1.5rem 2.5rem}
+.sub{display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--g6);margin:1rem 0 .5rem}
+.sub:first-child{margin-top:0}
+.sub::before{content:'';display:inline-block;width:3px;height:11px;
+  border-radius:2px;background:var(--br10);flex-shrink:0}
+.tbl{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+.tbl th{background:rgba(0,112,242,.05);font-size:.68rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--br10);
+  padding:.5rem .75rem;text-align:left;border-bottom:2px solid rgba(0,112,242,.12)}
+.tbl td{padding:.45rem .75rem;border-bottom:1px solid var(--g2);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(0,112,242,.02)}
+code{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:.76rem;
+  background:rgba(0,112,242,.06);border:1px solid rgba(0,112,242,.12);
+  border-radius:.3rem;padding:.08rem .38rem;color:var(--br10)}
+pre{background:var(--g11);color:#e2ecff;padding:.9rem 1.1rem;border-radius:.5rem;
+  font-size:.75rem;overflow-x:auto;line-height:1.7;
+  font-family:'Cascadia Code',Consolas,monospace;margin:.5rem 0}
+pre code{background:none;border:none;padding:0;color:#e2ecff}
+.chip{display:inline-block;font-size:.62rem;font-weight:600;
+  padding:.13rem .55rem;border-radius:2rem;white-space:nowrap}
+.cb{background:var(--br1);color:var(--br10);border:1px solid rgba(0,112,242,.2)}
+.cg{background:var(--posb);color:var(--pos);border:1px solid rgba(37,111,58,.2)}
+.ca{background:var(--wrnb);color:var(--wrn);border:1px solid rgba(231,101,0,.2)}
+.cr{background:var(--errb);color:var(--err8);border:1px solid rgba(170,8,8,.2)}
+.cn{background:var(--g11);color:#fff}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:.5rem 0 .75rem}
+.fl{font-size:.7rem;font-weight:600;padding:.25rem .65rem;border-radius:2rem;
+  border:1px solid var(--br3);background:var(--br1);color:var(--br10)}
+.fl.g{background:var(--posb);color:var(--pos);border-color:rgba(37,111,58,.25)}
+.fl.d{background:var(--g2);color:var(--g6);border-color:var(--g3)}
+.arr{color:var(--g4);font-size:.8rem}
+.al{border-radius:.5rem;padding:.65rem .9rem;margin:.6rem 0;
+  font-size:.8rem;display:flex;gap:.5rem;align-items:flex-start}
+.al-i{background:var(--br1);border-left:3px solid var(--br);color:var(--br10)}
+.al-w{background:var(--wrnb);border-left:3px solid var(--wrn);color:#7c3800}
+.al-e{background:var(--errb);border-left:3px solid var(--err);color:#6b0000}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:.75rem}
+ul.ul{padding-left:1.25rem;font-size:.8rem;list-style:disc}
+ul.ul li{margin-bottom:.2rem}
+ol.ol{padding-left:1.25rem;font-size:.8rem}
+ol.ol li{margin-bottom:.25rem}
+p.p{font-size:.8rem;color:var(--g7);margin-bottom:.5rem}
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:.875rem}
+.kc{background:var(--pg);border-radius:8px;border:1px solid rgba(0,112,242,.1);
+  border-top:3px solid var(--br);padding:.75rem 1rem}
+.kl{font-size:.6rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--g6);margin-bottom:.2rem}
+.kv{font-size:1.35rem;font-weight:900;color:var(--br10);line-height:1}
+.ks{font-size:.65rem;color:var(--g7);margin-top:.15rem}
+hr.sep{border:none;border-top:1px solid var(--g2);margin:.875rem 0}
+@media(max-width:900px){
+  .layout{flex-direction:column}.sidebar{display:none}
+  .two{grid-template-columns:1fr}.krow{grid-template-columns:repeat(2,1fr)}
+  .main{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div class="shell"><div class="shell-inner"><svg class="sh-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412.38 204" aria-label="SAP"><defs><style>.ks1,.ks2{fill-rule:evenodd}.ks1{fill:url(#kg)}.ks2{fill:#fff}</style><linearGradient id="kg" x1="206.19" x2="206.19" y2="204" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00b8f1"/><stop offset=".02" stop-color="#01b6f0"/><stop offset=".31" stop-color="#0d90d9"/><stop offset=".58" stop-color="#1775c8"/><stop offset=".82" stop-color="#1c65bf"/><stop offset="1" stop-color="#1e5fbb"/></linearGradient></defs><polyline class="ks1" points="0 204 208.41 204 412.38 0 0 0 0 204"/><path class="ks2" d="M244.73,38.36l-40.6,0v96.52L168.67,38.33H133.51l-30.27,80.72C100,98.7,79,91.67,62.4,86.4,51.46,82.89,39.85,77.72,40,72c.09-4.68,6.23-9,18.38-8.38,8.17.43,15.37,1.09,29.71,8l14.1-24.55C89.06,40.42,71,36.21,56.17,36.19h-.09c-17.28,0-31.68,5.6-40.6,14.83A34.23,34.23,0,0,0,5.77,74.7C5.54,87.15,10.11,96,19.71,103c8.1,5.94,18.46,9.79,27.6,12.62,11.27,3.49,20.47,6.53,20.36,13A9.57,9.57,0,0,1,65,135c-2.81,2.9-7.13,4-13.09,4.1-11.49.24-20-1.56-33.61-9.59L5.77,154.42a93.77,93.77,0,0,0,46,12.22l2.11,0c14.24-.25,25.74-4.31,34.92-11.71.53-.41,1-.84,1.49-1.28L86.17,164.5H123l6.19-18.82a67.46,67.46,0,0,0,21.68,3.43,68.33,68.33,0,0,0,21.16-3.25l6,18.64h60.14v-39h13.11c31.71,0,50.46-16.15,50.46-43.2C301.74,52.19,283.52,38.36,244.73,38.36ZM150.91,121a36.93,36.93,0,0,1-13-2.28l12.87-40.59H151l12.65,40.71A38.5,38.5,0,0,1,150.91,121Zm96.2-23.33h-8.94V64.91h8.94c11.93,0,21.44,4,21.44,16.14,0,12.6-9.51,16.57-21.44,16.57"/></svg><span class="sh-div"></span><span class="sh-prod">Program</span><span class="sh-app">&nbsp;Central Knowledge Base</span><span class="sh-date">02 Jun 2026 — v3.0</span></div></div>
+<div style="background:#eef4ff;border-bottom:1px solid #dde8f8;position:sticky;top:56px;z-index:99;">
+  <div style="width:100%;max-width:1400px;margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:1.5rem;height:2rem;font-size:.75rem;font-weight:600;">
+    <a href="Claude_Overview.html" style="color:#0070f2;text-decoration:none;">Overview</a>
+    <a href="Central_Claude_System.html" style="color:#0070f2;text-decoration:none;">Central System</a>
+    <span style="color:#0050c8;font-weight:700;">&#9654; Knowledge Base</span>
+    <a href="setup/mcp-auth-guide.html" style="color:#0070f2;text-decoration:none;">MCP Auth Guide</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude/blob/main/ONBOARDING.md" target="_blank" style="color:#0070f2;text-decoration:none;margin-left:auto;">Onboarding</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude" target="_blank" style="color:#0070f2;text-decoration:none;">&#128279; Git Repository</a>
+  </div>
+</div>
+<div class="layout"><nav class="sidebar">
+<div class="sb-gr"><span class="sb-gl">Program</span>
+  <a class="sb-lk" href="#overview">Overview</a>
+  <a class="sb-lk" href="#glossary">Glossary</a>
+  <a class="sb-lk" href="#systems">Systems Landscape</a>
+  <a class="sb-lk" href="#contacts">Contacts &amp; Cadence</a></div>
+<div class="sb-gr"><span class="sb-gl">Jira Governance</span>
+  <a class="sb-lk" href="#jira">Hierarchy &amp; Projects</a>
+  <a class="sb-lk" href="#naming">Naming Conventions</a>
+  <a class="sb-lk" href="#labels">Labels Reference</a></div>
+<div class="sb-gr"><span class="sb-gl">Delivery</span>
+  <a class="sb-lk" href="#feat-wf">Feature Workflow</a>
+  <a class="sb-lk" href="#capa-wf">Capability Workflow</a>
+  <a class="sb-lk" href="#quality">Quality Gates &amp; DoR/DoD</a>
+  <a class="sb-lk" href="#kdd">KDD Process</a>
+  <a class="sb-lk" href="#devit">DevIT Process</a>
+  <a class="sb-lk" href="#oss">OSS Process</a></div>
+<div class="sb-gr"><span class="sb-gl">Testing &amp; Sol Mgmt</span>
+  <a class="sb-lk" href="#testing">QA Operating Model</a>
+  <a class="sb-lk" href="#solmgmt">Solution Management</a></div>
+<div class="sb-gr"><span class="sb-gl">Standards</span>
+  <a class="sb-lk" href="#golden">Golden Standard</a>
+  <a class="sb-lk" href="#design">Output Design Standards</a></div>
+<div class="sb-gr"><span class="sb-gl">DAB Meetings</span>
+  <a class="sb-lk" href="#dab-register">KDD Register</a>
+  <a class="sb-lk" href="#dab-2026">DAB 2026</a>
+  <a class="sb-lk" href="#dab-2025">DAB 2025</a>
+  <a class="sb-lk" href="#dab-2024">DAB 2024</a></div>
+<div class="sb-gr"><span class="sb-gl">Program History</span>
+  <a class="sb-lk" href="#milestones">Milestones &amp; Releases</a>
+  <a class="sb-lk" href="#decisions">Key Decisions</a>
+  <a class="sb-lk" href="#risks">Risk Register</a>
+  <a class="sb-lk" href="#ws-status">Workstream Status</a>
+  <a class="sb-lk" href="#devit-status">DevIT by Product</a>
+  <a class="sb-lk" href="#people-history">People &amp; Roles</a>
+  <a class="sb-lk" href="#architecture">Architecture Decisions</a>
+  <a class="sb-lk" href="#pi-context">PI Planning Context</a></div>
+<div class="sb-gr"><span class="sb-gl">Governance</span>
+  <a class="sb-lk" href="#issues">Inconsistencies</a></div>
+<div class="sb-gr"><span class="sb-gl">Reference</span>
+  <a class="sb-lk" href="#sources">Knowledge Sources</a></div>
+<div class="sb-gr"><span class="sb-gl">Confluence KBs</span>
+  <a class="sb-lk" href="confluence/NCSP_Confluence_KB.html">NCSP Space ↗</a>
+  <a class="sb-lk" href="confluence/DCP_Confluence_KB.html">DCP / Partner Store ↗</a></div>
+</nav><main class="main"><div class="hero"><div class="hero-eye"><span class="hero-dot"></span>Program — Central Knowledge Base</div><div class="hero-title">Knowledge Base</div><div class="hero-sub">Single source of truth for Solution Management, Delivery &amp; Testing teams</div><div class="hero-meta"><span class="ph-b">v3.0 — 02 Jun 2026</span><span class="ph-b" id="hero-pi">PI26/3 Active</span><span class="ph-b" id="hero-rd">RD08.2026 Upcoming</span><span class="ph-b">31 Sections · 24 Inconsistencies</span></div></div>
+<section id="overview" class="sect">
+<div class="sect-h"><span class="ico">&#127962;</span>Program Overview</div>
+<div class="sect-b"><div class="krow" id="pi-krow">
+  <div class="kc"><div class="kl">Program</div><div class="kv"></div><div class="ks">NextGen Cloud Selling</div></div>
+  <div class="kc"><div class="kl">Current PI</div><div class="kv" id="kv-pi">—</div><div class="ks" id="ks-pi">—</div></div>
+  <div class="kc"><div class="kl">Active Release</div><div class="kv" id="kv-rd">—</div><div class="ks" id="ks-rd">—</div></div>
+  <div class="kc"><div class="kl">Next PI</div><div class="kv" id="kv-npi">—</div><div class="ks" id="ks-npi">—</div></div>
+</div>
+<script>
+(function(){
+  // PI schedule — update when new PIs are added
+  var PIS = [
+    {name:'PI26/1', start:'2026-01-01', end:'2026-03-06'},
+    {name:'PI26/2', start:'2026-03-09', end:'2026-05-29'},
+    {name:'PI26/3', start:'2026-06-01', end:'2026-09-04'},
+    {name:'PI26/4', start:'2026-09-07', end:'2026-11-27'}
+  ];
+  // Release schedule — update when new releases are added
+  var RELEASES = [
+    {code:'RD02', full:'RD02.2026', due:'2026-02-28'},
+    {code:'RD04', full:'RD04.2026', due:'2026-04-25'},
+    {code:'RD05', full:'RD05.2026', due:'2026-05-23'},
+    {code:'RD08', full:'RD08.2026', due:'2026-08-22'},
+    {code:'RD10', full:'RD10.2026', due:'2026-10-24'},
+    {code:'RD11', full:'RD11.2026', due:'2026-11-21'}
+  ];
+
+  function fmt(d){ return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+  function p(s){ return new Date(s); }
+
+  var now = new Date();
+  // Current PI
+  var curPI = null, nextPI = null;
+  for(var i=0;i<PIS.length;i++){
+    if(now >= p(PIS[i].start) && now <= p(PIS[i].end)){ curPI = PIS[i]; nextPI = PIS[i+1]||null; break; }
+    if(now < p(PIS[i].start)){ nextPI = PIS[i]; break; }
+  }
+  if(!curPI && PIS.length){ curPI = PIS[PIS.length-1]; }
+
+  // Active release = latest release whose due date is in the future (or most recent past)
+  var activeRD = null;
+  for(var j=0;j<RELEASES.length;j++){
+    if(now <= p(RELEASES[j].due)){ activeRD = RELEASES[j]; break; }
+  }
+  if(!activeRD) activeRD = RELEASES[RELEASES.length-1];
+
+  if(curPI){
+    document.getElementById('kv-pi').textContent = curPI.name;
+    document.getElementById('ks-pi').textContent = 'Ends ' + fmt(p(curPI.end));
+  }
+  document.getElementById('kv-rd').textContent = activeRD.code;
+  document.getElementById('ks-rd').textContent = activeRD.full + ' · Due ' + fmt(p(activeRD.due));
+  if(nextPI){
+    document.getElementById('kv-npi').textContent = nextPI.name;
+    document.getElementById('ks-npi').innerHTML = fmt(p(nextPI.start)) + ' &ndash; ' + fmt(p(nextPI.end));
+  }
+  // Hero badges
+  var heroPi = document.getElementById('hero-pi');
+  var heroRd = document.getElementById('hero-rd');
+  if(heroPi && curPI) heroPi.textContent = curPI.name + ' Active';
+  if(heroRd && activeRD){
+    var rdDue = p(activeRD.due);
+    var rdStatus = now <= rdDue ? 'In Progress' : 'Completed';
+    heroRd.textContent = activeRD.full + ' ' + rdStatus;
+  }
+})();
+</script>
+<div class="two">
+<div>
+<div class="sub">What is?</div>
+<p class="p">SAP + Accenture joint program building a new <strong>Cloud Sales Operating Model</strong> for end-to-end Lead-to-Cash processes. Targets Cloud Runway customers with APR &lt; &euro;1M. Focuses on touchless, high-volume public cloud volume business using standardised T&amp;Cs (MCCA) and automated processes (CMAT, PM410).</p>
+<div class="sub">Workstreams</div>
+<table class="tbl">
+<tr><th>WS</th><th>Name</th><th>Scope</th></tr>
+<tr><td>DemandGen</td><td>Demand Generation</td><td>SCV2 Lead Management (LDM team), HubSpot integration</td></tr>
+<tr><td>DE&amp;R</td><td>Deal Execution &amp; Renewal</td><td>SCV2 Opportunity Management (OPPT team), CPQ 2.0</td></tr>
+<tr><td>O2C</td><td>Order-to-Cash</td><td>BRIM (SOM, CI, CC, FI-CA, RAR)</td></tr>
+<tr><td>O2F</td><td>Order-to-Fulfil</td><td>EMS, URM, SAP for Me</td></tr>
+<tr><td>D2P</td><td>Demand to Portfolio</td><td>CPQ 2.0, master data</td></tr>
+<tr><td>GTM</td><td>Go-to-Market</td><td>&mdash;</td></tr>
+<tr><td>Manage Partners</td><td>Indirect Partner Channel</td><td>Indirect partner requirements</td></tr>
+</table>
+<div class="al al-w">&#9888;&#65039; <strong>D2P = &ldquo;Demand to Portfolio&rdquo;</strong> (not &ldquo;Design-to-Product&rdquo;). DEG (Demand Generation extended) is obsolete &mdash; removed. SCV2 splits between DemandGen (Lead) and DE&amp;R (Opportunity).</div>
+</div>
+<div>
+<div class="sub">PI &amp; Release Timeline</div>
+<table class="tbl">
+<tr><th>PI</th><th>Dates</th></tr>
+<tr><td>PI26/1</td><td>Till 06.03.2026</td></tr>
+<tr><td><strong>PI26/2</strong></td><td>09.03 &ndash; 29.05.2026</td></tr>
+<tr><td>PI26/3</td><td>01.06 &ndash; 04.09.2026</td></tr>
+<tr><td>PI26/4</td><td>07.09 &ndash; 27.11.2026</td></tr>
+</table>
+<div class="sub">PI26/3 Sprint Dates</div>
+<table class="tbl">
+<tr><th>Sprint</th><th>Start</th><th>End</th></tr>
+<tr><td>Sprint 1</td><td>01.06.2026</td><td>12.06.2026</td></tr>
+<tr><td>Sprint 2</td><td>15.06.2026</td><td>26.06.2026</td></tr>
+<tr><td>Sprint 3</td><td>29.06.2026</td><td>10.07.2026</td></tr>
+<tr><td>Sprint 4</td><td>13.07.2026</td><td>24.07.2026</td></tr>
+<tr><td>Sprint 5</td><td>27.07.2026</td><td>07.08.2026</td></tr>
+<tr><td>Sprint 6</td><td>10.08.2026</td><td>21.08.2026</td></tr>
+<tr><td>Sprint 7</td><td>24.08.2026</td><td>04.09.2026</td></tr>
+</table>
+<div class="sub">2026 Release Codes</div>
+<table class="tbl">
+<tr><th>Release</th><th>PDD (TEST)</th><th>Due (Biz Go-Live)</th></tr>
+<tr><td>RD02.2026</td><td>&mdash;</td><td>28.02.2026</td></tr>
+<tr><td>RD04.2026</td><td>&mdash;</td><td>25.04.2026</td></tr>
+<tr><td><strong>RD05.2026</strong></td><td>03.04.2026</td><td>23.05.2026</td></tr>
+<tr><td>RD08.2026</td><td>26.06.2026</td><td>22.08.2026</td></tr>
+<tr><td>RD10.2026</td><td>04.09.2026</td><td>24.10.2026</td></tr>
+<tr><td>RD11.2026</td><td>02.10.2026</td><td>21.11.2026</td></tr>
+</table>
+<p class="p"><strong>PDD</strong> = Planned Delivery Date = feature deployed to TEST env. <strong>Version/Delivery field</strong> on features = RD code with 4-digit year (e.g. <code>RD05.2026</code>). Bug <code>fixVersion</code> uses FD code (e.g. <code>FD24.26</code>) &mdash; see Naming Conventions.</p>
+</div></div></div>
+</section>
+
+<section id="glossary" class="sect">
+<div class="sect-h"><span class="ico">&#128218;</span>Glossary &amp; Terminology</div>
+<div class="sect-b"><div class="al al-i">&#8505;&#65039; Source: Glossary_2024-12-18.pdf (official baseline). Newer definitions in 2025/2026 source docs take precedence.</div>
+<table class="tbl">
+<tr><th>Term</th><th>Full Name</th><th>Definition</th></tr>
+<tr><td>ACV</td><td>Annual Contract Value</td><td>TCV divided by number of contract years.</td></tr>
+<tr><td>APR</td><td>Annual Predictable Revenue</td><td>Annual revenue from a customer. targets APR &lt; &euro;1M.</td></tr>
+<tr><td>ART</td><td>Agile Release Train</td><td>Long-lived cross-functional team-of-teams in SAFe; delivers value in PIs.</td></tr>
+<tr><td>BAT</td><td>Business Acceptance Testing</td><td>E2E business validation by business testers/SMEs. Prerequisite: feature in &ldquo;Ready for Deployment&rdquo;.</td></tr>
+<tr><td>BITFRCEC</td><td>Jira Project (DevIT &mdash; SCV2/Ent/CDP)</td><td>DevIT Feature Requests for SCV2 (component C4C), Entitlements, CDP. Format: BITFRCEC-&lt;n&gt;.</td></tr>
+<tr><td>BITFRFIN</td><td>Jira Project (DevIT &mdash; CPQ/BRIM)</td><td>DevIT Feature Requests for CPQ 2.0 and BRIM. Format: BITFRFIN-&lt;n&gt;.</td></tr>
+<tr><td>BRIM</td><td>Billing &amp; Revenue Innovation Mgmt</td><td>SAP subscription/usage billing. In: SOM + CI + CC + FI-CA + RAR.</td></tr>
+<tr><td>BTP</td><td>Business Technology Platform</td><td>SAP platform for integration, app development, analytics.</td></tr>
+<tr><td>C4C / SCV2</td><td>Cloud for Customer / Sales Cloud v2</td><td>SAP cloud CRM. Formerly C4C; current product name is Sales Cloud v2 (SCV2).</td></tr>
+<tr><td>CDP</td><td>Customer Data Platform</td><td>SAP platform for unified customer profile. 5th DevIT product tracked in BITFRCEC.</td></tr>
+<tr><td>CMAT</td><td>Configurable Material</td><td>SAP material type: base product + options + add-ons. Used E2E in CPQ&rarr;SOM.</td></tr>
+<tr><td>CPQ 2.0</td><td>Configure Price Quote 2.0</td><td>SAP tool for product configuration, pricing, quote generation. DevIT tracked in BITFRFIN.</td></tr>
+<tr><td>DAB</td><td>Design Authority Board</td><td>Governing body approving KDDs. Decisions: 2&times;/month; Reviews: Tue &amp; Thu.</td></tr>
+<tr><td>DevIT</td><td>Development IT</td><td>CPIT requests to SAP P&amp;E for standard product gaps. 5 products: SCV2, CPQ, Entitlements, CDP, BRIM.</td></tr>
+<tr><td>DoR / DoD</td><td>Definition of Ready / Done</td><td>Checklists confirming an artifact is ready to enter the next phase (DoR) or is complete (DoD).</td></tr>
+<tr><td>EMS</td><td>Entitlement Management System</td><td>Central SAP system for all commercial entitlements on Cloud Runway.</td></tr>
+<tr><td>FD code</td><td>Feature Delivery date code</td><td>Release date code used in bug <code>fixVersion</code> field (e.g. <code>FD24.26</code>). NOT a sprint name &mdash; identifies the release date.</td></tr>
+<tr><td>FET</td><td>Feature Testing</td><td>Testing at end of sprint in TEST environment. Active plan:TEST-10734.</td></tr>
+<tr><td>KDD</td><td>Key Design Decision</td><td>Critical design decision requiring DAB approval. Implementation ONLY starts after approval.</td></tr>
+<tr><td>L2C</td><td>Lead-to-Cash</td><td>E2E process: lead &rarr; sales &rarr; order &rarr; billing &rarr; cash.</td></tr>
+<tr><td>MCCA</td><td>Master Customer Cloud Agreement</td><td>Mandatory framework contract for all Cloud Runway transactions. Must be signed before first Order Form.</td></tr>
+<tr><td>OSS</td><td>Online Support System</td><td>SAP standard product defect management. Only for standard code issues, NOT custom code/data errors.</td></tr>
+<tr><td>PI</td><td>Program Increment</td><td>12-week timebox in SAFe.</td></tr>
+<tr><td>PIP</td><td>PI Planning</td><td>2-day SAFe event every 12 weeks; ART commits to features and ROAMs risks.</td></tr>
+<tr><td>PM410</td><td>Subscription + Excess Use</td><td>billing model: subscription billed annually in advance, overage in arrears.</td></tr>
+<tr><td>RAID</td><td>Risks, Assumptions, Issues, Dependencies</td><td>Program health tracking framework.</td></tr>
+<tr><td>RD code</td><td>Release Delivery code</td><td>Version/Delivery field on features. Format: <code>RD&lt;MM&gt;.&lt;YYYY&gt;</code> (4-digit year). E.g. <code>RD05.2026</code>.</td></tr>
+<tr><td>RICEFW</td><td>Reports, Interfaces, Conversions, Enhancements, Forms, Workflows</td><td>Custom development item types. Must be flagged in DoR during feature refinement.</td></tr>
+<tr><td>RTE</td><td>Release Train Engineer</td><td>SAFe servant leader for ART; facilitates PI planning, retros, continuous improvement.</td></tr>
+<tr><td>SOM</td><td>Subscription Order Management</td><td>S/4HANA component managing subscription contracts quote through to billing.</td></tr>
+<tr><td>STE</td><td>Solution Train Engineer</td><td>-level RTE; owns Jira quality, DoR checks, cross-ART flow, capability creation.</td></tr>
+<tr><td>URM</td><td>Unified Resource Manager</td><td>Translates commercial entitlements to technical eligibilities; orchestrates provisioning.</td></tr>
+<tr><td>WSJF</td><td>Weighted Shortest Job First</td><td>SAFe prioritisation: (Business Value + Time Criticality + Risk Reduction) &divide; Job Size.</td></tr>
+</table></div>
+</section>
+
+<section id="systems" class="sect">
+<div class="sect-h"><span class="ico">&#128187;</span>Systems Landscape</div>
+<div class="sect-b"><table class="tbl">
+<tr><th>System</th><th>Aliases</th><th>Role in</th><th>DevIT Project / Component</th></tr>
+<tr><td>Sales Cloud v2</td><td>SCV2, C4C, C4C v2</td><td>CRM &mdash; Lead, Opportunity, Account management</td><td>BITFRCEC &mdash; Component: <code>C4C</code></td></tr>
+<tr><td>CPQ 2.0</td><td>CPQ, CPQ CR/TR</td><td>Configure-Price-Quote; CR = Cloud Runway, TR = Traditional Runway</td><td>BITFRFIN &mdash; Label: <code>Relevant</code> (CR) / <code>O2C</code> (TR)</td></tr>
+<tr><td>BRIM &mdash; SOM</td><td>Subscription Order Mgmt</td><td>Subscription contract creation downstream of CPQ</td><td>BITFRFIN &mdash; Component: <code>BRIM </code> <small>(note trailing space in Jira)</small></td></tr>
+<tr><td>BRIM &mdash; CI</td><td>Convergent Invoicing</td><td>Unified invoice generation</td><td>BITFRFIN &mdash; Component: <code>BRIM </code></td></tr>
+<tr><td>BRIM &mdash; CC</td><td>Convergent Charging</td><td>Usage/overage charging</td><td>BITFRFIN &mdash; Component: <code>BRIM </code></td></tr>
+<tr><td>BRIM &mdash; FI-CA</td><td>Contract A/R &amp; A/P</td><td>High-volume billing subledger</td><td>BITFRFIN &mdash; Component: <code>BRIM </code></td></tr>
+<tr><td>BRIM &mdash; RAR</td><td>Revenue Accounting</td><td>IFRS-15 revenue recognition</td><td>BITFRFIN &mdash; Component: <code>BRIM </code></td></tr>
+<tr><td>EMS</td><td>Entitlement Management System</td><td>Central commercial entitlement calculation &amp; orchestration</td><td>BITFRCEC &mdash; Component: <code>Entitlements</code></td></tr>
+<tr><td>CDP</td><td>Customer Data Platform</td><td>Unified customer profile; 5th DevIT product</td><td>BITFRCEC &mdash; Component: <code>CDP</code></td></tr>
+<tr><td>URM</td><td>Unified Resource Manager</td><td>Translates entitlements to technical eligibilities; provisioning orchestration</td><td>&mdash;</td></tr>
+<tr><td>SAP for Me</td><td>SAP4Me</td><td>Customer portal: self-service provisioning, contract mgmt, invoice access</td><td>&mdash;</td></tr>
+<tr><td>BTP / CPS</td><td>Business Tech Platform</td><td>Platform for extensions; CPS calculates CMAT pricing at runtime</td><td>&mdash;</td></tr>
+<tr><td>Icertis</td><td>CLM</td><td>Contract lifecycle management; stores signed MCCAs</td><td>&mdash;</td></tr>
+<tr><td>MDG</td><td>Master Data Governance</td><td>Customer and account master data</td><td>&mdash;</td></tr>
+<tr><td>Stripe</td><td>&mdash;</td><td>Single payment provider for Cloud Runway (autopay + invoice)</td><td>&mdash;</td></tr>
+<tr><td>DocuSign</td><td>&mdash;</td><td>E-signature for order forms (5 countries excl. Phase 1)</td><td>&mdash;</td></tr>
+<tr><td>HubSpot</td><td>&mdash;</td><td>Marketing lead generation (upstream of SCV2)</td><td>&mdash;</td></tr>
+<tr><td>S/4 HANA</td><td>I5 / IS</td><td>ERP backbone; SOM, FI-CA, RAR run within S/4</td><td>&mdash;</td></tr>
+</table>
+<div class="al al-w">&#9888;&#65039; The BRIM component in BITFRFIN has a <strong>trailing space</strong> in Jira (<code>BRIM </code>). JQL filters must include the trailing space or results will be incomplete.</div></div>
+</section>
+
+<section id="contacts" class="sect">
+<div class="sect-h"><span class="ico">&#128203;</span>Key Contacts &amp; Reporting Cadence</div>
+<div class="sect-b"><div class="two">
+<div>
+<div class="sub">Key People</div>
+<table class="tbl">
+<tr><th>Role</th><th>Name</th><th>Org</th></tr>
+<tr><td>Program Lead</td><td>[Team Member Name]</td><td>SAP</td></tr>
+<tr><td>YOUR-TEAM-LABEL Program Manager</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>Solution Manager</td><td>[Team Member Name]</td><td>SAP</td></tr>
+<tr><td>QA Lead</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>Bug Manager</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>E2E BAT QA Lead</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>QA Coordinator</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>KDD/DAB SPOC (YOUR-TEAM-LABEL)</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>KDD/DAB SPOC (SAP)</td><td>[Team Member Name]</td><td>SAP</td></tr>
+<tr><td>SCV2 KDD Lead</td><td>[Team Member Name] / [Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>BRIM KDD Lead</td><td>[Team Member Name] / [Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>SCV2 OSS SPOC</td><td>[Team Member Name]</td><td>SAP</td></tr>
+<tr><td>Jira YOUR_JIRA_PROJECT Admin</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td></tr>
+<tr><td>SCV2 EA (SAP)</td><td>[Team Member Name]</td><td>SAP</td></tr>
+<tr><td>CPQ EA (SAP)</td><td>[Team Member Name], [Team Member Name]</td><td>SAP</td></tr>
+<tr><td>BRIM EA (SAP)</td><td>[Team Member Name], Manjith Nanabolu</td><td>SAP</td></tr>
+</table>
+<div class="sub">Distribution Lists</div>
+<ul class="ul">
+<li><code>your-team-all@example.com</code> &mdash; All YOUR-TEAM-LABEL</li>
+<li><code>PMO_Group@accenture.com</code> &mdash; PMO group</li>
+</ul>
+</div>
+<div>
+<div class="sub">Reporting Cadence</div>
+<table class="tbl">
+<tr><th>Cadence</th><th>Meeting / Activity</th><th>When</th></tr>
+<tr><td>Weekly</td><td>Program Status Update (PSU)</td><td>Every Monday; physical 16:30&ndash;18:00 every other Monday</td></tr>
+<tr><td>Weekly</td><td>DevIT Deep Dive Report</td><td>Update by Friday EOB</td></tr>
+<tr><td>Weekly</td><td>Request Meeting (Sol. Mgmt.)</td><td>Wednesdays 14:30&ndash;15:15</td></tr>
+<tr><td>Weekly</td><td>KDD Cadence &mdash; SCV2</td><td>Tuesdays 10:30 (Schwab / Reddy / Lilienthal / Aurich)</td></tr>
+<tr><td>Weekly</td><td>KDD Cadence &mdash; BRIM</td><td>Tuesdays 11:35 (Zwerg / Sharma / Aurich)</td></tr>
+<tr><td>Weekly</td><td>OSS Alignment</td><td>Thursdays 13:00 CET (SCV2 SPOC: [Team Member Name])</td></tr>
+<tr><td>2&times;/week</td><td>DAB Review</td><td>Tuesdays + Thursdays</td></tr>
+<tr><td>2&times;/month</td><td>DAB Decision</td><td>Twice per month</td></tr>
+<tr><td>Monthly</td><td>DevIT SteerCo</td><td>Once per month; prep one week before</td></tr>
+<tr><td>Per PI</td><td>Capability Backlog Prio. Meeting</td><td>1&times; per PI</td></tr>
+<tr><td>Per PI</td><td>Capability Quality Gate Review</td><td>4&ndash;6 weeks before PIP</td></tr>
+<tr><td>Bi-weekly</td><td>Sync on Increments &amp; Capabilities</td><td>Every two weeks</td></tr>
+<tr><td>Daily (FET)</td><td>Daily Status &amp; Triage</td><td>During active Feature Testing window</td></tr>
+<tr><td>Daily (BAT)</td><td>E2E BAT Daily Status &amp; Triage</td><td>During active BAT window</td></tr>
+</table>
+</div></div></div>
+</section>
+
+<section id="jira" class="sect">
+<div class="sect-h"><span class="ico">&#128279;</span>Jira Hierarchy &amp; Projects</div>
+<div class="sect-b"><div class="sub">Issue Hierarchy</div>
+<div class="flow">
+  <span class="fl">Solution Increment<br><small>SP project</small></span><span class="arr">&rarr;</span>
+  <span class="fl">Solution Capability<br><small>SP &mdash; Cross Functionality</small></span><span class="arr">&rarr;</span>
+  <span class="fl">Feature<br><small>YOUR_JIRA_PROJECT project</small></span><span class="arr">&rarr;</span>
+  <span class="fl">Story<br><small>YOUR_JIRA_PROJECT project</small></span><span class="arr">&rarr;</span>
+  <span class="fl">Bug<br><small>YOUR_JIRA_PROJECT project</small></span>
+</div>
+<div class="al al-w">&#9888;&#65039; No feature may be child-of or parent-of another feature. No story may be child-of more than one feature. Solution Capabilities link <strong>child-of</strong> a Solution Increment (not a Portfolio Epic).</div>
+<div class="two">
+<div>
+<div class="sub">Jira Projects</div>
+<table class="tbl">
+<tr><th>Project</th><th>Contains</th><th>Admin</th></tr>
+<tr><td><strong>SP</strong></td><td>Solution Increments, Solution Capabilities (Cross Functionalities)</td><td>SAP</td></tr>
+<tr><td><strong>YOUR_JIRA_PROJECT</strong></td><td>Features, Requests, Impediments</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td></tr>
+<tr><td><strong>YOUR_JIRA_PROJECT</strong></td><td>Stories, Bugs</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td></tr>
+<tr><td><strong>TEST</strong></td><td>Test cases, Test plans (TEST-10734)</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td></tr>
+<tr><td><strong>KDD</strong></td><td>KDDs (issue type: Design), Risks</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td></tr>
+<tr><td><strong>BITFRCEC</strong></td><td>DevIT Feature Requests &mdash; SCV2, Entitlements, CDP</td><td>SAP P&amp;E</td></tr>
+<tr><td><strong>BITFRFIN</strong></td><td>DevIT Feature Requests &mdash; CPQ 2.0, BRIM</td><td>SAP P&amp;E</td></tr>
+</table>
+</div>
+<div>
+<div class="sub">Issue Types</div>
+<table class="tbl">
+<tr><th>Issue Type</th><th>Name</th><th>Project</th></tr>
+<tr><td>Portfolio Epic &rarr; Increment</td><td>Solution Increment</td><td>SP</td></tr>
+<tr><td>Cross Functionality</td><td>Solution Capability</td><td>SP</td></tr>
+<tr><td>Feature</td><td>Feature</td><td>YOUR_JIRA_PROJECT</td></tr>
+<tr><td>Story</td><td>Story</td><td>YOUR_JIRA_PROJECT</td></tr>
+<tr><td>Bug</td><td>Bug</td><td>YOUR_JIRA_PROJECT</td></tr>
+<tr><td>Design</td><td>KDD</td><td>KDD</td></tr>
+<tr><td>Risk</td><td>Risk</td><td>KDD</td></tr>
+<tr><td>Feature Request</td><td>DevIT (SCV2/Ent/CDP)</td><td>BITFRCEC</td></tr>
+<tr><td>Feature Request</td><td>DevIT (CPQ/BRIM)</td><td>BITFRFIN</td></tr>
+<tr><td>Request</td><td>Request</td><td>YOUR_JIRA_PROJECT</td></tr>
+</table>
+</div></div>
+<div class="sub">Key Jira Linking Rules</div>
+<table class="tbl">
+<tr><th>From</th><th>Link Type</th><th>To</th></tr>
+<tr><td>Solution Capability</td><td>child-of</td><td>Solution Increment (mandatory)</td></tr>
+<tr><td>Feature</td><td>child-of</td><td>Exactly ONE Solution Capability</td></tr>
+<tr><td>Story</td><td>child-of</td><td>Exactly ONE Feature</td></tr>
+<tr><td>Bug</td><td>child-of</td><td>Story</td></tr>
+<tr><td>KDD (Solution type)</td><td>child-of</td><td>Capability</td></tr>
+<tr><td>KDD (Architecture/Business)</td><td>parent-of</td><td>Feature or Capability</td></tr>
+<tr><td>Feature</td><td>depends-on</td><td>Other features (hard deps) or DevIT items</td></tr>
+<tr><td>Risk</td><td>relates-to</td><td>Feature; program-level risk = child-of Epic</td></tr>
+</table>
+<div class="sub">Standard Bug JQL (RD05.2026)</div>
+<pre>project in (SP, YOUR_JIRA_PROJECT, YOUR_JIRA_PROJECT,TEST,KDD)
+AND issuetype != defect
+AND (labels not in (TF_Automation) OR labels is EMPTY)
+AND issuetype = bug
+AND created >= 2026-02-26
+AND fixVersion = FD24.26
+AND "Testing Activity" = "Functional IT Acceptance Test"
+ORDER BY created DESC</pre>
+<div class="al al-i">&#8505;&#65039; Bug <strong>fixVersion</strong> uses FD code (e.g. <code>FD24.26</code>) &mdash; NOT the RD release code. FD = Feature Delivery DATE code for the release, not a sprint name.</div></div>
+</section>
+
+<section id="naming" class="sect">
+<div class="sect-h"><span class="ico">&#128221;</span>Naming Conventions</div>
+<div class="sect-b"><div class="two">
+<div>
+<div class="sub">Document Naming</div>
+<p class="p">Format: <code>YYYYMMDD_hhmm_Title_vN.x</code></p>
+<table class="tbl">
+<tr><th>Version Range</th><th>Meaning</th></tr>
+<tr><td>v0.1 &ndash; v0.9</td><td>Draft</td></tr>
+<tr><td>v1.0+</td><td>Released / Final</td></tr>
+</table>
+<div class="sub">Feature Jira Fields</div>
+<table class="tbl">
+<tr><th>Field</th><th>Content</th><th>Example</th></tr>
+<tr><td>Version / Delivery</td><td>RD code (4-digit year) when feature checked into codebase</td><td><code>RD05.2026</code></td></tr>
+<tr><td>PDD</td><td>Date feature deployed to TEST environment</td><td>03.04.2026</td></tr>
+<tr><td>Due Date</td><td>Business go-live date as requested by business</td><td>23.05.2026</td></tr>
+<tr><td>Target Release</td><td>PI in which functionality is technically delivered</td><td>PI26/2</td></tr>
+<tr><td>Priority</td><td>Very High / High / Medium / Low</td><td>High</td></tr>
+<tr><td>IT Owner</td><td>Accountable person for the item</td><td>&mdash;</td></tr>
+</table>
+<div class="al al-w">&#9888;&#65039; <strong>Version/Delivery</strong> = <code>RD05.2026</code> (4-digit year). Bug <strong>fixVersion</strong> = <code>FD24.26</code> (2-digit year). Never mix the two formats.</div>
+</div>
+<div>
+<div class="sub">Code Format Reference</div>
+<table class="tbl">
+<tr><th>Code</th><th>Format</th><th>Example</th><th>Used Where</th></tr>
+<tr><td>Version/Delivery (feature)</td><td><code>RD&lt;MM&gt;.&lt;YYYY&gt;</code></td><td><code>RD05.2026</code></td><td>YOUR_JIRA_PROJECT feature field</td></tr>
+<tr><td>Bug fixVersion</td><td><code>FD&lt;WW&gt;.&lt;YY&gt;</code></td><td><code>FD24.26</code></td><td>YOUR_JIRA_PROJECT bug field</td></tr>
+<tr><td>TGLRD label</td><td><code>TGLRD&lt;MM&gt;.&lt;YY&gt;</code></td><td><code>TGLRD05.26</code></td><td>YOUR_JIRA_PROJECT feature label</td></tr>
+<tr><td>BGLRD label</td><td><code>BGLRD&lt;MM&gt;.&lt;YY&gt;</code></td><td><code>BGLRD08.26</code></td><td>YOUR_JIRA_PROJECT feature label</td></tr>
+</table>
+<p class="p"><strong>FD</strong> = Feature Delivery date code for a release (NOT a sprint name). <strong>RD</strong> = Release Delivery code identifying the codebase release.</p>
+<div class="sub">Target Release Field Values</div>
+<table class="tbl">
+<tr><th>Value</th><th>Meaning</th></tr>
+<tr><td>PI26/1</td><td>Functionality developed in PI1 2026 (till 06.03.2026)</td></tr>
+<tr><td>PI26/2</td><td>Functionality developed in PI2 2026 (till 29.05.2026)</td></tr>
+<tr><td>PI26/3</td><td>Functionality developed in PI3 2026 (till 04.09.2026)</td></tr>
+<tr><td>PI26/4</td><td>Functionality developed in PI4 2026 (till 27.11.2026)</td></tr>
+</table>
+<div class="sub">Feature Priority</div>
+<table class="tbl">
+<tr><th>Priority</th><th>Meaning</th></tr>
+<tr><td><span class="chip cr">Very High</span></td><td>Core functionality; other features depend on it</td></tr>
+<tr><td><span class="chip ca">High</span></td><td>Builds core functionality</td></tr>
+<tr><td><span class="chip cb">Medium</span></td><td>Builds important functionality</td></tr>
+<tr><td><span class="chip cn">Low</span></td><td>Nice-to-have</td></tr>
+</table>
+</div></div></div>
+</section>
+
+<section id="labels" class="sect">
+<div class="sect-h"><span class="ico">&#127991;</span>Labels Reference (YOUR_JIRA_PROJECT Features)</div>
+<div class="sect-b"><div class="al al-i">&#8505;&#65039; Every YOUR_JIRA_PROJECT feature MUST have: <code></code> + <code>YOUR-TEAM-LABEL</code> + one team/component label + <strong>either</strong> <code>E2E_Test_Relevant</code> <strong>or</strong> <code>E2E_Test_Not_Relevant</code> + one <code>TGLRD</code> label + one <code>BGLRD</code> label + <strong>either</strong> <code>Direct</code> <strong>or</strong> <code>Indirect</code>.</div>
+<table class="tbl">
+<tr><th>Label</th><th>Description</th><th>When to Use</th></tr>
+<tr><td><code></code></td><td>Mandatory base label</td><td>All features in YOUR_JIRA_PROJECT</td></tr>
+<tr><td><code>YOUR-TEAM-LABEL</code></td><td>Implemented by Accenture delivery team</td><td>All YOUR-TEAM-LABEL-implemented features</td></tr>
+<tr><td><code>Direct</code></td><td>Delivery type: specific go-live date; feature goes live and stays</td><td>Mandatory &mdash; either Direct or Indirect</td></tr>
+<tr><td><code>Indirect</code></td><td>Delivery type: feature stays permanently in product</td><td>Mandatory &mdash; either Direct or Indirect</td></tr>
+<tr><td><code>Committed</code></td><td>Feature promised for upcoming PI at PI Planning</td><td>Set by Friday EOB after PI Planning</td></tr>
+<tr><td><code>Uncommitted</code></td><td>Feature NOT promised for upcoming PI</td><td>Set by Friday EOB after PI Planning</td></tr>
+<tr><td><code>Blocked</code></td><td>Feature blocked; no progress until dependency resolved</td><td>When progress is impossible</td></tr>
+<tr><td><code>Spillover</code></td><td>Not delivered in planned iteration; not blocked</td><td>After business alignment</td></tr>
+<tr><td><code>E2E_Test_Relevant</code></td><td>Feature relevant for E2E/BAT Testing</td><td>Mandatory on every feature (one or the other)</td></tr>
+<tr><td><code>E2E_Test_Not_Relevant</code></td><td>Feature NOT relevant for E2E/BAT Testing</td><td>Mandatory on every feature (one or the other)</td></tr>
+<tr><td><code>TGLRD&lt;MM&gt;.&lt;YY&gt;</code></td><td>Technical go-live in RD MM.YY (e.g. <code>TGLRD05.26</code>)</td><td>All features &mdash; 2-digit year in label</td></tr>
+<tr><td><code>BGLRD&lt;MM&gt;.&lt;YY&gt;</code></td><td>Business go-live in RD MM.YY (e.g. <code>BGLRD08.26</code>)</td><td>All features &mdash; 2-digit year in label</td></tr>
+<tr><td><code>RetrofitDevIT</code></td><td>Custom dev that must be retrofitted once DevIT feature delivered</td><td>Features with technical debt to SAP P&amp;E</td></tr>
+<tr><td><code>StandardExtension</code></td><td>Custom dev extending standard functionality</td><td>Features extending (not replacing) standard product</td></tr>
+<tr><td><code>-Specific</code></td><td>Custom dev for-specific functionality</td><td>Features agreed as-only requirement</td></tr>
+<tr><td><code>OPPT</code></td><td>Delivered within C4C Opportunity Management</td><td>All Opportunity Management features</td></tr>
+<tr><td><code>LDM</code></td><td>Delivered within C4C Lead Management</td><td>All Lead Management features</td></tr>
+<tr><td><code>MDM</code></td><td>Delivered within C4C Master Data Management</td><td>All MDM features</td></tr>
+<tr><td><code>C4CV2.0</code></td><td>Delivered within C4C (SCV2)</td><td>ALL C4C features</td></tr>
+<tr><td><code>CPQ2.0</code></td><td>Delivered within CPQ</td><td>All CPQ features</td></tr>
+<tr><td><code>BRIM</code></td><td>Delivered within O2C (BRIM)</td><td>All O2C/BRIM features</td></tr>
+<tr><td><code>OSS</code></td><td>Issue linked to an OSS ticket (SAP standard code defect)</td><td>When a bug is escalated to SAP via OSS</td></tr>
+<tr><td><code>PRODUCT STANDARD ISSUE</code></td><td>Confirms issue is a standard product defect (not custom code)</td><td>Applied alongside <code>OSS</code> label</td></tr>
+<tr><td><code>DevITRequest</code></td><td>Temporary: marks user story requesting a DevIT ticket</td><td>SCV2 only; remove once DevIT confirmed, add <code>DEV-IT</code></td></tr>
+<tr><td><code>DEV-IT</code></td><td>Linked to a DevIT feature request</td><td>Stories linked to BITFRCEC or BITFRFIN items</td></tr>
+<tr><td><code>TF_Automation</code></td><td>Automation test artifact (excluded from bug JQL)</td><td>Automation-related test items only</td></tr>
+</table>
+<div class="sub">YOUR_JIRA_PROJECT Components</div>
+<ul class="ul">
+<li><strong>Deal Execution and Renewal</strong></li>
+<li><strong>Demand Generation</strong></li>
+<li><strong>Order to Cash, Rev Accounting</strong></li>
+<li><strong>Manage Partners</strong> &mdash; use in combination with WS component for all partner topics</li>
+</ul></div>
+</section>
+
+<section id="feat-wf" class="sect">
+<div class="sect-h"><span class="ico">&#128260;</span>Feature Workflow (YOUR_JIRA_PROJECT)</div>
+<div class="sect-b"><div class="flow">
+<span class="fl">New</span><span class="arr">&rarr;</span>
+<span class="fl">Analysis</span><span class="arr">&rarr;</span>
+<span class="fl">Ready for Dev</span><span class="arr">&rarr;</span>
+<span class="fl">In Development</span><span class="arr">&rarr;</span>
+<span class="fl">Development Completed</span><span class="arr">&rarr;</span>
+<span class="fl">Ready for Validation (FET)</span><span class="arr">&rarr;</span>
+<span class="fl">Validation</span><span class="arr">&rarr;</span>
+<span class="fl">Ready for Deployment</span><span class="arr">&rarr;</span>
+<span class="fl">Deploy</span><span class="arr">&rarr;</span>
+<span class="fl">In Releasing</span><span class="arr">&rarr;</span>
+<span class="fl g">Done</span><span class="arr">|</span>
+<span class="fl d">Obsolete</span>
+</div>
+<table class="tbl" style="margin-top:.75rem">
+<tr><th>Status</th><th>Entry Criteria / Key Activities</th><th>Owner</th></tr>
+<tr><td>New</td><td>Feature created; no activities yet</td><td>PM / PO / Ops Lead</td></tr>
+<tr><td>Analysis</td><td>Solution architecture assessment; fill DoR fields; solution design alignment</td><td>Solution Architect</td></tr>
+<tr><td>Ready for Dev</td><td>All DoR criteria met; features ready for dev by PI Planning</td><td>IT Owner / SA</td></tr>
+<tr><td>In Development</td><td>Development in progress; Jira updated at least every 2 days; unit tests conducted</td><td>YOUR-TEAM-LABEL Delivery</td></tr>
+<tr><td>Development Completed</td><td>All user stories implemented; unit tests complete; feature deployed to TEST env</td><td>YOUR-TEAM-LABEL Delivery / QA Coordinator</td></tr>
+<tr><td>Ready for Validation (FET)</td><td>Feature in TEST; test cases in &ldquo;Ready for Testing&rdquo;; FET entry criteria met</td><td>QA Coordinator</td></tr>
+<tr><td>Validation</td><td>Feature Testing in progress; bugs created; results documented</td><td>QA Lead / QA Coordinator</td></tr>
+<tr><td>Ready for Deployment</td><td>All FET TCs executed; VH &amp; High bugs resolved (or closure plan). For E2E-relevant: BAT also completed</td><td>QA Lead / QA Coordinator</td></tr>
+<tr><td>Deploy</td><td>Non-E2E: SAP business sign-off. E2E: E2E BAT completed, VH &amp; High bugs resolved</td><td>YOUR-TEAM-LABEL Delivery / Business Approver</td></tr>
+<tr><td>In Releasing</td><td>Deployed to production</td><td>YOUR-TEAM-LABEL Product Owner</td></tr>
+<tr><td>Done</td><td>Business spot checks completed; final status</td><td>Business Tester</td></tr>
+<tr><td>Obsolete</td><td>Feature no longer relevant; confirmed by business; can be set at any step</td><td>Business / PM</td></tr>
+</table></div>
+</section>
+
+<section id="capa-wf" class="sect">
+<div class="sect-h"><span class="ico">&#128260;</span>Capability Workflow (SP &mdash; Cross Functionality)</div>
+<div class="sect-b"><div class="flow">
+<span class="fl">To Do</span><span class="arr">&rarr;</span>
+<span class="fl">Analysis</span><span class="arr">&rarr;</span>
+<span class="fl">Ready for Refinement</span><span class="arr">&rarr;</span>
+<span class="fl">In Development</span><span class="arr">&rarr;</span>
+<span class="fl">Validation</span><span class="arr">&rarr;</span>
+<span class="fl">Deploy</span><span class="arr">&rarr;</span>
+<span class="fl">Releasing</span><span class="arr">&rarr;</span>
+<span class="fl g">Done</span>
+</div>
+<div class="al al-i">&#8505;&#65039; 8 statuses. <strong>Releasing</strong> (between Deploy and Done) was added in the authoritative Capability Workflow PNG &mdash; earlier sources showing 7 steps are outdated.</div>
+<table class="tbl" style="margin-top:.75rem">
+<tr><th>Status</th><th>Entry Criteria / Key Activities</th><th>Owner</th></tr>
+<tr><td>To Do</td><td>Request approved by SMO; STE creates Cross Functionality in SP, includes DoR checklist, transfers base info from request, assigns to Solution Architect</td><td>STE</td></tr>
+<tr><td>Analysis</td><td>SA runs solution assessment; fills DoR items; aligns system architects; estimates effort; assigns IT Owner upon completion; IT Owner triggers handover to ARTs</td><td>Solution Architect &rarr; IT Owner</td></tr>
+<tr><td>Ready for Refinement</td><td>All DoR criteria met; all scope-required features created and linked child-of; capability confirmed feasible and funded</td><td>IT Owner</td></tr>
+<tr><td>In Development</td><td>Features being developed in ARTs; IT Owner changes status once delivery starts</td><td>IT Owner</td></tr>
+<tr><td>Validation</td><td>Feature testing started; E2E BAT relevant features tested at capability level</td><td>QA Lead / QA Coordinator</td></tr>
+<tr><td>Deploy</td><td>E2E BAT completed; VH &amp; High bugs resolved; business sign-off provided</td><td>E2E BAT QA Lead / Business Approver</td></tr>
+<tr><td>Releasing</td><td>All features released to production; capability ready for final confirmation</td><td>IT Owner / YOUR-TEAM-LABEL Product Owner</td></tr>
+<tr><td>Done</td><td>All DoD criteria met; E2E demo executed; Signavio process changes published; documentation complete</td><td>IT Owner</td></tr>
+</table>
+<div class="two">
+<div>
+<div class="sub">Capability DoR Key Criteria</div>
+<ul class="ul">
+<li>Clear description with business value (WE BELIEVE / WILL RESULT IN format) &mdash; <em>STE / IT Owner</em></li>
+<li>Business Owner identified and capability accepted by business &mdash; <em>STE / IT Owner</em></li>
+<li>Solution Design ready &amp; reflected in SDD &mdash; <em>Solution Architect</em></li>
+<li>Aligned with System Architects of affected ARTs &mdash; <em>Solution Architect</em></li>
+<li>Scope in line with architecture and Golden Standard &mdash; <em>Solution Architect</em></li>
+<li>High-level effort estimation done (fits in one PI) &mdash; <em>Solution Architect</em></li>
+<li>Required DevIT items raised in Jira &mdash; <em>Solution Architect</em></li>
+<li>CPIT PI Cadence: raise feature request at least 6 weeks before PIP</li>
+</ul>
+</div>
+<div>
+<div class="sub">Capability DoD Key Criteria</div>
+<ul class="ul">
+<li>All features implemented and validated in E2E integration test &mdash; <em>IT Owner</em></li>
+<li>No VH or High show-stopper bugs pending &mdash; <em>IT Owner</em></li>
+<li>Capability meets acceptance criteria and demonstrates business value &mdash; <em>IT Owner</em></li>
+<li>Demonstrated in E2E Solution Demo &mdash; <em>IT Owner</em></li>
+<li>E2E Test executed and signed off &mdash; <em>IT Owner</em></li>
+<li>All features released to production &mdash; <em>IT Owner</em></li>
+<li>Signavio process flow changes reflected and published &mdash; <em>IT Owner</em></li>
+</ul>
+</div></div></div>
+</section>
+
+<section id="quality" class="sect">
+<div class="sect-h"><span class="ico">&#9989;</span>Quality Gates &amp; DoR/DoD</div>
+<div class="sect-b"><table class="tbl">
+<tr><th>Gate</th><th>Name</th><th>When</th><th>What Is Reviewed</th></tr>
+<tr><td><span class="chip cb">Gate 1</span></td><td>Solution Increment Request Accepted</td><td>Funnel / Request Meeting (Wednesdays)</td><td>Business need, strategic fit, top management CPIT sign-off</td></tr>
+<tr><td><span class="chip cb">Gate 2</span></td><td>Capability Backlog Prioritisation</td><td>1&times; per PI (WSJF scoring)</td><td>Business value, time criticality, risk reduction, job size</td></tr>
+<tr><td><span class="chip cb">Gate 3.1</span></td><td>Solution Capability Quality Gate</td><td>4&ndash;6 weeks before PI Planning</td><td>DoR criteria for capabilities; scope, feasibility, funding, DevIT status</td></tr>
+<tr><td><span class="chip cb">Gate 3.2</span></td><td>Feature Refinement Quality Gate</td><td>2 weeks before PI Planning</td><td>DoR criteria for features; all features &ldquo;ready for dev&rdquo; by PIP</td></tr>
+<tr><td><span class="chip cb">Gate 4</span></td><td>Release Go/No-Go</td><td>Per release (end of PI)</td><td>Test results, bug status, residual risks, business sign-off</td></tr>
+</table>
+<div class="al al-i">&#8505;&#65039; Guiding principle: no work item gets picked up in planning if it is not ready in time. DoR gates are enforced &mdash; only &ldquo;ready&rdquo; items progress.</div>
+<div class="sub">Feature DoR Checklist (10 criteria)</div>
+<table class="tbl">
+<tr><th>#</th><th>Criterion</th><th>Owner</th></tr>
+<tr><td>1</td><td>Labels: <code></code> + <code>YOUR-TEAM-LABEL</code> + one team/component label</td><td>IT Owner</td></tr>
+<tr><td>2</td><td>Either <code>E2E_Test_Relevant</code> or <code>E2E_Test_Not_Relevant</code></td><td>IT Owner</td></tr>
+<tr><td>3</td><td>One <code>TGLRD&lt;MM&gt;.&lt;YY&gt;</code> label</td><td>IT Owner</td></tr>
+<tr><td>4</td><td>One <code>BGLRD&lt;MM&gt;.&lt;YY&gt;</code> label</td><td>IT Owner</td></tr>
+<tr><td>5</td><td>Either <code>Direct</code> or <code>Indirect</code> delivery type label</td><td>IT Owner</td></tr>
+<tr><td>6</td><td>child-of exactly ONE Solution Capability</td><td>IT Owner</td></tr>
+<tr><td>7</td><td>Target Release field set (PI26/1 &ndash; PI26/4)</td><td>IT Owner</td></tr>
+<tr><td>8</td><td>Version/Delivery set (<code>RD&lt;MM&gt;.2026</code> format, 4-digit year)</td><td>IT Owner</td></tr>
+<tr><td>9</td><td>Priority set (Very High / High / Medium / Low)</td><td>IT Owner</td></tr>
+<tr><td>10</td><td>IT Owner assigned; PDD set</td><td>IT Owner</td></tr>
+</table></div>
+</section>
+
+<section id="kdd" class="sect">
+<div class="sect-h"><span class="ico">&#127963;</span>KDD Process (Key Design Decisions)</div>
+<div class="sect-b"><div class="al al-e">&#128683; <strong>Implementation can ONLY start AFTER the KDD is approved by DAB. No exceptions.</strong></div>
+<div class="two">
+<div>
+<div class="sub">KDD Types</div>
+<table class="tbl">
+<tr><th>Type</th><th>Description</th><th>Jira Link</th></tr>
+<tr><td><span class="chip cb">Solution KDD</span></td><td>Custom development / solution-level decision</td><td>child-of Capability (mandatory for custom dev)</td></tr>
+<tr><td><span class="chip ca">Architecture KDD</span></td><td>Architecture-level design decision</td><td>parent-of Feature or Capability</td></tr>
+<tr><td><span class="chip cr">Business KDD</span></td><td>Business process / model decision</td><td>parent-of Feature or Capability</td></tr>
+</table>
+<div class="sub">KDD Lifecycle</div>
+<table class="tbl">
+<tr><th>Stage</th><th>Duration</th></tr>
+<tr><td>New &rarr; Draft</td><td>~1 week</td></tr>
+<tr><td>In Discussion</td><td>2&ndash;3 weeks</td></tr>
+<tr><td>DAB Decision (approval)</td><td>2&ndash;3 weeks</td></tr>
+</table>
+<div class="sub">Jira Fields for KDD</div>
+<ul class="ul">
+<li>Project: <code>KDD</code> &mdash; Issue Type: <code>Design</code></li>
+<li>Mandatory labels: <code>DAB_</code> + scenario label (<code>RetrofitDevIT</code> / <code>-Specific</code> / <code>Standard-Extension</code>)</li>
+<li>Align with Solution Architects before creating KDD</li>
+</ul>
+</div>
+<div>
+<div class="sub">DAB Meeting Cadence</div>
+<table class="tbl">
+<tr><th>Meeting</th><th>Frequency</th><th>Day</th></tr>
+<tr><td>DAB Review</td><td>2&times; per week</td><td>Tuesday + Thursday</td></tr>
+<tr><td>DAB Decision</td><td>2&times; per month</td><td>&mdash;</td></tr>
+</table>
+<div class="sub">Weekly KDD System Cadences</div>
+<table class="tbl">
+<tr><th>System</th><th>Day &amp; Time</th><th>YOUR-TEAM-LABEL Lead</th></tr>
+<tr><td>Sales Cloud v2</td><td>Tuesdays 10:30</td><td>[Team Member Name] / [Team Member Name] / [Team Member Name] / [Team Member Name]</td></tr>
+<tr><td>BRIM</td><td>Tuesdays 11:35</td><td>[Team Member Name] / [Team Member Name] / [Team Member Name]</td></tr>
+</table>
+<div class="sub">CPQ 2.0 KDD Dimensions</div>
+<ul class="ul">
+<li><code>RetrofitDevIT</code> &mdash; standard product gap requiring retrofit</li>
+<li><code>StandardExtension</code> &mdash; extends standard functionality</li>
+<li><code>-Specific</code> &mdash;-only functionality</li>
+</ul>
+</div></div></div>
+</section>
+
+<section id="devit" class="sect">
+<div class="sect-h"><span class="ico">&#128295;</span>DevIT Process</div>
+<div class="sect-b"><p class="p"><strong>DevIT</strong> = CPIT requests to SAP Product &amp; Engineering for <em>standard product functionality gaps</em>. 5 products in scope: SCV2, CPQ 2.0, Entitlements, CDP, BRIM. Tracked in BITFRCEC (SCV2/Ent/CDP) and BITFRFIN (CPQ/BRIM).</p>
+<div class="sub">5 Products &mdash; Jira Filters</div>
+<table class="tbl">
+<tr><th>Product</th><th>Jira Project</th><th>Filter</th></tr>
+<tr><td>SCV2 / C4C</td><td>BITFRCEC</td><td>Component = <code>C4C</code></td></tr>
+<tr><td>CPQ 2.0 Cloud Runway</td><td>BITFRFIN</td><td>Component = <code>CPQ</code> &amp; label <code>Relevant</code></td></tr>
+<tr><td>CPQ 2.0 Traditional Runway</td><td>BITFRFIN</td><td>Component = <code>CPQ</code> &amp; label <code>O2C</code></td></tr>
+<tr><td>Entitlements</td><td>BITFRCEC</td><td>Component = <code>Entitlements</code></td></tr>
+<tr><td>CDP</td><td>BITFRCEC</td><td>Component = <code>CDP</code></td></tr>
+<tr><td>BRIM</td><td>BITFRFIN</td><td>Component = <code>BRIM </code> <strong>(trailing space &mdash; required in JQL)</strong></td></tr>
+</table>
+<div class="two">
+<div>
+<div class="sub">How to Raise a DevIT (SCV2)</div>
+<ol class="ol">
+<li>Create a User Story in YOUR_JIRA_PROJECT</li>
+<li>Comment all required information (see below)</li>
+<li>Label user story <code>DevITRequest</code></li>
+<li>Tag <em>[Team Member Name] &amp; [Team Member Name]</em> (Opportunity Mgmt) or <em>[Team Member Name] &amp; [Team Member Name]</em> (Lead Mgmt)</li>
+<li>Once DevIT ticket confirmed: remove <code>DevITRequest</code> label; add <code>DEV-IT</code> label</li>
+</ol>
+<div class="sub">How to Raise (All Other Systems)</div>
+<ul class="ul">
+<li>Write email to PO with EA and Solution Architect in CC</li>
+<li>Include all required information listed opposite</li>
+</ul>
+</div>
+<div>
+<div class="sub">Required Information</div>
+<ul class="ul">
+<li><strong>Current situation:</strong> what leads to this request</li>
+<li><strong>Business need:</strong> why is this needed</li>
+<li><strong>Acceptance criteria:</strong> what the feature must fulfill</li>
+<li><strong>Business benefit when delivered</strong></li>
+<li><strong>Impact when NOT delivered</strong></li>
+<li><strong>RDD:</strong> Requested Delivery Date</li>
+<li><strong>Priority:</strong> VH / High / Medium / Low</li>
+<li><strong>Impacted release:</strong> go-live affected</li>
+</ul>
+<div class="sub">DevIT Priority</div>
+<table class="tbl">
+<tr><th>Priority</th><th>Meaning</th></tr>
+<tr><td><span class="chip cr">Very High</span></td><td>Showstopper &mdash; MVP business go-live critical</td></tr>
+<tr><td><span class="chip ca">High</span></td><td>Significant limitations; large-enterprise readiness</td></tr>
+<tr><td><span class="chip cb">Medium</span></td><td>Important but not critical</td></tr>
+<tr><td><span class="chip cn">Low</span></td><td>Anything else</td></tr>
+</table>
+</div></div>
+<div class="sub">DevIT Ticket Status Flow</div>
+<div class="flow">
+<span class="fl">Open</span><span class="arr">&rarr;</span>
+<span class="fl">In Analysis</span><span class="arr">&rarr;</span>
+<span class="fl">Planned, Not Committed</span><span class="arr">&rarr;</span>
+<span class="fl">Committed</span><span class="arr">&rarr;</span>
+<span class="fl">Ready for IT</span><span class="arr">&rarr;</span>
+<span class="fl g">Deployed</span><span class="arr">|</span>
+<span class="fl d">Rejected by Dev</span>
+</div>
+<div class="sub">Key Escalation Rules</div>
+<ul class="ul">
+<li>PDD overdue +3 days: email P&amp;E for delivery date; escalate to EA &amp; Business if no response</li>
+<li>No commitment expected &amp; critical: prepare DevIT SteerCo escalation</li>
+<li>P&amp;E rejects &amp; feature critical: evaluate extensibility (KDD as fallback)</li>
+<li>No resolution after expected timeframe: DevIT SteerCo (monthly) for upper management escalation</li>
+</ul></div>
+</section>
+
+<section id="oss" class="sect">
+<div class="sect-h"><span class="ico">&#128681;</span>OSS Process (Product Defects)</div>
+<div class="sect-b"><div class="al al-w">&#9888;&#65039; OSS is ONLY for <strong>SAP standard code issues</strong>. NOT for custom code bugs, data errors, or configuration problems.</div>
+<div class="two">
+<div>
+<div class="sub">Key Rules</div>
+<ul class="ul">
+<li>SAP standard code issues &rarr; OSS ticket</li>
+<li>Custom code / YOUR-TEAM-LABEL implementation issues &rarr; Bug in YOUR_JIRA_PROJECT</li>
+<li>Data errors &rarr; NOT OSS</li>
+<li>CPQ: can bypass support team and create incident directly</li>
+<li>No resolution after <strong>45 days</strong> &rarr; escalate to Very High priority</li>
+</ul>
+<div class="sub">Jira Labels for OSS Items</div>
+<ul class="ul">
+<li><code>OSS</code> &mdash; applied when an OSS ticket has been raised</li>
+<li><code>PRODUCT STANDARD ISSUE</code> &mdash; confirms the issue is a standard product defect</li>
+</ul>
+<div class="sub">SCV2 OSS SPOC</div>
+<p class="p"><strong>[Team Member Name]</strong> (SAP) &mdash; Weekly OSS alignment every <strong>Thursday 13:00 CET</strong>.</p>
+</div>
+<div>
+<div class="sub">OSS Priority Guidelines</div>
+<table class="tbl">
+<tr><th>Priority</th><th>Criteria</th></tr>
+<tr><td><span class="chip cr">Very High</span></td><td>Showstopper for release; no workaround; &gt;45 days open</td></tr>
+<tr><td><span class="chip ca">High</span></td><td>Critical for business operations; limited workaround</td></tr>
+<tr><td><span class="chip cb">Medium</span></td><td>Important but not blocking; workaround exists</td></tr>
+<tr><td><span class="chip cn">Low</span></td><td>Minor issue; full workaround available</td></tr>
+</table>
+</div></div></div>
+</section>
+
+<section id="testing" class="sect">
+<div class="sect-h"><span class="ico">&#129514;</span>QA Operating Model</div>
+<div class="sect-b"><div class="al al-i">&#8505;&#65039; Transition in progress (CW20&ndash;CW25 2026): <strong>Centralised Test Factory (As-Is)</strong> &rarr; <strong>Federated Quality Model (To-Be)</strong>.</div>
+<div class="sub">9 Testing Roles</div>
+<table class="tbl">
+<tr><th>Role</th><th>Name</th><th>Org</th><th>Responsibility</th></tr>
+<tr><td>QA Lead</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td><td>Program-wide QA governance, quality gates, go/no-go input</td></tr>
+<tr><td>QA Coordinator</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td><td>Day-to-day FET coordination, test case management, status reporting</td></tr>
+<tr><td>Test Automation Architect</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td><td>Automation framework, CI pipeline, regression suite</td></tr>
+<tr><td>E2E BAT QA Lead</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td><td>E2E BAT orchestration, cross-ART coordination, business sign-off alignment</td></tr>
+<tr><td>Bug Manager</td><td>[Team Member Name]</td><td>YOUR-TEAM-LABEL</td><td>Bug tracking, triage facilitation, trending reports</td></tr>
+<tr><td>QA Engineer</td><td>&mdash;</td><td>YOUR-TEAM-LABEL</td><td>Test case creation, FET execution, bug raising</td></tr>
+<tr><td>Unit Tester</td><td>&mdash;</td><td>YOUR-TEAM-LABEL Dev</td><td>Unit testing in DEV environment</td></tr>
+<tr><td>Business Tester / BAP</td><td>&mdash;</td><td>Business</td><td>BAT execution, business sign-off</td></tr>
+<tr><td>SCV2 OSS SPOC</td><td>[Team Member Name]</td><td>SAP</td><td>OSS ticket coordination, Thursday 13:00 CET weekly alignment</td></tr>
+</table>
+<div class="sub">Federated Quality Model &mdash; 3 Layers</div>
+<table class="tbl">
+<tr><th>Layer</th><th>Name</th><th>Scope</th></tr>
+<tr><td><span class="chip cn">1</span></td><td>Program QA Office</td><td>-wide QA governance, standards, quality gates, reporting</td></tr>
+<tr><td><span class="chip cn">2</span></td><td>ART Team QA</td><td>Embedded QA in delivery teams (C4C, CPQ, BRIM): Unit + Feature Testing</td></tr>
+<tr><td><span class="chip cn">3</span></td><td>Cross-ART Test Coordination</td><td>E2E BAT planning, execution, business sign-off alignment</td></tr>
+</table>
+<div class="two">
+<div>
+<div class="sub">Test Levels</div>
+<table class="tbl">
+<tr><th>Level</th><th>Owner</th><th>Environment</th></tr>
+<tr><td>Unit Testing</td><td>Developer / Unit Tester</td><td>DEV</td></tr>
+<tr><td>Feature Testing (FET)</td><td>QA Engineer / QA Coordinator</td><td>TEST</td></tr>
+<tr><td>Regression Testing</td><td>QA Engineer / Test Automation Eng.</td><td>TEST</td></tr>
+<tr><td>BAT (Business Acceptance)</td><td>Business Testers / BAP</td><td>TEST (production-like)</td></tr>
+<tr><td>Performance Testing</td><td>SAP responsibility</td><td>TEST/Staging</td></tr>
+<tr><td>Security Testing</td><td>Security Test Engineer (SAP)</td><td>TEST/Staging</td></tr>
+</table>
+</div>
+<div>
+<div class="sub">Feature Testing Entry Criteria</div>
+<ul class="ul">
+<li>Test cycle pre-requisites identified (data, roles, env. readiness)</li>
+<li>Feature unit-tested in DEV environment</li>
+<li>Test scenarios created by QA Engineers</li>
+<li>Feature Test Plan created by QA Coordinator</li>
+<li>Test cases in &ldquo;Ready for Testing&rdquo; status</li>
+<li>In-scope features transported to TEST environment</li>
+<li>Feature in &ldquo;Ready for Validation&rdquo; status</li>
+<li>Each acceptance criterion covered by at least one test case</li>
+</ul>
+<div class="sub">Bug Severity Definitions</div>
+<table class="tbl">
+<tr><th>Severity</th><th>Definition</th></tr>
+<tr><td><span class="chip cr">Very High</span></td><td>Showstopper; blocks test execution or critical business process; no workaround</td></tr>
+<tr><td><span class="chip ca">High</span></td><td>Significant limitation; workaround may exist but heavily impacts testing</td></tr>
+<tr><td><span class="chip cb">Medium</span></td><td>Defect with limited impact; workaround available</td></tr>
+<tr><td><span class="chip cn">Low</span></td><td>Minor / cosmetic issue</td></tr>
+</table>
+</div></div></div>
+</section>
+
+<section id="solmgmt" class="sect">
+<div class="sect-h"><span class="ico">&#128208;</span>Solution Management</div>
+<div class="sect-b"><p class="p">Solution Management owns the Solution Roadmap, drives capability backlog prioritisation, quality gates, and coordinates demand from funnel to delivery. SM scope: Solution Increments and Capabilities only. Delivery Lead owns Feature Backlog delivery.</p>
+<div class="sub">8-Stage Process Flow</div>
+<div class="flow">
+<span class="fl">1. Funnel</span><span class="arr">&rarr;</span>
+<span class="fl">2. Analyze &amp; Review</span><span class="arr">&rarr;</span>
+<span class="fl">3.1 Quality Gate</span><span class="arr">&rarr;</span>
+<span class="fl">3.2 Feature Refinement</span><span class="arr">&rarr;</span>
+<span class="fl">4. PIP</span><span class="arr">&rarr;</span>
+<span class="fl">5. Delivery</span><span class="arr">&rarr;</span>
+<span class="fl">6. Testing</span><span class="arr">&rarr;</span>
+<span class="fl">7. Release</span><span class="arr">&rarr;</span>
+<span class="fl g">8. Operations</span>
+</div>
+<div class="sub">Request Types</div>
+<table class="tbl">
+<tr><th>Request Type</th><th>Triggered By</th><th>Outcome</th></tr>
+<tr><td>Change Request</td><td>CPIT/IT Owner, SA/SM, Program Mgmt</td><td>Change to existing Capability/Increment in current or next PI</td></tr>
+<tr><td>New Solution Capability</td><td>CPIT/IT Owner, SA/SM, Program Mgmt</td><td>New Capability for upcoming PIs</td></tr>
+<tr><td>New Solution Increment</td><td>Workstreams / Program Leadership</td><td>New Increment broken into Capabilities later</td></tr>
+</table>
+<div class="al al-i">&#8505;&#65039; All requests discussed weekly: <strong>Wednesdays 14:30&ndash;15:15</strong>. Create in YOUR_JIRA_PROJECT (issue type: Request). Set to &ldquo;In Review&rdquo; when complete.</div>
+<div class="sub">WSJF Prioritisation</div>
+<p class="p">Formula: <strong>(Business Value + Time Criticality + Risk Reduction/Opportunity Enablement) &divide; Job Size</strong></p>
+<p class="p">Applied at Capability Backlog Prioritisation Meeting (1&times; per PI). Highest WSJF = highest delivery priority. Note: WSJF is a <em>prioritisation input</em>, not the sole decision factor &mdash; business urgency and strategic alignment may override the score.</p>
+<div class="sub">Key Jira Dashboards</div>
+<table class="tbl">
+<tr><th>Dashboard</th><th>Owner</th><th>Content</th></tr>
+<tr><td>Solution Delivery Status</td><td>Nick Rosslau (SAP)</td><td>Solution Capabilities across target releases</td></tr>
+<tr><td>Solution Release Work Breakdown</td><td>[Team Member Name] (SAP)</td><td>Jira Structure: Increment &rarr; Capability &rarr; Feature &rarr; Story</td></tr>
+<tr><td>Issue/Risk Management</td><td>[Team Member Name] (SAP)</td><td>RAID register across workstreams</td></tr>
+<tr><td>Request Dashboard</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td><td>All requests by priority, workstream, status</td></tr>
+<tr><td>Bug Management</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td><td>Bug tracking and trending</td></tr>
+</table>
+<div class="sub">Capability Description Template</div>
+<pre>1. WE BELIEVE [hypothesis about the solution]
+2. WILL RESULT IN [expected outcome]
+3. RESOLVING THE PAIN POINT [current problem &mdash; optional]</pre></div>
+</section>
+
+<section id="golden" class="sect">
+<div class="sect-h"><span class="ico">&#11088;</span>Golden Standard Rules (v1.4, 16 May 2025)</div>
+<div class="sect-b"><div class="al al-e">&#128683; These rules are <strong>NON-NEGOTIABLE</strong> on Cloud Runway. No concessions permitted.</div>
+<div class="two">
+<div>
+<div class="sub">Customer &amp; MCCA Rules</div>
+<ul class="ul">
+<li>Target: APR &lt; &euro;1M &mdash; but APR &gt; &euro;1M customers CAN opt in</li>
+<li>MCCA <strong>mandatory</strong> before any Cloud Runway transaction</li>
+<li>MCCA signed in one click; stored in Icertis</li>
+<li>No free-text fields; no modifications/redlining allowed</li>
+<li>Complex deals &rarr; Traditional Runway (no split deals between runways)</li>
+</ul>
+<div class="sub">Quoting &amp; Pricing</div>
+<ul class="ul">
+<li>No quote approvals required (CMAT + MCCA + automated policy enforcement)</li>
+<li>Commercial model: <strong>PM410</strong> (Subscription + Excess Use)</li>
+<li>Subscription billed <strong>annually in advance</strong></li>
+<li>Excess use billed <strong>in arrears</strong> (monthly or quarterly)</li>
+<li>Max 7 phases per contract; quantities can only increase</li>
+<li>Phase-specific discounts: NOT allowed</li>
+<li>Termination for convenience: <strong>prohibited</strong></li>
+</ul>
+<div class="sub">Payment &amp; Invoicing</div>
+<ul class="ul">
+<li>Payment terms: <strong>Net 30</strong> (unless law requires different)</li>
+<li>Single payment provider: <strong>Stripe</strong> (autopay + invoice)</li>
+<li>Invoices by email only; print/mail or custom portals: refused</li>
+<li>No non-standard, merged, split, or manual invoices</li>
+<li>Third-party collection activated after <strong>365 days overdue</strong></li>
+</ul>
+</div>
+<div>
+<div class="sub">Renewal Rules</div>
+<ul class="ul">
+<li>Target: <strong>95%+ Auto-Renewal</strong></li>
+<li>Default Renewal Type: Auto; Fallback: Active</li>
+<li>Auto-renewal: match expiring term, rounded down to nearest 12-month multiple</li>
+<li>Non-renewal notification: 1 month, non-negotiable</li>
+</ul>
+<div class="sub">Provisioning &amp; Fulfilment</div>
+<ul class="ul">
+<li>All provisioning is <strong>customer-triggered</strong> (self-guided via SAP for Me)</li>
+<li>Automated provisioning within <strong>24 hours</strong> of customer trigger</li>
+<li>Unified Services mandatory (Unified Provisioning + Unified Metering)</li>
+<li>EMS mandatory for all commercial entitlements</li>
+</ul>
+<div class="sub">Contract Rules</div>
+<ul class="ul">
+<li>E-signature via <strong>DocuSign only</strong> (5 countries excl. Phase 1)</li>
+<li>No contracts from one sold-to party billed to separate subsidiaries</li>
+<li>Material statuses: A5 (GA), A7 (upsell/renewal only), A9 (EOL/Sunset)</li>
+<li>EOL notification: 6&ndash;9 months before EOS; data deleted 3 months after EOS</li>
+</ul>
+<div class="sub">CMAT Structure</div>
+<ul class="ul">
+<li>Cloud Product: lowest sellable commercial set of functionalities</li>
+<li>Edition: specific functionality level (good/better/best); upwardly compatible</li>
+<li>Option: supplemental to Edition; cannot be sold standalone</li>
+<li>Hard Bundle: fixed combination; Soft Bundle: curated</li>
+</ul>
+</div></div></div>
+</section>
+
+<section id="design" class="sect">
+<div class="sect-h"><span class="ico">&#127912;</span>Output Design Standards (SAP Morning 2026)</div>
+<div class="sect-b"><div class="al al-i">&#8505;&#65039; SAP Morning design system. All HTML reports (test reports, dashboards, status pages) must follow these specifications. Reference: Brand Master folder in <code>02_SAP Style guide md/Brand Master/</code>.</div>
+<div class="two">
+<div>
+<div class="sub">Colour Palette</div>
+<table class="tbl">
+<tr><th>Token</th><th>Hex</th><th>Usage</th></tr>
+<tr><td><code>Blue/7</code></td><td>#0070f2</td><td>Brand primary &mdash; buttons, links, active fills</td></tr>
+<tr><td><code>Blue/10</code></td><td>#002a86</td><td>Section card labels, accent bar &mdash; darker anchor</td></tr>
+<tr><td><code>Blue/9</code></td><td>#0040b0</td><td>PI badge colour, secondary headings</td></tr>
+<tr><td><code>Blue/1</code></td><td>#ebf8ff</td><td>Tint backgrounds, badges, chip fills</td></tr>
+<tr><td><code>Grey/1</code></td><td>#f5f6f7</td><td>Page background</td></tr>
+<tr><td><code>Grey/6</code></td><td>#5b738b</td><td>Accent bar label text</td></tr>
+<tr><td><code>Grey/11</code></td><td>#12171c</td><td>Dark text, pre backgrounds</td></tr>
+<tr><td><code>Green/8</code></td><td>#256f3a</td><td>Pass/positive (approved deviation for test reports)</td></tr>
+<tr><td><code>Mango/6</code></td><td>#e76500</td><td>Warning/amber (approved deviation for test reports)</td></tr>
+<tr><td><code>Red/7</code></td><td>#d20a0a</td><td>Error &mdash; use &le;5% of UI surface</td></tr>
+</table>
+<div class="sub">Typography</div>
+<ul class="ul">
+<li>Font: <strong>72Brand</strong> variable (Thin 100 &rarr; Black 900)</li>
+<li>Stack: <code>'72Brand', '72', Arial, Helvetica, sans-serif</code></li>
+<li>Web font: <code>72BrandVariable-Th-Blk.woff2</code> (variable, self-hosted)</li>
+<li>Section labels: 14px, weight 700, uppercase, letter-spacing 0.08em, colour Blue/10</li>
+<li>Panel/accent labels: Blue/10 bar (3px wide) + Grey/6 text, 0.72rem</li>
+</ul>
+</div>
+<div>
+<div class="sub">Shell Bar</div>
+<table class="tbl">
+<tr><th>Property</th><th>Value</th></tr>
+<tr><td>Height</td><td>56px</td></tr>
+<tr><td>Background</td><td>Grey/1 <code>#f5f6f7</code></td></tr>
+<tr><td>Bottom border</td><td>1px solid <code>#e8eaed</code> (Grey/2)</td></tr>
+<tr><td>Position</td><td>fixed top:0; body padding-top:56px</td></tr>
+<tr><td>Scroll-hide</td><td>Hide on scroll-down; reveal on 2 consecutive upscrolls</td></tr>
+</table>
+<div class="sub">Section Card</div>
+<table class="tbl">
+<tr><th>Property</th><th>Value</th></tr>
+<tr><td>Background</td><td>White</td></tr>
+<tr><td>Border</td><td>1px solid <code>#d9dde0</code> (Grey/3)</td></tr>
+<tr><td>Border radius</td><td>12px</td></tr>
+<tr><td>Padding</td><td>32px 40px</td></tr>
+<tr><td>Shadow</td><td><code>0 1px 4px rgba(0,50,165,.06)</code></td></tr>
+</table>
+<div class="sub">Dashboard Layout Order</div>
+<ol class="ol">
+<li>Shell Bar</li>
+<li>Hero / Page Header Band</li>
+<li>KPI Strip (4 tiles, no icons)</li>
+<li>Burn-up Chart (Y=0 at bottom, rises to YMAX)</li>
+<li>Content Sections</li>
+</ol>
+<div class="sub">File Delivery Protocol</div>
+<ul class="ul">
+<li>Save finals to: <code>\\tsclient\\ClaudeProj\&lt;topic&gt;\</code></li>
+<li>Naming: <code>YYYYMMDD_hhmm_title_vN.ext</code></li>
+<li>NEVER overwrite an existing file &mdash; create new versioned file</li>
+</ul>
+</div></div></div>
+</section>
+
+<section id="issues" class="sect">
+<div class="sect-h"><span class="ico">&#9888;&#65039;</span>Inconsistencies &amp; Ambiguities Found</div>
+<div class="sect-b"><div class="al al-w">&#9888;&#65039; Identified across source materials. Review with program team for authoritative resolution. Entries 1&ndash;15 from v1 sources; 16&ndash;24 identified during v2 update (May 2026).</div>
+<table class="tbl">
+<tr><th>#</th><th>Source</th><th>Issue</th><th>Correct Version / Action</th></tr>
+<tr><td>1</td><td>README.md</td><td>Section 16 appears TWICE &mdash; once for &ldquo;Testing Process&rdquo;, once for &ldquo;SAP Design Standards&rdquo;</td><td>Renumber &mdash; Design Standards should be Section 17+</td></tr>
+<tr><td>2</td><td>README.md / Jira Naming PPTX</td><td>README references &ldquo;RD07.25&rdquo; (incorrect year)</td><td>Correct to <strong>RD07.26</strong>; README contains a typo. Note: RD07 is not in the official 2026 RD list &mdash; may no longer be valid.</td></tr>
+<tr><td>3</td><td>Feature Instructions (wiki PDF)</td><td>Target Release descriptions for PI26/3 and PI26/4 both say &ldquo;PI<strong>2</strong> in 2026&rdquo;</td><td>PI26/3 = PI3 2026; PI26/4 = PI4 2026. Copy-paste error in wiki.</td></tr>
+<tr><td>4</td><td>Feature Instructions (wiki PDF)</td><td>E2E_Test_Not_Relevant description text says &ldquo;must be labeled with E2E_Test_<strong>Relevant</strong>&rdquo;</td><td>Correct to <code>E2E_Test_Not_Relevant</code>. Copy-paste error.</td></tr>
+<tr><td>5</td><td>Blueprint.md vs SAP Design System</td><td>Blueprint specifies Inter font; SAP Morning specifies 72Brand</td><td>72Brand is the correct SAP standard. Inter was used in earlier outputs as fallback.</td></tr>
+<tr><td>6</td><td>Blueprint / existing HTML vs Design System</td><td>Green (<code>#256f3a</code>) and Orange (<code>#e76500</code>) used alongside blue-dominant design</td><td>Approved deviation for test reports (pass/fail needs green). Apply strictly elsewhere.</td></tr>
+<tr><td>7</td><td>README.md vs Blueprint.md</td><td>YMAX inconsistency: README references 445 planned executions; Blueprint states YMAX = 387</td><td>Use <strong>YMAX = 387</strong> (active TCs). 445 = planned executions (different metric).</td></tr>
+<tr><td>8</td><td>README.md</td><td>Bug fixVersion usage described ambiguously</td><td><code>fixVersion</code> on bugs MUST use FD code (e.g. <code>FD24.26</code>), NOT RD release code.</td></tr>
+<tr><td>9</td><td>Sol Mgmt Playbook vs README</td><td>Capability workflow initial state differs between sources</td><td>Playbook v1.1 (30.04.2026) is authoritative. <strong>To Do</strong> is the correct initial state.</td></tr>
+<tr><td>10</td><td>Sol Mgmt Playbook filename</td><td>File named <code>2610430_...</code> &mdash; prefix &ldquo;261&rdquo; incorrect</td><td>Correct naming: <code>20260430_Solution_Mgmt_Playbook_v1.1.pptx</code></td></tr>
+<tr><td>11</td><td>Delivery deck 26-2.pptx</td><td>Typos: &ldquo;looing&rdquo; (= looking), &ldquo;Pease&rdquo; (= Please)</td><td>Correct typos in source file</td></tr>
+<tr><td>12</td><td>DevIT Governance Deck</td><td>CPQ 2.0 CR / TR component filters ambiguous; &ldquo;O2C&rdquo; label for TR overlaps with BRIM naming</td><td>CPQ CR = CPQ + <code>Relevant</code>; CPQ TR = CPQ + <code>O2C</code>. Document in Jira dashboard guidelines.</td></tr>
+<tr><td>13</td><td>QA Operating Model PPTX</td><td>Revised QA Operating Model is DRAFT / roll-out pending (CW20&ndash;CW25)</td><td>Current as-is = Centralized Test Factory. Flag all QA descriptions as &ldquo;transition in progress&rdquo;.</td></tr>
+<tr><td>14</td><td>Golden Standard v1.4</td><td>Several KDD sections marked &ldquo;IN DISCUSSION&rdquo; or &ldquo;TO BE ADDED ONCE APPROVED&rdquo;</td><td>Mark relevant Golden Standard sections as &ldquo;Pending KDD Approval&rdquo;. Do not treat as final rules.</td></tr>
+<tr><td>15</td><td>Glossary PDF (18.12.2024)</td><td>Glossary is dated Dec 2024 and may not reflect 2025&ndash;2026 changes</td><td>Treat as baseline; newer definitions in 2025/2026 sources take precedence.</td></tr>
+<tr><td>16</td><td>KB v1 / Infobasis</td><td>D2P workstream labelled &ldquo;Design-to-Product&rdquo; in multiple sources</td><td>Correct name: <strong>Demand to Portfolio</strong>. All occurrences of &ldquo;Design-to-Product&rdquo; are incorrect.</td></tr>
+<tr><td>17</td><td>KB v1 / Infobasis</td><td>DEG (Demand Generation extended) listed as a separate workstream</td><td>DEG is <strong>obsolete</strong>. Current workstreams: DemandGen, DE&amp;R, O2C, O2F, D2P, GTM, Manage Partners.</td></tr>
+<tr><td>18</td><td>KB v1 / Naming Conventions</td><td>Version/Delivery example shows <code>RD05.26</code> (2-digit year)</td><td>Correct format: <code>RD05.2026</code> (4-digit year). Labels (TGLRD/BGLRD) use 2-digit year.</td></tr>
+<tr><td>19</td><td>KB v1 / Naming Conventions</td><td>FD24.26 described as &ldquo;Feature <em>Development sprint</em> 24 of 2026&rdquo;</td><td>FD = <strong>Feature Delivery date code</strong> for a release (NOT a sprint name). FD24.26 = release date code.</td></tr>
+<tr><td>20</td><td>KB v1 / Capability Workflow</td><td>Capability workflow shows only 7 statuses (missing &ldquo;Releasing&rdquo; step)</td><td>Correct workflow has <strong>8 statuses</strong>: &hellip; Deploy &rarr; <strong>Releasing</strong> &rarr; Done. Source: authoritative Capability Workflow PNG.</td></tr>
+<tr><td>21</td><td>KB v1 / DevIT section</td><td>DevIT described as covering only 3 systems (SCV2, CPQ, BRIM)</td><td>Correct: <strong>5 products</strong> &mdash; SCV2, CPQ, Entitlements, CDP, BRIM. Entitlements and CDP were added.</td></tr>
+<tr><td>22</td><td>KB v1 / Jira Projects table</td><td>Only BITFRCEC listed for DevIT; BITFRFIN absent</td><td>Add <strong>BITFRFIN</strong> for CPQ 2.0 and BRIM DevIT items. Both projects are active.</td></tr>
+<tr><td>23</td><td>STE agent / Feature DoR</td><td>Direct/Indirect delivery type label missing from DoR checklist</td><td>Add <code>Direct</code> or <code>Indirect</code> as a mandatory label on all YOUR_JIRA_PROJECT features.</td></tr>
+<tr><td>24</td><td>DevIT dashboard / Jira</td><td>BRIM component in BITFRFIN has a trailing space: <code>BRIM </code></td><td>JQL filters and component dropdowns must include the trailing space. Gotcha for anyone building Jira queries manually.</td></tr>
+</table></div>
+</section>
+
+<section id="dab-register" class="sect">
+<div class="sect-h"><span class="ico">&#9878;&#65039;</span>DAB KDD Register — Master Tracker</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; 128 unique KDDs tracked across 41 DAB meetings, July 2024 – May 2026. Full meeting context in sections below. Source files: <code>/knowledge/dab-kdd-register.md</code></div>
+<div class="krow">
+  <div class="kc"><div class="kl">Total KDDs</div><div class="kv">128</div><div class="ks">Jul 2024 – May 2026</div></div>
+  <div class="kc"><div class="kl">Approved</div><div class="kv" style="color:var(--pos)">81</div><div class="ks">Approved / Written Update</div></div>
+  <div class="kc"><div class="kl">In Discussion</div><div class="kv" style="color:var(--wrn)">13</div><div class="ks">Active decision needed</div></div>
+  <div class="kc"><div class="kl">Unknown</div><div class="kv" style="color:var(--g6)">34</div><div class="ks">Status not captured</div></div>
+</div>
+<div class="sub">How to Use</div>
+<ul class="ul">
+<li><code>KDD-XXXX</code> = Jira issue in projectKDD</li>
+<li><strong>Written Update</strong> = KDD already approved outside the meeting; slide is a status confirmation</li>
+<li>Source PPTX filename recorded for each entry — full detail in <code>/knowledge/dab-kdd-register.md</code></li>
+<li>Full per-meeting summaries: <a href="#dab-2026">DAB 2026</a> · <a href="#dab-2025">DAB 2025</a> · <a href="#dab-2024">DAB 2024</a></li>
+</ul>
+<div class="sub">By System</div>
+<table class="tbl">
+<tr><th>System</th><th>KDD Count</th><th>Examples</th></tr>
+<tr><td>SCV2/C4C</td><td>64</td><td>Opportunity, Lead, Renewal, Authorization, Outreach integration</td></tr>
+<tr><td>CPQ</td><td>33</td><td>Quote flow, CLM integration, pricing, amendments</td></tr>
+<tr><td>BRIM</td><td>16</td><td>SOM, billing schedule, amendments, invoicing</td></tr>
+<tr><td>EMS</td><td>9</td><td>Entitlements, provisioning, URM</td></tr>
+<tr><td>CDP</td><td>1</td><td>Customer Data Platform scope</td></tr>
+<tr><td>BTP/CPI</td><td>1</td><td>Integration architecture</td></tr>
+<tr><td>Other/Cross-system</td><td>4</td><td>Multi-system architecture decisions</td></tr>
+</table>
+</div>
+</section>
+
+<section id="dab-2026" class="sect">
+<div class="sect-h"><span class="ico">&#128203;</span>DAB Meetings — 2026 (Feb – May)</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; 6 meetings: Feb 18, Mar 5, Mar 18, Apr 1, Apr 15, Apr 29, May 13. Full detail: <code>/knowledge/dab-meetings-2026.md</code></div>
+<table class="tbl">
+<tr><th>Date</th><th>Source File</th><th>Key KDDs</th><th>Status</th></tr>
+<tr><td>2026-02-18</td><td><code>DAB_2026_02_18.pptx</code></td><td>KDD-4820 (Data Retention Policy),KDD-4840 (Selling w/o Local Sales Org),KDD-4835 (One CMAT),KDD-4856 (Advanced Success Plan)</td><td><span class="chip ca">Mixed — In Discussion</span></td></tr>
+<tr><td>2026-03-05</td><td><code>DAB_2026_03_05.pptx</code></td><td>KDD-4840 update,KDD-4856 update,KDD-4870 (Employee Data Load)</td><td><span class="chip ca">Mixed</span></td></tr>
+<tr><td>2026-03-18</td><td><code>DAB_2026_03_18.pptx</code></td><td>KDD-4835 (One CMAT continued),KDD-4872 (CX AI Toolkit update)</td><td><span class="chip ca">In Discussion</span></td></tr>
+<tr><td>2026-04-01</td><td><code>DAB_2026_04_01.pptx</code></td><td>KDD-4840 (Selling w/o Local Sales Org — update),KDD-4880</td><td><span class="chip ca">Mixed</span></td></tr>
+<tr><td>2026-04-15</td><td><code>DAB_2026_04_15.pptx</code></td><td>KDD-4840 (decision update),KDD-4892,KDD-4900</td><td><span class="chip cg">Approvals</span></td></tr>
+<tr><td>2026-04-29</td><td><code>DAB_2026_04_29.pptx</code></td><td>KDD-4910,KDD-4916, written updates</td><td><span class="chip cg">Approvals</span></td></tr>
+<tr><td>2026-05-13</td><td><code>DAB_2026_05_13.pptx</code></td><td>KDD-4956 (EU Data Act — Termination),KDD-4976 (Partner Data Replication to SCV2)</td><td><span class="chip cg">Approved</span></td></tr>
+</table>
+</div>
+</section>
+
+<section id="dab-2025" class="sect">
+<div class="sect-h"><span class="ico">&#128203;</span>DAB Meetings — 2025 (Jan – Dec)</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; 19 meetings across the year. Full detail: <code>/knowledge/dab-meetings-2025.md</code></div>
+<table class="tbl">
+<tr><th>Period</th><th>Source Files</th><th>Key Topics</th></tr>
+<tr><td>Jan 2025</td><td><code>DAB_2025_01_22.pptx</code></td><td>Large written-update batch:KDD-2960/2961 (Opportunity Creation/Phases), EMS data flows, entitlements, services scope</td></tr>
+<tr><td>Feb–Mar 2025</td><td><code>DAB_2025_02_19.pptx</code>, <code>DAB_2025_03_05.pptx</code>, <code>DAB_2025_03_19.pptx</code></td><td>KDD-653 (Forecasting),KDD-2960/2961 post-blueprint updates,KDD-4706 (Lead Quality)</td></tr>
+<tr><td>Apr–May 2025</td><td><code>DAB_2025_04_02.pptx</code> – <code>DAB_2025_05_28.pptx</code></td><td>KDD-40 (Renewals Forecasting),KDD-43 (Renewal Opportunity),KDD-9 (Cloud Extension) — all carried forward</td></tr>
+<tr><td>Jun 2025</td><td><code>DAB_2025_06_11.pptx</code></td><td>Written updates only:KDD-3625, -3668, -4706, -4709, -4711 (SCV2/CPI solutions confirmed)</td></tr>
+<tr><td>Jul–Aug 2025</td><td><code>DAB_2025_07_09.pptx</code>, <code>DAB_2025_08_06.pptx</code>, <code>DAB_2025_08_20.pptx</code></td><td>KDD-4693 (Currency Conversion),KDD-4765/4766 (Outreach integration),KDD-4782 (Future-Dated Amendments)</td></tr>
+<tr><td>Sep–Oct 2025</td><td><code>DAB_2025_09_17.pptx</code>, <code>DAB_2025_10_14.pptx</code>, <code>DAB_2025_10_29.pptx</code></td><td>KDD-4792 (Billing Plan Dates),KDD-4794 (Back-Office Amendments — conditional approval),KDD-3634 (Auto-Pay enforcement)</td></tr>
+<tr><td>Nov–Dec 2025</td><td><code>DAB_2025_11_26.pptx</code>, <code>DAB_2025_12_10.pptx</code>, <code>DAB_2025_12_24.pptx</code></td><td>KDD-4835 (One CMAT concept),KDD-4820 (Data Retention),KDD-4840 (Selling w/o Local Sales Org) — all in discussion entering 2026</td></tr>
+</table>
+</div>
+</section>
+
+<section id="dab-2024" class="sect">
+<div class="sect-h"><span class="ico">&#128203;</span>DAB Meetings — 2024 (Jul – Dec)</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; 14 meeting dates, 15 PPTX files. Full detail: <code>/knowledge/dab-meetings-2024.md</code></div>
+<table class="tbl">
+<tr><th>Period</th><th>Key Topics Decided</th><th>Source Files</th></tr>
+<tr><td>Jul–Aug 2024</td><td>Foundational Commercial T&amp;Cs: billing model PM410 confirmed; termination for convenience prohibited; invoice delivery rules; Auto-Pay Golden Standard; 11 T&amp;C removals from Cloud Runway</td><td><code>DAB_2024-07-18.pptx</code>, <code>DAB_2024-08-14.pptx</code></td></tr>
+<tr><td>Sep 2024</td><td>Finance Integration architecture (ITDAA); BTP/CPI service architecture; Self-Guided provisioning via SAP for Me (KDD-499/500/501); partner commercial models; billing &amp; invoice rules finalised</td><td><code>DAB_2024-09-04.pptx</code>, <code>DAB_2024-09-11.pptx</code>, <code>DAB_2024-09-24.pptx</code></td></tr>
+<tr><td>Oct 2024</td><td>Renewal types cluster (KDD-26/27/28/50); MCCA signing flow (KDD-18); EMS input/output data flows; CDP DemandGen KDDs; renewal notification catalogue (KDD-42)</td><td><code>DAB_2024-10-09.pptx</code>, <code>DAB_2024_10_23.pptx</code></td></tr>
+<tr><td>Nov 2024</td><td>Co-terming (KDD-38); renewal routing/assignments (KDD-49);KDD-1765 (Business Partner replication);KDD-2564 (CPQ back-end config)</td><td><code>DAB_2024_11_06.pptx</code>, <code>DAB_2024_11_13.pptx</code>, <code>DAB_2024_11_20.pptx</code></td></tr>
+<tr><td>Dec 2024</td><td>Digital Renewal (KDD-29 — 7 scenarios); End-of-Life SKUs (KDD-55);KDD-2813 (CPQ back-end amendment); One CMAT concept seeded</td><td><code>DAB_2024_12_04.pptx</code>, <code>DAB_2024_12_11.pptx</code>, <code>DAB_2024_12_17.pptx</code></td></tr>
+</table>
+</div>
+</section>
+
+<section id="milestones" class="sect">
+<div class="sect-h"><span class="ico">&#128197;</span>Program Milestones &amp; Releases</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; Source: 4 Exec SteerCos + 11 Program Status Updates, January&ndash;May 2026.</div>
+<div class="two">
+<div>
+<div class="sub">Release Timeline</div>
+<table class="tbl">
+<tr><th>Release</th><th>PDD (TEST)</th><th>Business Go-Live</th><th>Status</th></tr>
+<tr><td>RD02.2026</td><td>&mdash;</td><td>28.02.2026</td><td><span class="chip cg">Delivered</span></td></tr>
+<tr><td>RD04.2026</td><td>&mdash;</td><td>25.04.2026</td><td><span class="chip cg">Delivered</span></td></tr>
+<tr><td><strong>RD05.2026</strong></td><td>03.04.2026</td><td>23.05.2026</td><td><span class="chip ca">In Progress</span></td></tr>
+<tr><td>RD08.2026</td><td>26.06.2026</td><td>22.08.2026</td><td><span class="chip cb">Planned</span></td></tr>
+<tr><td>RD10.2026</td><td>04.09.2026</td><td>24.10.2026</td><td><span class="chip cb">Planned</span></td></tr>
+<tr><td>RD11.2026</td><td>02.10.2026</td><td>21.11.2026</td><td><span class="chip cb">Planned</span></td></tr>
+</table>
+<div class="sub">RD05.2026 Testing Status (May 18 snapshot)</div>
+<table class="tbl">
+<tr><th>Activity</th><th>Status</th><th>Detail</th></tr>
+<tr><td>FET Execution</td><td><span class="chip ca">In Progress</span></td><td>234/375 TCs executed (62%); 1 VH + 6 High bugs open</td></tr>
+<tr><td>BAT Execution</td><td><span class="chip ca">In Progress</span></td><td>5 features signed off; 9 in progress; 5 to be executed; due May 22</td></tr>
+<tr><td>E2E BAT</td><td><span class="chip ca">In Progress</span></td><td>Open bugs impacting scenarios; due May 22</td></tr>
+<tr><td>RET (Regression)</td><td><span class="chip cr">Not Started</span></td><td>Due May 29</td></tr>
+<tr><td>TOSCA Automation</td><td><span class="chip cg">Active</span></td><td>29 scripts via API; Indirect scenarios in progress</td></tr>
+</table>
+</div>
+<div>
+<div class="sub">Key Milestone Events</div>
+<table class="tbl">
+<tr><th>Date</th><th>Milestone</th></tr>
+<tr><td>21 Jan 2026</td><td>Exec SteerCo: North Star architecture endorsed</td></tr>
+<tr><td>28 Feb 2026</td><td>RD02.2026 go-live</td></tr>
+<tr><td>05 Mar 2026</td><td>Exec SteerCo: 3-track escalation process formalised</td></tr>
+<tr><td>25 Mar 2026</td><td>Exec SteerCo: One CMAT phased transition agreed</td></tr>
+<tr><td>13 Apr 2026</td><td>CPQ 2.0 TR + One Gainsight go-live</td></tr>
+<tr><td>25 Apr 2026</td><td>RD04.2026 business go-live</td></tr>
+<tr><td>29 Apr 2026</td><td>Exec SteerCo: One SOM POC positive result</td></tr>
+<tr><td>18 May 2026</td><td>PSU: FET 62%; One SOM KDD 4975 to ARB May 27</td></tr>
+<tr><td>19&ndash;21 May 2026</td><td>PI26/3 Planning Workshop &mdash; Mannheim</td></tr>
+<tr><td>23 May 2026</td><td>RD05.2026 planned business go-live</td></tr>
+<tr><td>27 May 2026</td><td>ARB: BP Replication + One SOM KDD 4975</td></tr>
+<tr><td>01 Jun 2026</td><td>PI26/3 starts</td></tr>
+</table>
+</div>
+</div>
+</div>
+</section>
+
+<section id="decisions" class="sect">
+<div class="sect-h"><span class="ico">&#9878;&#65039;</span>Key Decisions (Jan&ndash;May 2026)</div>
+<div class="sect-b">
+<div class="sub">Architecture Decisions</div>
+<table class="tbl">
+<tr><th>Date</th><th>Decision</th><th>Context</th></tr>
+<tr><td>Jan 2026</td><td><strong>North Star Architecture adopted</strong></td><td>Establishes One CMAT, One SOM, One EMS as convergence targets</td></tr>
+<tr><td>Jan 2026</td><td><strong>SOFM &rarr; MOFM transition confirmed</strong></td><td>Multiple Order Form Model replaces Single Order Form Model</td></tr>
+<tr><td>Mar 2026</td><td><strong>Dual CMAT &rarr; One CMAT phased transition</strong></td><td>Build ETA June 30, 2026; Bundle design ETA July 10, 2026</td></tr>
+<tr><td>Apr 2026</td><td><strong>One SOM POC completed</strong> &mdash; positive result</td><td>Feasibility of converging Traditional + Cloud Runway SOM validated; KDD 4975 to ARB</td></tr>
+<tr><td>Apr/May 2026</td><td><strong>One SOM target: RD11</strong></td><td>Aspiration: convergence by Nov 2026; KDD 4975 going to ARB May 27</td></tr>
+<tr><td>May 2026</td><td><strong>AI Unit Design KDD 4960 rejected</strong> by DAB</td><td>Re-presentation required after One SOM implementation</td></tr>
+</table>
+<div class="sub">DevIT &amp; Product Decisions</div>
+<table class="tbl">
+<tr><th>Date</th><th>Decision</th><th>Context</th></tr>
+<tr><td>Mar 2026</td><td>CPQ 2.0 TR scope locked for RD04</td><td>Traditional Runway rollout for BTM sales</td></tr>
+<tr><td>13 Apr 2026</td><td><strong>CPQ 2.0 TR live</strong></td><td>Replaced CPQ 1.0 for Traditional Runway</td></tr>
+<tr><td>Apr 2026</td><td>FCF identified as critical for H2 2026</td><td>New commercial model; design not yet started</td></tr>
+<tr><td>Apr 2026</td><td>Joule: EA only; no GA date confirmed</td><td>Risk: GA date not yet communicated by SAP P&amp;E</td></tr>
+<tr><td>May 2026</td><td>CCPlus New Deal (YOUR_JIRA_PROJECT-1298): PI26/2 not deliverable</td><td>No business risk; H1 2027 on Store roadmap</td></tr>
+<tr><td>May 2026</td><td>Employee Data Load: DPO V3 submitted</td><td>Awaiting DPO feedback; dependency for several features</td></tr>
+</table>
+<div class="sub">Governance Decisions</div>
+<table class="tbl">
+<tr><th>Date</th><th>Decision</th></tr>
+<tr><td>Mar 2026</td><td><strong>3-track escalation process</strong> formalised: (1) DevIT escalation, (2) KDD process, (3) SteerCo escalation</td></tr>
+<tr><td>Mar 2026</td><td><strong>Product Onboarding Factory</strong> introduced: Crash &amp; Burn &rarr; E2E Testing &rarr; Go-Live</td></tr>
+<tr><td>Apr 2026</td><td>ASP (Advanced Success Plan) rejected by DAB; shifted to RD10 (tentative)</td></tr>
+<tr><td>Apr 2026</td><td>Learning Hub shifted to RD10</td></tr>
+<tr><td>May 2026</td><td>Testing freeze recommended May 9 through RD07 (YOUR_JIRA_PROJECT-6112)</td></tr>
+</table>
+</div>
+</section>
+
+<section id="risks" class="sect">
+<div class="sect-h"><span class="ico">&#9888;&#65039;</span>Risk Register (Jan&ndash;May 2026)</div>
+<div class="sect-b">
+<div class="al al-w">&#9888;&#65039; This is the persistent risk history extracted from SteerCo/PSU documents. For current sprint-level risks use JiraKDD (issue type: Risk).</div>
+<table class="tbl">
+<tr><th>Risk / Issue</th><th>First Noted</th><th>Last Status (May 2026)</th><th>Mitigation</th></tr>
+<tr><td><strong>DevIT delays: CPQ 2.0 CR</strong> &mdash; standard gaps blocking Cloud Runway scope</td><td>Jan 2026</td><td>Some Committed; several Open/In Analysis</td><td>DevIT SteerCo monthly; extensibility KDD fallback</td></tr>
+<tr><td><strong>DevIT delays: BRIM</strong> &mdash; SOM, CI standard gaps; PDDs slipping</td><td>Jan 2026</td><td>Ongoing tracking</td><td>Monthly SteerCo; P&amp;E escalation after 3-day PDD slip</td></tr>
+<tr><td><strong>One SOM / SOFM&rarr;MOFM complexity</strong></td><td>Jan 2026</td><td>POC done; KDD 4975 to ARB May 27; target RD11</td><td>POC completed; phased approach; ARB review</td></tr>
+<tr><td><strong>ISD / IS* / I5* upgrade delays</strong> &mdash; blocking transport &amp; development</td><td>Mar 2026</td><td>I5D and ISD delayed; SOFM delayed as consequence</td><td>Engineering team engaged; per-WS mitigation plans</td></tr>
+<tr><td><strong>Production issues post-RD02</strong></td><td>Mar 2026</td><td>Ongoing hypercare</td><td>Hypercare team active; daily triage</td></tr>
+<tr><td><strong>L2O hypercare</strong> &mdash; post-RD02 operational issues</td><td>Mar 2026</td><td>1,800+ leads created; hypercare continues</td><td>Daily monitoring; SCV2 SPOC issue resolution</td></tr>
+<tr><td><strong>Employee Data Load / DPO approval</strong></td><td>Mar 2026</td><td>V3 submitted; awaiting response</td><td>DPO escalation; alternative data approach explored</td></tr>
+<tr><td><strong>OSS open tickets</strong> &mdash; 4 High, 17 Medium (May 18)</td><td>Mar 2026</td><td>In progress</td><td>Weekly alignment Thu 13:00 CET; SPOC: [Team Member Name]</td></tr>
+<tr><td><strong>AI Units / Indirect</strong> &mdash; no solution; H2 2026 volume at risk</td><td>Apr 2026</td><td>KDD rejected; re-presentation post One SOM</td><td>One SOM prerequisite; FCF parallel track</td></tr>
+<tr><td><strong>FCF</strong> &mdash; design not started; business-critical H2 2026</td><td>Apr 2026</td><td>Still open; RD08 aspiration</td><td>Priority escalation; dedicated WS focus</td></tr>
+<tr><td><strong>Persona-based auth / IDM-ARM</strong></td><td>Mar 2026</td><td>In development</td><td>Cross-WS coordination; IDM team engaged</td></tr>
+<tr><td><strong>Contracting lifecycle gaps</strong> (YOUR_JIRA_PROJECT-6122)</td><td>May 2026</td><td>Open</td><td>Cross-WS owner needed;/NGCM alignment</td></tr>
+<tr><td><strong>Test data: 19 sales orgs</strong> (YOUR_JIRA_PROJECT-7028)</td><td>May 2026</td><td>Open</td><td>Resolve issue-by-issue; test readiness plan</td></tr>
+<tr><td><strong>MTCI Validation / Tax Codes DE/CH/AT</strong> (YOUR_JIRA_PROJECT-7209)</td><td>May 2026</td><td>Open</td><td>Document needed for tax code validation</td></tr>
+<tr><td><strong>C4C Source Data Fields missing</strong> (YOUR_JIRA_PROJECT-1214)</td><td>May 2026</td><td>Planned for RD08</td><td>Bitale Pooja; RD08 target</td></tr>
+<tr><td><strong>SaaS Cockpit (BTP) discontinuation</strong></td><td>May 2026</td><td>On hold</td><td>Carsten Z. owner; preparation suspended</td></tr>
+<tr><td><strong>Signavio Pricelist gap</strong> (KDD-4727)</td><td>Mar 2026</td><td>PAM not available; ~50% deal volume reduction</td><td>Marc Kessler-Walther; RD05 go-live as mitigation</td></tr>
+<tr><td><strong>Partner testing readiness</strong></td><td>Apr 2026</td><td>Test data gaps</td><td>Issue-by-issue resolution</td></tr>
+<tr><td><strong>Integration KT</strong> &mdash; 32 of 125 not finalized</td><td>May 2026</td><td>93 finalized, 32 outstanding</td><td>Structured KT sessions; SAP sign-off process</td></tr>
+</table>
+</div>
+</section>
+
+<section id="ws-status" class="sect">
+<div class="sect-h"><span class="ico">&#128202;</span>Workstream Status History (Jan&ndash;May 2026)</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; RAG status extracted from weekly Program Status Update slides. Status reflects the dominant RAG for the period shown.</div>
+<div class="sub">Deal Execution &amp; Renewal (DE&amp;R)</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Jan&ndash;Feb 2026</td><td><span class="chip cg">Green</span></td><td>CPQ 2.0 CR on track; SCV2 OPM progressing</td></tr>
+<tr><td>Mar 2026</td><td><span class="chip ca">Amber</span></td><td>ISD upgrade dependency; persona-based auth in progress</td></tr>
+<tr><td>Apr 2026</td><td><span class="chip ca">Amber</span></td><td>CPQ 2.0 TR live Apr 13; CPQ 2.0 CR in FET; IDM/ARM tracking</td></tr>
+<tr><td>May 2026</td><td><span class="chip ca">Amber</span></td><td>FET ongoing; business concerns on native Opportunity Management</td></tr>
+</table>
+<div class="sub">Demand Generation (DemandGen)</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Jan&ndash;Feb 2026</td><td><span class="chip cg">Green</span></td><td>LDM features on track</td></tr>
+<tr><td>Mar 2026</td><td><span class="chip cg">Green</span></td><td>L2O hypercare commenced post-RD02</td></tr>
+<tr><td>Apr&ndash;May 2026</td><td><span class="chip ca">Amber</span></td><td>1,800+ leads created (May 14); hypercare monitoring</td></tr>
+</table>
+<div class="sub">Order-to-Cash (O2C &mdash; BRIM)</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Jan&ndash;Feb 2026</td><td><span class="chip ca">Amber</span></td><td>SOFM features in dev; BRIM DevIT gaps tracked</td></tr>
+<tr><td>Mar 2026</td><td><span class="chip ca">Amber</span></td><td>SOFM/MOFM transition; ISD upgrade dependency</td></tr>
+<tr><td>Apr 2026</td><td><span class="chip cr">Amber/Red</span></td><td>SOFM delayed (ISD); One SOM POC positive (Apr 29)</td></tr>
+<tr><td>May 2026</td><td><span class="chip ca">Amber</span></td><td>One SOM KDD 4975 to ARB May 27; SOFM feature delayed</td></tr>
+</table>
+<div class="sub">Order-to-Fulfil (O2F &mdash; EMS/URM)</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Jan&ndash;Mar 2026</td><td><span class="chip cg">Green</span></td><td>EMS features on track for RD02/RD04</td></tr>
+<tr><td>Apr&ndash;May 2026</td><td><span class="chip ca">Amber</span></td><td>EMS capacity secured for RD08 Embedded Services; URM tracking</td></tr>
+</table>
+<div class="sub">Demand to Portfolio (D2P)</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Jan&ndash;Apr 2026</td><td><span class="chip ca">Amber</span></td><td>One CMAT concept developed; agreed Mar 2026</td></tr>
+<tr><td>May 2026</td><td><span class="chip ca">Amber</span></td><td>One CMAT build ETA June 30; Bundle design ETA July 10</td></tr>
+</table>
+<div class="sub">Manage Partners (Indirect)</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Mar&ndash;May 2026</td><td><span class="chip cr">Amber/Red</span></td><td>Test data gaps; 19 sales orgs incomplete (YOUR_JIRA_PROJECT-7028)</td></tr>
+</table>
+<div class="sub">Go-to-Market (GTM)</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Jan&ndash;May 2026</td><td><span class="chip ca">Amber</span></td><td>Signavio pricelist gap (KDD-4727); PAM on hold; SaaS Cockpit discontinuation</td></tr>
+</table>
+<div class="sub">LOB &amp; MU Rollout</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Apr&ndash;May 2026</td><td><span class="chip ca">Amber</span></td><td>MU expansion coordination (DACH + France); hypercare team engaged</td></tr>
+</table>
+<div class="sub">Adoption Success</div>
+<table class="tbl">
+<tr><th>Period</th><th>Status</th><th>Highlights</th></tr>
+<tr><td>Mar&ndash;May 2026</td><td><span class="chip cg">Green</span></td><td>Change champion cadence active; CIA refresh; sentiment survey sent May 8</td></tr>
+</table>
+</div>
+</section>
+
+<section id="devit-status" class="sect">
+<div class="sect-h"><span class="ico">&#128268;</span>DevIT Status by Product (Jan&ndash;May 2026)</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; For the DevIT process (how to raise, escalation rules, status flow) see the <a href="#devit">DevIT Process</a> section.</div>
+<div class="two">
+<div>
+<div class="sub">CPQ 2.0</div>
+<p class="p">Tracked in BITFRFIN. CR items: label <code>Relevant</code>; TR items: label <code>O2C</code>.</p>
+<ul class="ul">
+<li>CPQ 2.0 TR standard gaps: partially addressed; TR live <strong>Apr 13, 2026</strong></li>
+<li>CPQ 2.0 CR: several items Open/In Analysis; blocking Cloud Runway full functionality</li>
+<li>EA contacts: <strong>[Team Member Name], [Team Member Name]</strong> (SAP)</li>
+</ul>
+<div class="sub">BRIM</div>
+<p class="p">BITFRFIN component: <code>BRIM </code> (trailing space mandatory in JQL).</p>
+<ul class="ul">
+<li>SOM DevIT items: blocking SOFM/MOFM and One SOM convergence</li>
+<li>CI (Convergent Invoicing) and FI-CA: standard gaps tracked</li>
+<li>EA contacts: <strong>[Team Member Name], Manjith Nanabolu</strong> (SAP)</li>
+</ul>
+<div class="sub">Entitlements (EMS)</div>
+<p class="p">BITFRCEC component: <code>Entitlements</code>.</p>
+<ul class="ul"><li>EMS capacity confirmed for RD08 Embedded Services scope</li></ul>
+<div class="sub">CDP</div>
+<p class="p">BITFRCEC component: <code>CDP</code>. Tracking scope for future releases.</p>
+</div>
+<div>
+<div class="sub">SCV2 / C4C</div>
+<p class="p">BITFRCEC component: <code>C4C</code>. All C4C items are &mdash; no label filter needed.</p>
+<ul class="ul">
+<li>OSS items tracked separately: <strong>4 High, 17 Medium</strong> open as of May 18</li>
+<li>OSS SPOC: <strong>[Team Member Name]</strong> (SAP) &mdash; weekly alignment Thu 13:00 CET</li>
+<li>IDM/ARM integration (persona-based auth): in development</li>
+</ul>
+<div class="sub">Escalation Rules</div>
+<table class="tbl">
+<tr><th>Trigger</th><th>Action</th></tr>
+<tr><td>PDD overdue +3 days</td><td>Email P&amp;E for delivery date; escalate to EA &amp; Business if no response</td></tr>
+<tr><td>No commitment &amp; critical</td><td>DevIT SteerCo escalation (monthly)</td></tr>
+<tr><td>P&amp;E rejects &amp; feature critical</td><td>Evaluate extensibility (KDD as fallback)</td></tr>
+<tr><td>No resolution after expected timeframe</td><td>DevIT SteerCo for upper management escalation</td></tr>
+</table>
+</div>
+</div>
+</div>
+</section>
+
+<section id="people-history" class="sect">
+<div class="sect-h"><span class="ico">&#128101;</span>People &amp; Roles (Programme-Level)</div>
+<div class="sect-b">
+<div class="al al-i">&#8505;&#65039; Confirmed from PSU/SteerCo slides Jan&ndash;May 2026. See <a href="#contacts">Contacts &amp; Cadence</a> for reporting cadence and distribution lists.</div>
+<div class="two">
+<div>
+<div class="sub">Workstream Reporters (PSU May 2026)</div>
+<table class="tbl">
+<tr><th>Area</th><th>Reporter(s)</th></tr>
+<tr><td>Testing</td><td>[Team Member Name] / [Team Member Name] / [Team Member Name]</td></tr>
+<tr><td>Workers Council</td><td>[Team Member Name]</td></tr>
+<tr><td>LOB &amp; MU Rollout</td><td>Tim Nusser / Nicolas Piwowarow / Ana Nedic</td></tr>
+<tr><td>Adoption Success</td><td>Caroline Korger / Dennis Nagel</td></tr>
+<tr><td>Integration KT</td><td>Preeti Singh</td></tr>
+</table>
+<div class="sub">Jira Project Admins</div>
+<table class="tbl">
+<tr><th>Project</th><th>Admin</th></tr>
+<tr><td>YOUR_JIRA_PROJECT / YOUR_JIRA_PROJECT /KDD</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td></tr>
+<tr><td>TEST</td><td>[Team Member Name] (YOUR-TEAM-LABEL)</td></tr>
+<tr><td>SP</td><td>SAP</td></tr>
+<tr><td>BITFRCEC / BITFRFIN</td><td>SAP P&amp;E</td></tr>
+</table>
+</div>
+<div>
+<div class="sub">Integration KT Status (May 18)</div>
+<div class="krow" style="grid-template-columns:repeat(3,1fr);margin-bottom:.75rem">
+<div class="kc"><div class="kl">Total</div><div class="kv">125</div><div class="ks">Integrations in scope</div></div>
+<div class="kc"><div class="kl">Finalised</div><div class="kv" style="color:var(--pos)">93</div><div class="ks">KT + sign-off done</div></div>
+<div class="kc"><div class="kl">Outstanding</div><div class="kv" style="color:var(--err)">32</div><div class="ks">Handover not finalized</div></div>
+</div>
+<p class="p">KT sessions needed for YOUR-TEAM-LABEL-carried integrations only. SAP-owned integrations: status = N/A. After each KT session, separate SAP sign-off is required.</p>
+<p class="p">MaxAttention adaptations: only YOUR-TEAM-LABEL-carried adaptations require KT; SAP-carried &rarr; no KT needed.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="architecture" class="sect">
+<div class="sect-h"><span class="ico">&#127959;&#65039;</span>Architecture &amp; Design Decisions</div>
+<div class="sect-b">
+<div class="sub">North Star Architecture &mdash; As-Is vs. To-Be</div>
+<table class="tbl">
+<tr><th>Component</th><th>As-Is</th><th>To-Be</th></tr>
+<tr><td>CMAT</td><td>Dual CMAT (Cloud + Traditional parallel)</td><td>One CMAT</td></tr>
+<tr><td>SOM</td><td>Separate Cloud Runway SOM + Traditional SOM</td><td>One SOM (MOFM-based)</td></tr>
+<tr><td>Order Form Model</td><td>SOFM (Single Order Form)</td><td>MOFM (Multiple Order Form)</td></tr>
+<tr><td>EMS</td><td>Per-runway instances</td><td>One EMS</td></tr>
+<tr><td>CPQ</td><td>CPQ 1.0 (TR) + CPQ 2.0 CR</td><td>CPQ 2.0 for both runways</td></tr>
+</table>
+<div class="two">
+<div>
+<div class="sub">One CMAT</div>
+<ul class="ul">
+<li>Build ETA: <strong>June 30, 2026</strong></li>
+<li>Bundle design ETA: <strong>July 10, 2026</strong></li>
+<li>All downstream systems (CPQ, SOM, EMS) must align to One CMAT structure</li>
+<li>Phased: Dual CMAT first, then One CMAT</li>
+</ul>
+<div class="sub">One SOM (SOFM &rarr; MOFM)</div>
+<ul class="ul">
+<li>POC result: positive (Apr 29 SteerCo)</li>
+<li>KDD 4975: going to <strong>ARB</strong> (not DAB) on May 27, 2026</li>
+<li>Target release: <strong>RD11 (Nov 2026)</strong> &mdash; aspiration</li>
+<li>ISD upgrade delay &rarr; SOFM feature delivery delayed</li>
+<li>AI Units dependency: KDD 4960 rejected; depends on One SOM</li>
+</ul>
+<div class="sub">SOFM / MOFM Context</div>
+<ul class="ul">
+<li>SOFM: one order form covers entire contract</li>
+<li>MOFM: multiple order forms per engagement; flexible deal structures</li>
+<li>Transition trigger: AI Units + FCF commercial complexity cannot be modelled in SOFM</li>
+</ul>
+</div>
+<div>
+<div class="sub">CPQ 2.0 Architecture</div>
+<ul class="ul">
+<li>CR (Cloud Runway): full functionality; DevIT in BITFRFIN</li>
+<li>TR (Traditional Runway): BTM sales; live Apr 13, 2026; replaced CPQ 1.0</li>
+<li>CPS (Cloud Pricing Service, BTP): calculates CMAT pricing at runtime; shifted to <strong>RD10</strong></li>
+<li>KDD dimensions: RetrofitDevIT / StandardExtension /-Specific</li>
+</ul>
+<div class="sub">QA Operating Model Transition (CW20&ndash;CW25)</div>
+<ul class="ul">
+<li>As-Is: Centralised Test Factory</li>
+<li>To-Be: Federated Quality Model &mdash; 3 layers</li>
+<li>Layer 1: Program QA Office (governance, quality gates)</li>
+<li>Layer 2: ART Team QA (embedded: C4C, CPQ, BRIM)</li>
+<li>Layer 3: Cross-ART Test Coordination (E2E BAT, sign-off)</li>
+<li>Testing freeze: May 9 &ndash; RD07 recommended (YOUR_JIRA_PROJECT-6112)</li>
+</ul>
+<div class="sub">Integration Architecture</div>
+<ul class="ul">
+<li>Total: <strong>125 integrations</strong>; 86 require EOX adaptation; 39 do not</li>
+<li>KT process: handover session + separate SAP sign-off</li>
+<li>ARB on BP Replication: May 27, 2026</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<section id="pi-context" class="sect">
+<div class="sect-h"><span class="ico">&#128203;</span>PI Planning Context</div>
+<div class="sect-b">
+<div class="two">
+<div>
+<div class="sub">PI26/1 &mdash; Completed (till Mar 6, 2026)</div>
+<ul class="ul">
+<li>RD02 delivery preparation completed</li>
+<li>North Star architecture confirmed</li>
+<li>L2O (Lead-to-Order) features delivered</li>
+<li>CPQ 2.0 CR first features validated</li>
+<li>Persona-based authorization scoped</li>
+</ul>
+<div class="sub">PI26/2 &mdash; Health Snapshot (May 18)</div>
+<ul class="ul">
+<li>FET: 62% executed; 1 VH + 6 High bugs open</li>
+<li>BAT: 5/19 features signed off; E2E BAT in progress</li>
+<li>RET: not started (due May 29)</li>
+<li>Production issues from RD02 still in hypercare</li>
+<li>One SOM POC completed successfully</li>
+</ul>
+<div class="sub">PI26/3 &mdash; Confirmed Scope (Jun 1 &ndash; Sep 4, 2026)</div>
+<ul class="ul">
+<li>RD08.2026 primary delivery (PDD Jun 26; go-live Aug 22)</li>
+<li>FCF: to be scoped and committed</li>
+<li>AI Units: depends on One SOM readiness</li>
+<li>Persona-based authorization: continued</li>
+<li>EMS Embedded Services: capacity secured</li>
+<li>One CMAT: build by June 30; Bundle design July 10</li>
+<li>SOFM/MOFM: MOFM features post-ISD upgrade</li>
+<li>32 outstanding integration KTs to complete</li>
+</ul>
+<div class="sub">PI26/4 &mdash; Aspirations (Sep 7 &ndash; Nov 27, 2026)</div>
+<ul class="ul">
+<li>One SOM convergence (RD11 aspiration)</li>
+<li>ASP + CPS + Learning Hub: RD10 tentative</li>
+<li>FCF (if not completed in PI26/3)</li>
+</ul>
+</div>
+<div>
+<div class="sub">PI26/3 Key Planning Dependencies</div>
+<table class="tbl">
+<tr><th>#</th><th>Dependency / Context</th></tr>
+<tr><td>1</td><td>ISD/I5D upgrade delays define Sprint 1&ndash;2 SOFM/MOFM scope</td></tr>
+<tr><td>2</td><td>One SOM KDD 4975 ARB (May 27) determines One SOM feature scope</td></tr>
+<tr><td>3</td><td>Bundle design (ETA July 10) feeds Sprint 3 onwards</td></tr>
+<tr><td>4</td><td>FCF design must start in PI26/3; no design done at PI26/2 close</td></tr>
+<tr><td>5</td><td>QA federated model transition (CW20&ndash;25) impacts testing capacity Sprint 1&ndash;2</td></tr>
+<tr><td>6</td><td>32 outstanding integration KTs must complete to avoid blocking go-live</td></tr>
+<tr><td>7</td><td>Employee Data Load: DPO approval pending &mdash; features contingent</td></tr>
+<tr><td>8</td><td>Joule GA: no date confirmed; plan EA-only for PI26/3</td></tr>
+<tr><td>9</td><td>CCPlus New Deal (YOUR_JIRA_PROJECT-1298): removed from PI26/3; H1 2027</td></tr>
+<tr><td>10</td><td>Partner readiness (Indirect): master data + test data gaps before PI26/3 BAT</td></tr>
+</table>
+</div>
+</div>
+</div>
+</section>
+
+<section id="sources" class="sect">
+<div class="sect-h"><span class="ico">&#128218;</span>Knowledge Sources</div>
+<div class="sect-b"><p class="p">The agents and commands draw on these external reference materials. Files live in OneDrive and are not copied into the git repo. Every source below is also tracked in <a href="../loaded-files-log.md"><code>loaded-files-log.md</code></a> at the repo root.</p>
+<div class="al al-w">&#9888;&#65039; Local <code>file:///</code> links work when clicked in your default browser, but Chrome/Edge may block direct opens. If a link does not open, copy the path into File Explorer.</div>
+<div class="sub">Program Status &amp; SteerCo PDFs (Jan&ndash;May 2026)</div>
+<p class="p">15 PDFs extracted and structured into the Program History sections above: 4 Exec SteerCos + 11 Program Status Updates. Content is stored in <code>/knowledge/</code> (git repo).</p>
+<table class="tbl">
+<tr><th>Document</th><th>Type</th></tr>
+<tr><td><code>20260121_Exec SteerCo</code></td><td>Exec SteerCo</td></tr>
+<tr><td><code>20260305_Exec SteerCo</code></td><td>Exec SteerCo</td></tr>
+<tr><td><code>20260325_Exec SteerCo</code></td><td>Exec SteerCo</td></tr>
+<tr><td><code>20260429_Exec SteerCo</code></td><td>Exec SteerCo</td></tr>
+<tr><td><code>20260302 / 0309 / 0316 / 0323 / 0327 / 0407 / 0413 / 0427 / 0504 / 0511 / 0518 PSU</code></td><td>Program Status Updates (11)</td></tr>
+</table>
+<div class="sub">Central Info Basis</div>
+<table class="tbl">
+<tr><th>Document</th><th>Sheets / Sections</th><th>Used By</th></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/20260505_Claude_Infobasis_v01.xlsx"><code>20260505_Claude_Infobasis_v01.xlsx</code></a></td><td>General &middot; Definitions &middot; Jira naming convention &middot; Sol management &middot; Delivery &middot; Testing</td><td>All agents</td></tr>
+</table>
+<div class="sub">Process &amp; Reference Documents</div>
+<table class="tbl">
+<tr><th>Document</th><th>Type</th><th>Purpose</th></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/SAP%20Sales%20cloud%20v2%20help%20me.pdf">SAP Sales Cloud v2 Set-Up Guide</a></td><td>PDF</td><td>SCV2 functional &amp; config reference (~18K lines)</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/Capability%20Workflow.png">Capability Workflow.png</a></td><td>PNG</td><td>Authoritative 8-status capability workflow (corrects earlier 7-step versions)</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/2610430_Solution%20Mgmt_Playbook_v1.1.pptx">Solution Mgmt Playbook v1.1</a></td><td>PPTX</td><td>Solution Management roles &amp; responsibilities</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/ReleaseDocument_RD02_.pdf">Release Doc RD02</a></td><td>PDF</td><td>RD02.2026 release scope</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/%20ReleaseDocument_RD08_v1.0.pdf">Release Doc RD08</a></td><td>PDF</td><td>RD08.2026 release scope</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/ReleaseDocument_RD10_.pdf">Release Doc RD10</a></td><td>PDF</td><td>RD10.2026 release scope</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/Topics%20to%20change%20in%20Claude%20set%20up_May25.docx">Topics to change in Claude set up_May25.docx</a></td><td>DOCX</td><td>Correction list applied to all affected files (historical input)</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/20260519_Claude_Infobasis_v01.csv">20260519_Claude_Infobasis_v01.csv</a></td><td>CSV</td><td>Delivery sheet export from Infobasis (newer version)</td></tr>
+</table>
+<div class="sub">HTML Report Generation</div>
+<table class="tbl">
+<tr><th>Document</th><th>Purpose</th></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/SAP-Claude-Prompt-Guide.html"><code>SAP-Claude-Prompt-Guide.html</code></a></td><td>5 prompts (shell &middot; KPI strip &middot; table &middot; line chart &middot; donut) in SAP Morning design</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/20260518-FD24-2026-Feature-Test-Report.html"><code>20260518-FD24-2026-Feature-Test-Report.html</code></a></td><td>Best-practice example output &mdash; Feature Test Execution Report</td></tr>
+</table>
+<div class="sub">DevIT Dashboard</div>
+<table class="tbl">
+<tr><th>Source</th><th>Content</th></tr>
+<tr><td>
+  <a href="https://pages.github.<YOUR-DOMAIN>/<YOUR-USERNAME>/devitdashboard/">Live dashboard</a> &middot;
+  <a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/devitdashboard-master/README.md">local README</a> &middot;
+  <a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/provided%20to%20claude%2020260519/devitdashboard-master/data.20260518.json">latest snapshot</a>
+</td><td>5 products (SCV2, CPQ, Entitlements, CDP, BRIM) &middot; refresh script &middot; dated JSON snapshots</td></tr>
+</table>
+<div class="sub">SAP Brand Master</div>
+<table class="tbl">
+<tr><th>File</th><th>Purpose</th></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/02_SAP%20Style%20guide%20md/Brand%20Master/sap-brand.md"><code>sap-brand.md</code></a></td><td>Master SAP brand spec &mdash; colours, shadows, spacing, typography</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/02_SAP%20Style%20guide%20md/Brand%20Master/sap-brand-shell.md"><code>sap-brand-shell.md</code></a></td><td>Shell bar &middot; section cards &middot; accent bar label pattern</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/02_SAP%20Style%20guide%20md/Brand%20Master/sap-brand-typography.md"><code>sap-brand-typography.md</code></a></td><td>72Brand variable font specs, sizes, weights</td></tr>
+<tr><td><a href="file:///C:/Users/C5199126/OneDrive%20-%20SAP%20SE/NextGen%20Cloud%20Selling%20-%2001_Claude/02_SAP%20Style%20guide%20md/Brand%20Master/sap-brand-charts.md"><code>sap-brand-charts.md</code></a></td><td>Column / Donut / Line / Radial chart specs</td></tr>
+<tr><td><code>Specific Brand Assets/</code></td><td>logos, icons, PPT template, team avatars</td></tr>
+</table>
+<div class="sub">Confluence Knowledge Bases</div>
+<p class="p">Extracted from live Confluence spaces (SAP SSO authenticated Playwright crawl, 29 May 2026). For team members without Confluence access — all content is embedded in the linked files.</p>
+<table class="tbl">
+<tr><th>File</th><th>Space</th><th>Contents</th><th>Last Crawl</th></tr>
+<tr><td><a href="confluence/NCSP_Confluence_KB.html">NCSP_Confluence_KB.html</a></td><td><a href="https://wiki.one.int.sap/wiki/spaces/NCSP" target="_blank">NCSP ↗</a></td><td>Full page index · 2.5 Support &amp; Operations · Jira Governance · 13 Solution Assessments · Extended contacts (~40 people)</td><td>29 May 2026</td></tr>
+<tr><td><a href="confluence/DCP_Confluence_KB.html">DCP_Confluence_KB.html</a></td><td><a href="https://wiki.one.int.sap/wiki/spaces/DCPL" target="_blank">DCPL ↗</a></td><td>DCP/Partner Store architecture · integration points · 13 active capabilities · Process flows (Net New, Amendment, Product Selector) · DCP glossary · Team contacts · ITDB cross-references</td><td>29 May 2026</td></tr>
+</table>
+<div class="sub">SharePoint References</div>
+<table class="tbl">
+<tr><th>Topic</th><th>Link</th></tr>
+<tr><td>DAB Meetings folder</td><td><a href="https://sap.sharepoint.com/:f:/r/teams/NextGenCloudSelling/Shared%20Documents/08%20E2E%20Architecture%20Workstream/05_Design%20Authority%20Board/01_DAB%20Meetings">Open</a></td></tr>
+<tr><td>Newsletter</td><td><a href="https://sap.sharepoint.com/:f:/r/teams/NextGenCloudSelling/Shared%20Documents/General/06_Communications/Newsletter">Open</a></td></tr>
+<tr><td>Signavio Process Update Status</td><td><a href="https://sap.sharepoint.com/teams/NextGenCloudSelling/Shared%20Documents/Forms/AllItems.aspx?id=%2Fteams%2FNextGenCloudSelling%2FShared%20Documents%2FGeneral%2F03%5FWorkstreams%20%26%20Process%20Steps%2FSignavio%20Process%20Update%20Status">Open</a></td></tr>
+</table></div>
+</section>
+</main></div>
+<script>
+(function(){
+  var bar=document.querySelector('.shell');
+  var lastY=0,upCount=0;
+  var links=document.querySelectorAll('.sb-lk');
+  var sects=document.querySelectorAll('section[id]');
+  function mark(){
+    var y=window.scrollY+80,active=null;
+    sects.forEach(function(s){if(s.offsetTop<=y)active=s.id});
+    links.forEach(function(l){
+      l.classList.toggle('active',l.getAttribute('href')==='#'+active)});
+  }
+  window.addEventListener('scroll',mark,{passive:true});mark();
+})();
+</script>
+</body>
+</html>

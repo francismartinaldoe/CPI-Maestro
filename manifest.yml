@@ -1,0 +1,18 @@
+---
+applications:
+  - name: cpimaestro-mcp-gateway
+    memory: 256M
+    disk_quota: 512M
+    buildpacks:
+      - nodejs_buildpack
+    command: node dist/mcp/CPI_MCP/index.js
+    health-check-type: http
+    health-check-http-endpoint: /health
+    env:
+      MCP_TRANSPORT: http
+      NODE_ENV: production
+    # CPI credentials are NOT stored here — set them via:
+    #   cf set-env cpimaestro-mcp-gateway CPI_TENANT_URL <value>
+    #   cf set-env cpimaestro-mcp-gateway CPI_TOKEN_URL  <value>
+    #   cf set-env cpimaestro-mcp-gateway CPI_CLIENT_ID  <value>
+    #   cf set-env cpimaestro-mcp-gateway CPI_CLIENT_SECRET <value>

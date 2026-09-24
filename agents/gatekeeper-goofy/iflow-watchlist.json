@@ -1,0 +1,25 @@
+{
+  "_readme": "Gatekeeper-Goofy iFlow Watchlist — Add iFlows here to include them in batch MIRROR comparison reports. Run /batch-compare to generate a combined HTML report for all entries.",
+  "defaultSource": "DEV",
+  "defaultTarget": "TEST",
+  "iflows": [
+    {
+      "id": "Involved_Parties_Determination_in_Sales_Cloud_v2",
+      "name": "Involved Parties Determination in Sales Cloud v2",
+      "package": "YOUR_PACKAGE_ID",
+      "notes": ""
+    },
+    {
+      "id": "Update_Quote_in_SAP_CPQ_2_from_Opportunity",
+      "name": "Update Inv Party in SAP CPQ 2 Quote from C4C V2 Opportunity",
+      "package": "YOUR_PACKAGE_ID_2",
+      "notes": ""
+    },
+    {
+      "id": "Send_Employee_Data_from_Master_Data_Integration_CI_to_C4Cv2",
+      "name": "Send Employee Data from AEM to C4Cv2",
+      "package": "YOUR_PACKAGE_ID",
+      "notes": ""
+    }
+  ]
+}

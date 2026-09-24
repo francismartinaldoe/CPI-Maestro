@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Central Claude System —</title>
+<style>
+@font-face {
+  font-family: '72'; font-weight: 400;
+  src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: '72'; font-weight: 700;
+  src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Bold.woff2') format('woff2');
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --tx: #12171c;
+  --ts: #8ea4b8;
+  --tm: #556475;
+  --br: #0070f2;
+}
+body {
+  font-family: '72', Arial, Helvetica, sans-serif;
+  background: #f5f6f7;
+  color: var(--tx);
+  padding-top: 56px;
+  font-size: 16px;
+}
+
+/* Shell Bar */
+.top-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px; display: flex; align-items: center;
+  background: #f5f6f7; border-bottom: 1px solid #e8eaed;
+}
+.top-bar__inner {
+  width: 100%; max-width: 1200px; margin: 0 auto;
+  padding: 0 40px; display: flex; align-items: center;
+}
+.top-bar__logo { height: 32px; width: auto; display: block; flex-shrink: 0; }
+.top-bar__divider {
+  width: 1px; height: 22px; background: #d5dadd;
+  margin: 0 16px; flex-shrink: 0;
+}
+.top-bar__title-group { display: flex; align-items: baseline; gap: 14px; }
+.top-bar__product { font-size: 17px; font-weight: 700; color: #12171c; white-space: nowrap; }
+.top-bar__app { font-size: 17px; font-weight: 400; color: #354a5f; white-space: nowrap; }
+.top-bar__pi {
+  display: inline-block; font-size: 14px; font-weight: 700;
+  color: #0040b0; background: #ebf8ff;
+  border: 1px solid #a6e0ff; border-radius: 4px;
+  padding: 1px 6px; margin-left: 7px; vertical-align: middle;
+}
+.top-bar__date { margin-left: auto; font-size: 12px; color: #8ea4b8; white-space: nowrap; }
+
+/* Layout */
+.lead {
+  max-width: 1200px; margin: 0 auto;
+  padding: 40px 40px 80px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+
+/* Section Cards */
+.section-card {
+  background: #fff; border: 1px solid #d9dde0; border-radius: 12px;
+  padding: 32px 40px; box-shadow: 0 1px 4px rgba(0,50,165,.06);
+}
+.section-card__header { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+.section-card__label {
+  font-size: 14px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: #002a86; margin-bottom: 20px;
+}
+.section-card__header .section-card__label { margin-bottom: 0; }
+
+/* Accent Bar Chip */
+.chip {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: #5b738b; margin-bottom: .65rem;
+}
+.chip::before {
+  content: ''; display: inline-block;
+  width: 3px; height: 11px; border-radius: 2px;
+  background: #002a86; flex-shrink: 0;
+}
+
+/* Hero Banner */
+.hero {
+  background: linear-gradient(135deg, #002a86 0%, #0057d2 35%, #0070f2 70%, #4db1ff 100%);
+  border-radius: 12px; padding: 48px 56px; color: #fff;
+  position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: rgba(255,255,255,.04); pointer-events: none;
+}
+.hero__eyebrow {
+  font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255,255,255,.65); margin-bottom: 12px;
+}
+.hero__heading {
+  font-size: 2.25rem; font-weight: 700; line-height: 1.1;
+  color: #fff; margin-bottom: 18px;
+}
+.hero__body {
+  font-size: 1rem; font-weight: 400; line-height: 1.6;
+  color: rgba(255,255,255,.82); max-width: 680px;
+}
+
+/* SVG Diagram wrapper */
+.diagram-wrap {
+  width: 100%; overflow-x: auto;
+  border: 1px solid rgba(0,112,242,.1); border-radius: 10px;
+  background: #fafcff;
+}
+.diagram-wrap svg { display: block; width: 100%; min-width: 940px; }
+
+/* Two-column layout */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+@media (max-width: 780px) {
+  .two-col { grid-template-columns: 1fr; }
+  .lead { padding: 24px 20px 60px; }
+}
+
+/* Column panel */
+.col-panel {
+  background: #fafcff; border: 1px solid rgba(0,112,242,.1);
+  border-radius: 10px; padding: 24px 28px;
+}
+.col-panel--dark {
+  background: #12171c; border-color: rgba(0,64,176,.4);
+}
+
+/* Decision Flow */
+.flow-steps { display: flex; flex-direction: column; gap: 0; }
+.flow-step {
+  display: flex; align-items: flex-start; gap: 14px;
+  position: relative; padding-bottom: 20px;
+}
+.flow-step:last-child { padding-bottom: 0; }
+.flow-step::before {
+  content: ''; position: absolute; left: 13px; top: 28px;
+  width: 2px; bottom: 0; background: rgba(0,112,242,.14);
+}
+.flow-step:last-child::before { display: none; }
+.flow-num {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  background: #0070f2; color: #fff;
+  font-size: .72rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px; position: relative; z-index: 1;
+}
+.flow-num.allow { background: #256f3a; }
+.flow-num.block { background: #aa0808; }
+.flow-body { display: flex; flex-direction: column; gap: 2px; }
+.flow-title { font-size: .85rem; font-weight: 700; color: var(--tx); }
+.flow-desc { font-size: .78rem; color: var(--tm); line-height: 1.5; }
+.flow-desc code {
+  font-family: monospace; font-size: .73rem;
+  background: #f0f4f8; padding: 1px 5px; border-radius: 3px; color: #0040b0;
+}
+
+/* Code block */
+.code-block {
+  background: #0d1117; border-radius: 8px;
+  padding: 16px 20px; margin: 10px 0;
+  font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+  font-size: .74rem; line-height: 1.75; color: #d1efff;
+  overflow-x: auto; white-space: pre;
+}
+.c-cmt { color: #5b738b; font-style: italic; }
+.c-key { color: #89d1ff; }
+.c-str { color: #a6e0ff; }
+.c-val { color: #4db1ff; }
+.c-brace { color: #8ea4b8; }
+
+.note-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .7rem; font-weight: 700;
+  background: #fff8d6; border: 1px solid #ffc933;
+  color: #6d1900; border-radius: 20px; padding: 3px 10px; margin: 8px 0 4px;
+}
+.note-text { font-size: .78rem; color: var(--tm); line-height: 1.5; }
+
+/* Setup panel title */
+.setup-title {
+  font-size: .95rem; font-weight: 700; color: #d1efff; margin-bottom: 6px;
+}
+.setup-sub {
+  font-size: .75rem; color: #5b738b; margin-bottom: 10px;
+}
+
+/* Access Reference Table */
+.ref-table { width: 100%; border-collapse: collapse; }
+.ref-table th {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: #223548;
+  padding: .65rem 1rem; border-bottom: 2px solid rgba(0,112,242,.14);
+  text-align: left; background: #fff;
+}
+.ref-table td {
+  font-size: .78rem; padding: .65rem 1rem;
+  border-bottom: 1px solid rgba(0,112,242,.07);
+  color: #223548; vertical-align: middle;
+}
+.ref-table tr:hover td { background: #ebf8ff; }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table .capability-cell { font-weight: 500; color: #12171c; }
+.ref-table .enf-cell {
+  font-family: monospace; font-size: .7rem; color: #0040b0;
+  background: rgba(0,64,176,.04); border-radius: 3px;
+  padding: 2px 5px;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: .62rem; font-weight: 700; letter-spacing: .04em;
+  padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+}
+.badge-green { background: #e8f5ec; color: #256f3a; border: 1px solid rgba(37,111,58,.22); }
+.badge-red   { background: #ffeaf4; color: #aa0808; border: 1px solid rgba(170,8,8,.22); }
+.badge-blue  { background: #ebf8ff; color: #0040b0; border: 1px solid rgba(0,64,176,.22); }
+.badge-grey  { background: #f5f6f7; color: #475e75; border: 1px solid rgba(71,94,117,.2); }
+
+/* Footer */
+.footer { text-align: center; font-size: .72rem; color: #8ea4b8; padding: 8px 0 0; }
+
+/* GitHub-style section anchor */
+.section-anchor {
+  display: inline-flex; align-items: center; margin-left: 8px;
+  opacity: 0; transition: opacity .15s; color: #8ea4b8;
+  text-decoration: none; vertical-align: middle;
+}
+.section-anchor svg { width: 16px; height: 16px; fill: currentColor; }
+.section-anchor:hover { color: #0070f2; }
+.section-card:hover .section-anchor,
+.section-card__header:hover .section-anchor { opacity: 1; }
+
+/* ── Three-layer architecture diagram ── */
+.arch-diagram {
+  display: flex; flex-direction: column; gap: 0; position: relative;
+}
+.arch-layer {
+  display: grid; align-items: stretch; gap: 0;
+  position: relative;
+}
+/* Layer connectors */
+.arch-connector {
+  display: flex; align-items: center; justify-content: center;
+  height: 48px; position: relative;
+}
+.arch-connector__line {
+  width: 2px; height: 100%; background: linear-gradient(to bottom, #a6e0ff, #0070f2);
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.arch-connector__arrow {
+  width: 10px; height: 10px; border-right: 2px solid #0070f2;
+  border-bottom: 2px solid #0070f2; transform: rotate(45deg);
+  position: absolute; bottom: 6px; left: calc(50% - 5px);
+  background: #f5f6f7;
+}
+.arch-connector__label {
+  position: relative; z-index: 1; font-size: .65rem; font-weight: 700;
+  color: #0040b0; background: #ebf8ff; border: 1px solid #a6e0ff;
+  border-radius: 20px; padding: 3px 10px; letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* ── Layer cards ── */
+.layer-card {
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(34,53,72,.14);
+}
+.layer-card--core {
+  border: 2px solid #0070f2;
+}
+.layer-card--repo {
+  border: 2px solid #002a86;
+}
+.layer-card--wider {
+  border: 2px solid #d5dadd;
+}
+.layer-card__head {
+  padding: 16px 24px 14px; display: flex; align-items: center; gap: 12px;
+}
+.layer-card--core .layer-card__head { background: #0070f2; }
+.layer-card--repo .layer-card__head { background: #002a86; }
+.layer-card--wider .layer-card__head { background: #f5f6f7; border-bottom: 1px solid #d9dde0; }
+.layer-card__head-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.layer-card--core .layer-card__head-icon { background: rgba(255,255,255,.18); }
+.layer-card--repo .layer-card__head-icon { background: rgba(255,255,255,.12); }
+.layer-card--wider .layer-card__head-icon { background: #fff; border: 1px solid #d5dadd; }
+.layer-card__head-title { font-size: 1rem; font-weight: 700; }
+.layer-card--core .layer-card__head-title,
+.layer-card--repo .layer-card__head-title { color: #fff; }
+.layer-card--wider .layer-card__head-title { color: #12171c; }
+.layer-card__head-sub { font-size: .72rem; }
+.layer-card--core .layer-card__head-sub { color: rgba(255,255,255,.72); }
+.layer-card--repo .layer-card__head-sub { color: rgba(255,255,255,.60); }
+.layer-card--wider .layer-card__head-sub { color: #5b738b; }
+.layer-card__body { background: #fff; padding: 20px 24px 24px; }
+
+/* ── Permission badges ── */
+.perm-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.perm-item { display: flex; align-items: flex-start; gap: 10px; }
+.perm-icon {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.perm-icon--allow { background: #e8f5ec; }
+.perm-icon--deny  { background: #ffeaf4; }
+.perm-icon--info  { background: #ebf8ff; }
+.perm-text { font-size: .8rem; color: #354a5f; line-height: 1.45; }
+.perm-text strong { color: #12171c; font-weight: 700; }
+
+/* ── Team member pills ── */
+.member-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.member-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #ebf8ff; border: 1px solid #a6e0ff;
+  border-radius: 20px; padding: 5px 12px 5px 6px;
+}
+.member-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .58rem; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.member-name { font-size: .75rem; font-weight: 700; color: #0040b0; }
+.member-role { font-size: .68rem; color: #5b738b; margin-left: 2px; }
+
+/* ── Hook detail cards ── */
+.hook-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 4px; }
+.hook-card {
+  background: #f5f6f7; border: 1px solid #d9dde0; border-radius: 8px;
+  padding: 14px 16px;
+}
+.hook-card--gate { border-left: 3px solid #0070f2; }
+.hook-card--push { border-left: 3px solid #002a86; }
+.hook-card--sync { border-left: 3px solid #188918; }
+.hook-card__name {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; margin-bottom: 6px;
+}
+.hook-card--gate .hook-card__name { color: #0057d2; }
+.hook-card--push .hook-card__name { color: #002a86; }
+.hook-card--sync .hook-card__name { color: #188918; }
+.hook-card__file {
+  font-family: 'Consolas', 'Cascadia Code', monospace;
+  font-size: .68rem; background: #fff; border: 1px solid rgba(0,112,242,.12);
+  border-radius: 4px; padding: 3px 7px; color: #0040b0; margin-bottom: 8px;
+  display: inline-block;
+}
+.hook-card__desc { font-size: .75rem; color: #475e75; line-height: 1.5; }
+
+/* ── Protected files list ── */
+.protected-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.pf-item {
+  display: flex; align-items: center; gap: 8px;
+  background: #f5f6f7; border: 1px solid rgba(0,42,134,.1);
+  border-radius: 6px; padding: 7px 12px;
+}
+.pf-icon { color: #0040b0; flex-shrink: 0; }
+.pf-path {
+  font-family: 'Consolas', 'Cascadia Code', monospace;
+  font-size: .7rem; color: #354a5f;
+}
+
+/* ── Knowledge catalog ── */
+.knowledge-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 4px; }
+.k-block {}
+.k-block__label {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: #002a86; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.k-block__label::before {
+  content: ''; display: inline-block; width: 3px; height: 11px;
+  border-radius: 2px; background: #002a86;
+}
+.k-items { display: flex; flex-direction: column; gap: 5px; }
+.k-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .78rem; color: #354a5f; padding: 5px 0;
+  border-bottom: 1px solid rgba(0,112,242,.07);
+}
+.k-item:last-child { border-bottom: none; }
+.k-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #0070f2; flex-shrink: 0;
+}
+.k-dot--cmd { background: #0040b0; }
+.k-dot--ctx { background: #4db1ff; }
+.k-dot--mcp { background: #188918; }
+
+/* ── Status badge (arch section) ── */
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .6rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; border-radius: 20px; padding: 2px 8px;
+}
+.status-pill--allow { background: #e8f5ec; color: #188918; border: 1px solid rgba(24,137,24,.2); }
+.status-pill--deny  { background: #ffeaf4; color: #aa0808; border: 1px solid rgba(170,8,8,.2); }
+.status-pill--auto  { background: #ebf8ff; color: #0040b0; border: 1px solid rgba(0,112,242,.2); }
+
+/* ── Section divider ── */
+.section-sep { height: 1px; background: rgba(0,112,242,.07); margin: 20px 0; }
+
+/* ── Wider team capabilities grid ── */
+.cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+.cap-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #f5f6f7; border: 1px solid #d9dde0; border-radius: 8px;
+  padding: 12px 14px;
+}
+.cap-icon-wrap {
+  width: 32px; height: 32px; border-radius: 6px;
+  background: #ebf8ff; border: 1px solid #a6e0ff;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.cap-text {}
+.cap-name { font-size: .8rem; font-weight: 700; color: #12171c; margin-bottom: 2px; }
+.cap-desc { font-size: .72rem; color: #5b738b; line-height: 1.4; }
+</style>
+</head>
+<body>
+
+<!-- Shell Bar -->
+<header class="top-bar" id="top-bar">
+  <div class="top-bar__inner">
+    <svg class="top-bar__logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 412.38 204" aria-label="SAP"><defs><style>.cls-1,.cls-2{fill-rule:evenodd;}.cls-1{fill:url(#sap-grad);}.cls-2{fill:#fff;}</style><linearGradient id="sap-grad" x1="206.19" x2="206.19" y2="204" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00b8f1"/><stop offset="0.02" stop-color="#01b6f0"/><stop offset="0.31" stop-color="#0d90d9"/><stop offset="0.58" stop-color="#1775c8"/><stop offset="0.82" stop-color="#1c65bf"/><stop offset="1" stop-color="#1e5fbb"/></linearGradient></defs><polyline class="cls-1" points="0 204 208.41 204 412.38 0 0 0 0 204"/><path class="cls-2" d="M244.73,38.36l-40.6,0v96.52L168.67,38.33H133.51l-30.27,80.72C100,98.7,79,91.67,62.4,86.4,51.46,82.89,39.85,77.72,40,72c.09-4.68,6.23-9,18.38-8.38,8.17.43,15.37,1.09,29.71,8l14.1-24.55C89.06,40.42,71,36.21,56.17,36.19h-.09c-17.28,0-31.68,5.6-40.6,14.83A34.23,34.23,0,0,0,5.77,74.7C5.54,87.15,10.11,96,19.71,103c8.1,5.94,18.46,9.79,27.6,12.62,11.27,3.49,20.47,6.53,20.36,13A9.57,9.57,0,0,1,65,135c-2.81,2.9-7.13,4-13.09,4.1-11.49.24-20-1.56-33.61-9.59L5.77,154.42a93.77,93.77,0,0,0,46,12.22l2.11,0c14.24-.25,25.74-4.31,34.92-11.71.53-.41,1-.84,1.49-1.28L86.17,164.5H123l6.19-18.82a67.46,67.46,0,0,0,21.68,3.43,68.33,68.33,0,0,0,21.16-3.25l6,18.64h60.14v-39h13.11c31.71,0,50.46-16.15,50.46-43.2C301.74,52.19,283.52,38.36,244.73,38.36ZM150.91,121a36.93,36.93,0,0,1-13-2.28l12.87-40.59H151l12.65,40.71A38.5,38.5,0,0,1,150.91,121Zm96.2-23.33h-8.94V64.91h8.94c11.93,0,21.44,4,21.44,16.14,0,12.6-9.51,16.57-21.44,16.57"/></svg>
+    <div class="top-bar__divider"></div>
+    <div class="top-bar__title-group">
+      <span class="top-bar__product">Program</span>
+      <span class="top-bar__app">Central <em>Claude</em> System</span>
+    </div>
+    <span class="top-bar__date">02 Jun 2026</span>
+  </div>
+</header>
+<div style="background:#eef4ff;border-bottom:1px solid #dde8f8;position:sticky;top:56px;z-index:99;">
+  <div style="width:100%;max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:1.5rem;height:2rem;font-size:.75rem;font-weight:600;">
+    <a href="Claude_Overview.html" style="color:#0070f2;text-decoration:none;">Overview</a>
+    <span style="color:#0050c8;font-weight:700;">&#9654; Central System</span>
+    <a href="Knowledge_Base.html" style="color:#0070f2;text-decoration:none;">Knowledge Base</a>
+    <a href="setup/mcp-auth-guide.html" style="color:#0070f2;text-decoration:none;">MCP Auth Guide</a>
+    <a href="https://pages.github.<YOUR-DOMAIN>/public/changelog/" target="_blank" style="color:#0070f2;text-decoration:none;margin-left:auto;">🆕 What's New</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude/blob/main/ONBOARDING.md" target="_blank" style="color:#0070f2;text-decoration:none;">Onboarding</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude" target="_blank" style="color:#0070f2;text-decoration:none;">&#128279; Git Repository</a>
+  </div>
+</div>
+
+<main class="lead">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero__eyebrow">Program Intelligence</div>
+    <h1 class="hero__heading">Central <em style="font-style:italic;color:#a6e0ff;">Claude</em> System</h1>
+    <p class="hero__body">A single git repository connects the entire program team with centrally maintained intelligence — agents, commands, and knowledge authored by the core team and auto-synced to every team member before each prompt.</p>
+  </div>
+
+  <!-- System Overview -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Overview<a class="section-anchor" href="#overview" title="Link to this section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1100 560" style="width:100%;display:block;min-height:420px;" font-family="Arial,Helvetica,sans-serif" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- ── ZONE BACKGROUNDS ── -->
+        <rect x="5" y="5" width="448" height="535" rx="8" fill="#f7f8f9" stroke="#d9dde0" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="18" y="553" font-size="11" font-weight="700" fill="#556475" letter-spacing="0.09em">TEAM</text>
+        <rect x="668" y="5" width="427" height="535" rx="8" fill="#f0f7ff" stroke="#a6e0ff" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="680" y="553" font-size="11" font-weight="700" fill="#0040b0" letter-spacing="0.09em">CORE INTELLIGENCE TEAM</text>
+
+        <!-- ================================================================ -->
+        <!-- ANNOTATION BOXES (drawn first, in their own vertical space)     -->
+        <!-- ================================================================ -->
+
+        <!-- Note A: Git -> Wider Team (onboarding) — top-left of wider zone -->
+        <rect x="62" y="18" width="380" height="68" rx="6" fill="#fff" stroke="#d9dde0" stroke-width="1.2"/>
+        <rect x="62" y="18" width="4" height="68" rx="2" fill="#354a5f"/>
+        <text x="76" y="37" font-size="10.5" font-weight="700" fill="#354a5f">based on a single prompt:</text>
+        <text x="76" y="53" font-size="10" fill="#475e75">&#x2022; copy agents, knowledge/context, skills/workflows</text>
+        <text x="76" y="68" font-size="10" fill="#475e75">&#x2022; configure local Claude to auto-sync before each prompt</text>
+        <!-- pointer line from note A down to the git->TM arrow -->
+        <line x1="252" y1="86" x2="390" y2="228" stroke="#c0c8d0" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Note B: Core Team -> Git (maintenance) — top of core zone -->
+        <rect x="680" y="18" width="250" height="55" rx="6" fill="#fff" stroke="#a6e0ff" stroke-width="1.2"/>
+        <rect x="680" y="18" width="4" height="55" rx="2" fill="#0070f2"/>
+        <text x="694" y="37" font-size="10.5" font-weight="700" fill="#0040b0">core team maintains:</text>
+        <text x="694" y="52" font-size="10" fill="#475e75">agents, commands, knowledge, readme</text>
+        <!-- pointer line from note B down to the claude->git arrow -->
+        <line x1="805" y1="73" x2="650" y2="200" stroke="#a6c8f0" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Note C: Jira direct access — below Jira diamond -->
+        <rect x="20" y="310" width="190" height="68" rx="6" fill="#fff" stroke="#d5d9e8" stroke-width="1.2"/>
+        <rect x="20" y="310" width="4" height="68" rx="2" fill="#0052cc"/>
+        <text x="34" y="329" font-size="10.5" font-weight="700" fill="#0052cc">direct Jira access via MCP:</text>
+        <text x="34" y="346" font-size="10" fill="#475e75">updates, follow up &amp; validation</text>
+        <text x="34" y="362" font-size="10" fill="#475e75">of topics identified via Claude</text>
+        <!-- pointer line from note C up to jira↔TM arrow -->
+        <line x1="127" y1="310" x2="127" y2="253" stroke="#b0b8d0" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- ================================================================ -->
+        <!-- MAIN FLOW ARROWS (at y≈232) -->
+        <!-- ================================================================ -->
+
+        <!-- 1. Jira <-> Team Member (double-headed) -->
+        <line x1="115" y1="237" x2="257" y2="237" stroke="#0052cc" stroke-width="1.6"/>
+        <polygon points="119,232 109,237 119,242" fill="#0052cc"/>
+        <polygon points="257,232 267,237 257,242" fill="#0052cc"/>
+
+        <!-- 2. SAP Git -> Team Member (auto-sync, pointing LEFT) -->
+        <line x1="474" y1="189" x2="313" y2="237" stroke="#354a5f" stroke-width="2"/>
+        <polygon points="313,232 303,237 313,242" fill="#354a5f"/>
+        <!-- "auto-sync" pill on the arrow -->
+        <rect x="355" y="205" width="76" height="16" rx="8" fill="#f5fff8" stroke="#27a05e" stroke-width="1"/>
+        <text x="393" y="217" text-anchor="middle" font-size="8.5" font-weight="700" fill="#27a05e">auto-sync &#x2193;</text>
+
+        <!-- 3. Claude -> SAP Git (core team push, pointing LEFT) -->
+        <line x1="750" y1="237" x2="652" y2="189" stroke="#0070f2" stroke-width="2"/>
+        <polygon points="656,184 646,189 656,194" fill="#0070f2"/>
+        <!-- "push" pill on the arrow -->
+        <rect x="667" y="205" width="54" height="16" rx="8" fill="#ebf8ff" stroke="#0070f2" stroke-width="1"/>
+        <text x="694" y="217" text-anchor="middle" font-size="8.5" font-weight="700" fill="#0070f2">push &#x2191;</text>
+
+        <!-- 4. OneDrive -> Claude (knowledge source, dashed) -->
+        <line x1="876" y1="195" x2="793" y2="232" stroke="#0070f2" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="796,227 789,235 799,237" fill="#0070f2"/>
+
+        <!-- 5. Team Member -> Outputs (down) -->
+        <line x1="285" y1="312" x2="285" y2="355" stroke="#188918" stroke-width="1.6"/>
+        <polygon points="280,351 285,361 290,351" fill="#188918"/>
+
+        <!-- ================================================================ -->
+        <!-- SAP GIT BOX -->
+        <!-- ================================================================ -->
+        <rect x="462" y="100" width="188" height="310" rx="8" fill="#fff" stroke="#354a5f" stroke-width="2"/>
+        <rect x="462" y="100" width="188" height="42" rx="8" fill="#12171c"/>
+        <rect x="462" y="128" width="188" height="14" fill="#12171c"/>
+        <text x="556" y="123" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">SAP git</text>
+        
+        <!--Claude sub-box inside SAP git box -->
+        <rect x="474" y="150" width="164" height="115" rx="4" fill="#f7f8f9" stroke="#d5dadd" stroke-width="1.3"/>
+        <text x="556" y="162" text-anchor="middle" font-size="9.5" font-weight="700" fill="#12171c">Claude</text>
+        <text x="556" y="173" text-anchor="middle" font-size="6.5" fill="#8ea4b8" font-family="monospace">github.<YOUR-DOMAIN>//Claude</text>
+        <!-- readme.md icon -->
+        <rect x="488" y="187" width="42" height="56" rx="3" fill="none" stroke="#8ea4b8" stroke-width="1.3"/>
+        <path d="M516,187 L530,201 L530,243 L488,243 L488,187" fill="none" stroke="#8ea4b8" stroke-width="1.3"/>
+        <path d="M516,187 L516,201 L530,201" fill="none" stroke="#8ea4b8" stroke-width="1.3"/>
+        <text x="509" y="223" text-anchor="middle" font-size="7.5" fill="#8ea4b8" font-family="monospace">readme</text>
+        <text x="509" y="233" text-anchor="middle" font-size="7.5" fill="#8ea4b8" font-family="monospace">.md</text>
+        <!-- git branch icon -->
+        <circle cx="582" cy="195" r="6" fill="none" stroke="#556475" stroke-width="1.4"/>
+        <circle cx="582" cy="235" r="6" fill="none" stroke="#556475" stroke-width="1.4"/>
+        <circle cx="610" cy="213" r="6" fill="none" stroke="#556475" stroke-width="1.4"/>
+        <line x1="582" y1="201" x2="582" y2="229" stroke="#556475" stroke-width="1.3"/>
+        <path d="M582,201 Q582,213 610,213" fill="none" stroke="#556475" stroke-width="1.3" stroke-dasharray="3,2"/>
+        <path d="M610,213 Q610,225 582,229" fill="none" stroke="#556475" stroke-width="1.3" stroke-dasharray="3,2"/>
+
+
+        <!-- Separator betweenClaude and public inside git box -->
+        <line x1="470" y1="271" x2="642" y2="271" stroke="#8ea4b8" stroke-width="1" stroke-dasharray="3,2"/>
+
+        <!-- public sub-box inside SAP git box -->
+        <rect x="474" y="277" width="164" height="100" rx="5" fill="#f0f7ff" stroke="#0070f2" stroke-width="1.3"/>
+        <text x="556" y="291" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0040b0">public</text>
+        <rect x="478" y="298" width="68" height="14" rx="7" fill="#0070f2"/>
+        <text x="512" y="308" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">GitHub Pages</text>
+        <text x="556" y="317" text-anchor="middle" font-size="8" fill="#5b738b">pages.github.<YOUR-DOMAIN>/public</text>
+        <text x="483" y="332" font-size="8.5" font-weight="700" fill="#256f3a">prod/</text><text x="506" y="332" font-size="8" fill="#354a5f">— confirmed outputs</text>
+        <text x="483" y="347" font-size="8.5" font-weight="700" fill="#e76500">test/</text><text x="506" y="347" font-size="8" fill="#354a5f">— drafts &amp; previews</text>
+
+        <!-- Dashed arrow: Team Member -> public (push HTML) -->
+        <path d="M 310,290 C 370,287 430,287 474,287" fill="none" stroke="#0070f2" stroke-width="1.4" stroke-dasharray="5,3"/>
+        <polygon points="470,283 480,287 470,291" fill="#0070f2"/>
+        <!-- push HTML pill label -->
+        <rect x="337" y="279" width="110" height="16" rx="8" fill="#ebf8ff" stroke="#0070f2" stroke-width="1"/>
+        <text x="392" y="291" text-anchor="middle" font-size="8" font-weight="700" fill="#0070f2">push HTML ↑</text>
+
+        <!-- Dashed arrow: Claude -> public (core team push HTML to shared repo) -->
+        <path d="M 747,285 C 710,305 670,317 638,317" fill="none" stroke="#0070f2" stroke-width="1.4" stroke-dasharray="5,3"/>
+        <polygon points="642,313 633,317 642,321" fill="#0070f2"/>
+        <!-- push HTML pill label (right side, near Claude) -->
+        <rect x="672" y="274" width="64" height="16" rx="8" fill="#ebf8ff" stroke="#0070f2" stroke-width="1"/>
+        <text x="704" y="286" text-anchor="middle" font-size="8" font-weight="700" fill="#0070f2">push HTML ↑</text>
+
+        <!-- ================================================================ -->
+        <!-- JIRA DIAMOND -->
+        <!-- ================================================================ -->
+        <polygon points="80,195 122,232 80,269 38,232" fill="#0052cc"/>
+        <text x="80" y="238" text-anchor="middle" font-size="22" font-weight="bold" fill="#fff">J</text>
+        <text x="80" y="285" text-anchor="middle" font-size="11" fill="#475e75" font-weight="700">Jira</text>
+        <rect x="94" y="190" width="34" height="16" rx="8" fill="#e8f5ec" stroke="rgba(37,111,58,.3)" stroke-width="1"/>
+        <text x="111" y="202" text-anchor="middle" font-size="8.5" font-weight="700" fill="#256f3a">MCP</text>
+
+        <!-- ================================================================ -->
+        <!-- TEAM MEMBER -->
+        <!-- ================================================================ -->
+        <circle cx="285" cy="220" r="18" stroke="#475e75" stroke-width="1.8" fill="none"/>
+        <path d="M262,272 C262,252 271,245 285,245 C299,245 308,252 308,272" stroke="#475e75" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <rect x="305" y="271" width="22" height="18" rx="3" fill="#0078d4"/>
+        <text x="316" y="284" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">T</text>
+        <text x="285" y="298" text-anchor="middle" font-size="10.5" font-weight="700" fill="#354a5f">Team Member</text>
+
+        <!-- ================================================================ -->
+        <!-- OUTPUT ICONS -->
+        <!-- ================================================================ -->
+        <rect x="218" y="364" width="40" height="32" rx="3" fill="#c43e1c"/>
+        <text x="238" y="385" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#fff">PPT</text>
+        <rect x="267" y="364" width="44" height="32" rx="3" fill="#0070f2"/>
+        <text x="289" y="385" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">HTML</text>
+        <rect x="320" y="364" width="40" height="32" rx="3" fill="#217346"/>
+        <text x="340" y="385" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#fff">XLS</text>
+        <text x="285" y="410" text-anchor="middle" font-size="9.5" fill="#475e75">generate outputs based on workflow / skill</text>
+
+        <!-- ================================================================ -->
+        <!-- CLAUDE SETUP (Core Team) -->
+        <!-- ================================================================ -->
+        <circle cx="770" cy="220" r="18" stroke="#0070f2" stroke-width="1.8" fill="none"/>
+        <path d="M747,272 C747,252 756,245 770,245 C784,245 793,252 793,272" stroke="#0070f2" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <circle cx="789" cy="271" r="13" fill="#e07b39"/>
+        <text x="789" y="276" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">C</text>
+        <text x="770" y="298" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0040b0">Claude</text>
+        <text x="770" y="311" text-anchor="middle" font-size="9.5" fill="#5b738b">Setup / Maintenance</text>
+
+        <!-- ================================================================ -->
+        <!-- ONDRIVE BOX -->
+        <!-- ================================================================ -->
+        <rect x="877" y="80" width="208" height="200" rx="8" fill="#fff" stroke="#0063b1" stroke-width="1.5"/>
+        <path d="M903,130 Q894,130 891,122 Q888,110 898,106 Q902,95 916,96 Q921,87 936,89 Q956,88 958,103 Q970,105 968,118 Q966,130 953,130 Z" fill="#0072c6"/>
+        <text x="1010" y="118" text-anchor="middle" font-size="13" font-weight="700" fill="#0063b1">OneDrive</text>
+        <line x1="887" y1="138" x2="1075" y2="138" stroke="rgba(0,99,177,.12)" stroke-width="1"/>
+        <rect x="890" y="145" width="12" height="11" rx="2" fill="#ffc83d"/>
+        <text x="910" y="155" font-size="10.5" fill="#354a5f">00_General</text>
+        <rect x="890" y="162" width="12" height="11" rx="2" fill="#ffc83d"/>
+        <text x="910" y="172" font-size="10.5" fill="#354a5f">01_Solution Mgmt</text>
+        <rect x="890" y="179" width="12" height="11" rx="2" fill="#ffc83d"/>
+        <text x="910" y="189" font-size="10.5" fill="#354a5f">02_Delivery</text>
+        <rect x="890" y="196" width="12" height="11" rx="2" fill="#ffc83d"/>
+        <text x="910" y="206" font-size="10.5" fill="#354a5f">03_Testing</text>
+        <rect x="890" y="213" width="12" height="11" rx="2" fill="#ffc83d"/>
+        <text x="910" y="223" font-size="10.5" fill="#354a5f">04_Hypercare</text>
+        <!-- separator + additional sources section -->
+        <line x1="887" y1="286" x2="1079" y2="286" stroke="rgba(0,99,177,.14)" stroke-width="1"/>
+        <text x="887" y="296" font-size="8.5" font-weight="700" fill="#5b738b" letter-spacing="0.08em">ADDITIONAL SOURCES</text>
+
+        <!-- KDD -->
+        <rect x="882" y="301" width="198" height="28" rx="5" fill="#fff" stroke="#0052cc" stroke-width="1.3"/>
+        <rect x="882" y="301" width="198" height="14" rx="5" fill="#0052cc"/>
+        <rect x="882" y="308" width="198" height="7" fill="#0052cc"/>
+        <text x="981" y="311" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">KDD (KDD · Jira)</text>
+        <text x="892" y="323" font-size="9" fill="#354a5f">Design decisions &amp; DAB approvals</text>
+        <line x1="882" y1="315" x2="793" y2="237" stroke="#0070f2" stroke-width="1.4" stroke-dasharray="5,3"/>
+        <polygon points="796,232 789,240 799,242" fill="#0070f2"/>
+
+        <!-- Golden Standard -->
+        <rect x="882" y="334" width="198" height="28" rx="5" fill="#fff" stroke="#256f3a" stroke-width="1.3"/>
+        <rect x="882" y="334" width="198" height="14" rx="5" fill="#256f3a"/>
+        <rect x="882" y="341" width="198" height="7" fill="#256f3a"/>
+        <text x="981" y="344" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Golden Standard</text>
+        <text x="892" y="356" font-size="9" fill="#354a5f">Cloud Runway rules v1.4 · Non-negotiable</text>
+        <line x1="882" y1="348" x2="793" y2="237" stroke="#0070f2" stroke-width="1.4" stroke-dasharray="5,3"/>
+        <polygon points="796,232 789,240 799,242" fill="#0070f2"/>
+
+        <!-- C&P Path to North Star -->
+        <rect x="882" y="367" width="198" height="36" rx="5" fill="#fff" stroke="#e76500" stroke-width="1.3"/>
+        <rect x="882" y="367" width="198" height="14" rx="5" fill="#e76500"/>
+        <rect x="882" y="374" width="198" height="7" fill="#e76500"/>
+        <text x="981" y="377" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">C&amp;P Path to North Star</text>
+        <text x="892" y="390" font-size="9" fill="#354a5f">docs.udex.services.sap.com</text>
+        <text x="892" y="399" font-size="8" fill="#8ea4b8">External product repository</text>
+        <line x1="882" y1="381" x2="793" y2="237" stroke="#0070f2" stroke-width="1.4" stroke-dasharray="5,3"/>
+        <polygon points="796,232 789,240 799,242" fill="#0070f2"/>
+
+        <!-- Confluence / Wiki -->
+        <rect x="882" y="408" width="198" height="28" rx="5" fill="#fff" stroke="#253858" stroke-width="1.3"/>
+        <rect x="882" y="408" width="198" height="14" rx="5" fill="#253858"/>
+        <rect x="882" y="415" width="198" height="7" fill="#253858"/>
+        <text x="981" y="418" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Confluence (Wiki)</text>
+        <text x="892" y="430" font-size="9" fill="#354a5f">NCSP · program knowledge</text>
+        <line x1="882" y1="422" x2="793" y2="237" stroke="#0070f2" stroke-width="1.4" stroke-dasharray="5,3"/>
+        <polygon points="796,232 789,240 799,242" fill="#0070f2"/>
+
+        <!-- knowledge sources label -->
+        <text x="981" y="450" text-anchor="middle" font-size="9" fill="#8ea4b8">knowledge sources</text>
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- Permissions & Settings -->
+  <div class="section-card" id="permissions">
+    <div class="section-card__header">
+      <p class="section-card__label">Permissions &amp; Settings<a class="section-anchor" href="#permissions" title="Link to this section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></p>
+    </div>
+    <p style="font-size:.87rem;color:#354a5f;margin-bottom:20px;max-width:72ch;">
+      The central setup defines a common permission baseline for all team members in <code>.claude/settings.json</code>.
+      This removes repetitive confirmation prompts for routine work while enforcing explicit approval for destructive or shared-state operations.
+    </p>
+    <div class="two-col" style="gap:32px;margin-bottom:24px;">
+      <div>
+        <div class="chip" style="margin-bottom:12px;">Allowed Without Prompting</div>
+        <table class="ref-table">
+          <thead><tr><th>Category</th><th>Scope</th></tr></thead>
+          <tbody>
+            <tr><td class="capability-cell">Standard Bash commands</td><td>git status/log/diff/fetch/pull/add/commit, ls, find, grep, cat, echo, mkdir, cp, mv</td></tr>
+            <tr><td class="capability-cell">File operations</td><td>Read, Write, Edit — all file types (md, html, xlsx, pptx, json, py, sh, etc.)</td></tr>
+            <tr><td class="capability-cell">Jira MCP tools</td><td>All <code>mcp__sap-jira__*</code> read and write operations</td></tr>
+            <tr><td class="capability-cell">agent tools</td><td>All <code>mcp__-agents__*</code> operations</td></tr>
+            <tr><td class="capability-cell">PowerShell read-only</td><td>Get-Command, Where-Object, find via powershell.exe</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="chip" style="margin-bottom:12px;">Always Requires Confirmation</div>
+        <table class="ref-table">
+          <thead><tr><th>Operation</th><th>Reason</th></tr></thead>
+          <tbody>
+            <tr><td class="capability-cell"><code>git push</code> (any form)</td><td>Shared-state action — enforced by <code>protect-git-push.sh</code> hook. No exceptions.</td></tr>
+            <tr><td class="capability-cell">Write to <code>.claude/settings.json</code></td><td>Protected file — enforced by <code>protect-core-files.sh</code> hook.</td></tr>
+            <tr><td class="capability-cell">Edit protected workspace files</td><td>CLAUDE.md, agents/**, commands/**, hooks/**, /** — core team only.</td></tr>
+            <tr><td class="capability-cell">Destructive Bash</td><td><code>rm -rf</code>, <code>git reset --hard</code>, <code>git clean -f</code>, <code>git push --force</code>, <code>branch -D</code>.</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:16px;">
+          <div class="chip" style="margin-bottom:10px;">Hook Enforcement</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:.82rem;color:#354a5f;">
+            <div><strong style="color:#002a86;">protect-git-push.sh</strong> — PreToolUse hook blocks every <code>git push</code> command regardless of prefix or chaining.</div>
+            <div><strong style="color:#002a86;">protect-core-files.sh</strong> — PreToolUse hook blocks Write/Edit on protected paths for non-core team members.</div>
+            <div><strong style="color:#002a86;">git-sync-check.sh</strong> — UserPromptSubmit hook checks if local repo is behind origin before every prompt.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture Overview  <!-- Architecture Overview  <!-- Architecture Overview -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Architecture Overview<a class="section-anchor" href="#architecture-overview" title="Link to this section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 900 1020" style="width:100%;display:block;" font-family="Arial, sans-serif" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ── ARROWS (draw first) ── -->
+
+  <!-- git push: Core Team → Git Repo  x=240, going down -->
+  <line x1="240" y1="230" x2="240" y2="320" stroke="#0070f2" stroke-width="2"/>
+  <polygon points="235,316 240,326 245,316" fill="#0070f2"/>
+
+  <!-- file edits: Git Repo → Core Team  x=660, going up  dashed -->
+  <line x1="660" y1="325" x2="660" y2="235" stroke="#0070f2" stroke-width="2" stroke-dasharray="5,3"/>
+  <polygon points="655,239 660,229 665,239" fill="#0070f2"/>
+
+  <!-- auto-sync: Git Repo → Wider Team  x=450, going down -->
+  <line x1="450" y1="705" x2="450" y2="783" stroke="#27a05e" stroke-width="2"/>
+  <polygon points="445,779 450,789 455,779" fill="#27a05e"/>
+
+  <!-- ── GATE PILLS (draw on top) ── -->
+
+  <!-- protect-git-push.sh  on git push arrow  centred x=240 -->
+  <text x="240" y="254" text-anchor="middle" font-size="10" font-weight="700" fill="#0040b0">git push</text>
+  <rect x="145" y="260" width="190" height="26" rx="13" fill="#f0f7ff" stroke="#0070f2" stroke-width="1.4"/>
+  <text x="240" y="277" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#0040b0" font-family="monospace">protect-git-push.sh</text>
+
+  <!-- protect-core-files.sh  on file edits arrow  centred x=660 -->
+  <text x="660" y="254" text-anchor="middle" font-size="10" font-weight="700" fill="#0040b0">file edits</text>
+  <rect x="560" y="260" width="200" height="26" rx="13" fill="#f0f7ff" stroke="#0070f2" stroke-width="1.4"/>
+  <text x="660" y="277" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#0040b0" font-family="monospace">protect-core-files.sh</text>
+
+  <!-- git-sync-check.sh  on auto-sync arrow  centred x=450 -->
+  <text x="450" y="727" text-anchor="middle" font-size="10" font-weight="700" fill="#27a05e">auto-sync</text>
+  <rect x="350" y="733" width="200" height="26" rx="13" fill="#f5fff8" stroke="#27a05e" stroke-width="1.4"/>
+  <text x="450" y="750" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#27a05e" font-family="monospace">git-sync-check.sh</text>
+
+  <!-- ======================================================
+       NODE 1 — CORE INTELLIGENCE TEAM   x=10  y=10  w=880  h=220
+  ====================================================== -->
+  <rect x="10" y="10" width="880" height="220" rx="10" fill="#fff" stroke="#0057d2" stroke-width="2"/>
+  <rect x="10" y="10" width="880" height="46" rx="10" fill="#002a86"/>
+  <rect x="10" y="42" width="880" height="14" fill="#002a86"/>
+  <text x="450" y="37" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff" letter-spacing="0.03em">Core Intelligence Team</text>
+
+  <!-- LEFT COLUMN (x=20–440): CORE_TEAM pill + members -->
+  <rect x="24" y="66" width="220" height="26" rx="13" fill="#ebf8ff" stroke="#0070f2" stroke-width="1.3"/>
+  <text x="134" y="83" text-anchor="middle" font-size="10" font-weight="bold" fill="#0040b0" font-family="monospace">CORE_TEAM = 1</text>
+
+  <rect x="20" y="102" width="3" height="12" rx="1.5" fill="#002a86"/>
+  <text x="28" y="113" font-size="9" font-weight="bold" fill="#5b738b" letter-spacing="0.08em">MEMBERS</text>
+  <text x="24" y="131" font-size="10" fill="#354a5f"><tspan font-weight="700" fill="#12171c">Thomas Zwerg</tspan>  · C5199126</text>
+  <text x="24" y="149" font-size="10" fill="#354a5f"><tspan font-weight="700" fill="#12171c">Maren Autich</tspan>  · <YOUR-USERNAME></text>
+  <text x="24" y="167" font-size="10" fill="#354a5f"><tspan font-weight="700" fill="#12171c">Paul Voigt</tspan>  · C5409787</text>
+  <text x="24" y="185" font-size="10" fill="#354a5f"><tspan font-weight="700" fill="#12171c"><YOUR-NAME></tspan>  · <YOUR-C-NUMBER></text>
+  <text x="24" y="203" font-size="10" fill="#354a5f"><tspan font-weight="700" fill="#12171c">Fedai Albayrak</tspan>  · C5356117</text>
+
+  <!-- VERTICAL DIVIDER between columns -->
+  <line x1="455" y1="66" x2="455" y2="220" stroke="rgba(0,112,242,0.12)" stroke-width="1"/>
+
+  <!-- RIGHT COLUMN (x=470–880): PERMISSIONS + settings.local.json -->
+  <rect x="466" y="66" width="3" height="12" rx="1.5" fill="#002a86"/>
+  <text x="474" y="77" font-size="9" font-weight="bold" fill="#5b738b" letter-spacing="0.08em">PERMISSIONS</text>
+
+  <circle cx="478" cy="97" r="10" fill="#e8f5ec"/>
+  <text x="478" y="101" text-anchor="middle" font-size="12" fill="#188918">&#x2713;</text>
+  <text x="494" y="101" font-size="10.5" fill="#354a5f">Edit protected files</text>
+
+  <circle cx="478" cy="121" r="10" fill="#e8f5ec"/>
+  <text x="478" y="125" text-anchor="middle" font-size="12" fill="#188918">&#x2713;</text>
+  <text x="494" y="125" font-size="10.5" fill="#354a5f">git push via Claude Code</text>
+
+  <circle cx="478" cy="145" r="10" fill="#e8f5ec"/>
+  <text x="478" y="149" text-anchor="middle" font-size="12" fill="#188918">&#x2713;</text>
+  <text x="494" y="149" font-size="10.5" fill="#354a5f">Full agent &amp; command access</text>
+
+  <line x1="470" y1="163" x2="876" y2="163" stroke="rgba(0,112,242,0.10)" stroke-width="1"/>
+  <rect x="470" y="172" width="396" height="42" rx="7" fill="#fff8d6" stroke="rgba(255,179,0,0.4)" stroke-width="1.2"/>
+  <text x="668" y="189" text-anchor="middle" font-size="9" font-weight="bold" fill="#c35500" letter-spacing="0.06em">LOCAL ONLY — gitignored</text>
+  <text x="668" y="205" text-anchor="middle" font-size="10" fill="#6d4000" font-family="monospace">settings.local.json</text>
+
+  <!-- ======================================================
+       NODE 2 — GIT REPO   x=10  y=325  w=880  h=380
+  ====================================================== -->
+  <rect x="10" y="325" width="880" height="380" rx="10" fill="#fff" stroke="#354a5f" stroke-width="2.5"/>
+  <rect x="10" y="325" width="880" height="50" rx="10" fill="#12171c"/>
+  <rect x="10" y="360" width="880" height="15" fill="#12171c"/>
+  <text x="450" y="352" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff" letter-spacing="0.03em">Central Git Repository</text>
+  <text x="450" y="369" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-family="monospace">github.<YOUR-DOMAIN>//Claude</text>
+
+  <!-- LEFT COLUMN (x=20–440): Hooks + Protected Files -->
+  <rect x="20" y="386" width="3" height="12" rx="1.5" fill="#002a86"/>
+  <text x="28" y="397" font-size="9" font-weight="bold" fill="#5b738b" letter-spacing="0.08em">PROTECTION HOOKS</text>
+
+  <rect x="22" y="405" width="170" height="24" rx="12" fill="#f0f7ff" stroke="#0070f2" stroke-width="1"/>
+  <text x="107" y="421" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#0040b0" font-family="monospace">protect-core-files.sh</text>
+  <rect x="200" y="405" width="160" height="24" rx="12" fill="#f0f7ff" stroke="#0070f2" stroke-width="1"/>
+  <text x="280" y="421" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#0040b0" font-family="monospace">protect-git-push.sh</text>
+  <rect x="22" y="435" width="148" height="24" rx="12" fill="#f5fff8" stroke="#27a05e" stroke-width="1"/>
+  <text x="96" y="451" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#27a05e" font-family="monospace">git-sync-check.sh</text>
+
+  <line x1="20" y1="469" x2="440" y2="469" stroke="rgba(0,112,242,0.12)" stroke-width="1"/>
+
+  <rect x="20" y="477" width="3" height="12" rx="1.5" fill="#002a86"/>
+  <text x="28" y="488" font-size="9" font-weight="bold" fill="#5b738b" letter-spacing="0.08em">PROTECTED FILES</text>
+  <text x="24" y="507" font-size="9.5" font-family="monospace" fill="#354a5f">CLAUDE.md · README.md · ONBOARDING.md</text>
+  <text x="24" y="524" font-size="9.5" font-family="monospace" fill="#354a5f">.claude/agents/**  ·  .claude/commands/**</text>
+  <text x="24" y="541" font-size="9.5" font-family="monospace" fill="#354a5f">.claude/hooks/**  ·  .claude/settings.json</text>
+  <text x="24" y="558" font-size="9.5" font-family="monospace" fill="#354a5f">/**</text>
+
+  <!-- VERTICAL DIVIDER -->
+  <line x1="455" y1="386" x2="455" y2="690" stroke="rgba(0,112,242,0.12)" stroke-width="1"/>
+
+  <!-- RIGHT COLUMN (x=470–880): Knowledge -->
+  <rect x="466" y="386" width="3" height="12" rx="1.5" fill="#002a86"/>
+  <text x="474" y="397" font-size="9" font-weight="bold" fill="#5b738b" letter-spacing="0.08em">KNOWLEDGE</text>
+
+  <circle cx="480" cy="416" r="5" fill="#0070f2"/>
+  <text x="491" y="420" font-size="10.5" fill="#354a5f">13 Specialist Agents</text>
+  <circle cx="480" cy="438" r="5" fill="#0040b0"/>
+  <text x="491" y="442" font-size="10.5" fill="#354a5f">8 Slash Commands</text>
+  <circle cx="480" cy="460" r="5" fill="#4db1ff"/>
+  <text x="491" y="464" font-size="10.5" fill="#354a5f">Program Context — PI, releases, workstreams</text>
+  <circle cx="480" cy="482" r="5" fill="#188918"/>
+  <text x="491" y="486" font-size="10.5" fill="#354a5f">SAP Jira MCP Integration</text>
+  <circle cx="480" cy="504" r="5" fill="#4db1ff"/>
+  <text x="491" y="508" font-size="10.5" fill="#354a5f">System Landscape &amp; Jira Conventions</text>
+
+  <!-- Footer row across full width -->
+  <line x1="20" y1="580" x2="876" y2="580" stroke="rgba(0,112,242,0.12)" stroke-width="1"/>
+  <text x="450" y="597" text-anchor="middle" font-size="9.5" fill="#8ea4b8">Single source of truth — distributed via git · auto-synced on every Claude Code session start</text>
+
+  <!-- ======================================================
+       NODE 3 — TEAM   x=10  y=790  w=880  h=215
+  ====================================================== -->
+  <rect x="10" y="790" width="880" height="215" rx="10" fill="#fff" stroke="#8ea4b8" stroke-width="1.8"/>
+  <rect x="10" y="790" width="880" height="46" rx="10" fill="#556475"/>
+  <rect x="10" y="822" width="880" height="14" fill="#556475"/>
+  <text x="450" y="817" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff" letter-spacing="0.03em">Team</text>
+
+  <!-- LEFT COLUMN (x=20–440): no-variable pill + CAN DO -->
+  <rect x="24" y="854" width="250" height="26" rx="13" fill="#fff" stroke="#8ea4b8" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <text x="149" y="871" text-anchor="middle" font-size="9.5" fill="#556475" font-family="monospace">no CORE_TEAM variable</text>
+
+  <line x1="20" y1="890" x2="440" y2="890" stroke="rgba(0,112,242,0.10)" stroke-width="1"/>
+
+  <rect x="20" y="898" width="3" height="11" rx="1.5" fill="#188918"/>
+  <text x="28" y="908" font-size="9" font-weight="bold" fill="#188918" letter-spacing="0.07em">CAN DO</text>
+  <circle cx="28" cy="924" r="4" fill="#188918"/>
+  <text x="38" y="928" font-size="10.5" fill="#354a5f">Use all 13 agents</text>
+  <circle cx="28" cy="944" r="4" fill="#188918"/>
+  <text x="38" y="948" font-size="10.5" fill="#354a5f">Run all 8 commands</text>
+  <circle cx="28" cy="964" r="4" fill="#188918"/>
+  <text x="38" y="968" font-size="10.5" fill="#354a5f">SAP Jira MCP queries · Always auto-synced</text>
+
+  <!-- VERTICAL DIVIDER -->
+  <line x1="455" y1="848" x2="455" y2="995" stroke="rgba(0,112,242,0.12)" stroke-width="1"/>
+
+  <!-- RIGHT COLUMN (x=470–880): BLOCKED + change request -->
+  <rect x="466" y="854" width="3" height="11" rx="1.5" fill="#e03939"/>
+  <text x="474" y="864" font-size="9" font-weight="bold" fill="#e03939" letter-spacing="0.07em">BLOCKED</text>
+
+  <circle cx="478" cy="882" r="10" fill="#fdeaea"/>
+  <text x="478" y="886" text-anchor="middle" font-size="12" fill="#e03939">&#x2717;</text>
+  <text x="494" y="886" font-size="10.5" fill="#354a5f">Edit protected files</text>
+
+  <circle cx="478" cy="908" r="10" fill="#fdeaea"/>
+  <text x="478" y="912" text-anchor="middle" font-size="12" fill="#e03939">&#x2717;</text>
+  <text x="494" y="912" font-size="10.5" fill="#354a5f">git push via Claude Code</text>
+
+  <line x1="466" y1="928" x2="876" y2="928" stroke="rgba(0,112,242,0.10)" stroke-width="1"/>
+
+  <rect x="466" y="937" width="400" height="54" rx="8" fill="#fff8d6" stroke="rgba(255,179,0,0.4)" stroke-width="1.2"/>
+  <text x="666" y="957" text-anchor="middle" font-size="9" font-weight="bold" fill="#c35500" letter-spacing="0.05em">CHANGE REQUEST</text>
+  <text x="666" y="973" text-anchor="middle" font-size="10" fill="#6d4000">Use <tspan font-weight="bold" fill="#0040b0" font-family="monospace">/_tech-request</tspan> to submit a change request</text>
+
+</svg>
+    </div>
+  </div>
+
+  <!-- ── Three-layer architecture ── -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Three-Layer Architecture<a class="section-anchor" href="#three-layer" title="Link to this section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></p>
+    </div>
+
+    <!-- Layer 1: Core Team -->
+    <div class="arch-diagram">
+      <div class="layer-card layer-card--core" style="border-radius:12px;">
+        <div class="layer-card__head">
+          <div class="layer-card__head-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="7" r="3.5" stroke="white" stroke-width="1.5"/>
+              <path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="layer-card__head-title">Layer 1 — Core Intelligence Team</div>
+            <div class="layer-card__head-sub">Write authority — protected file edits &amp; git push</div>
+          </div>
+          <span class="status-pill status-pill--allow" style="margin-left:auto;">Write Access</span>
+        </div>
+        <div class="layer-card__body">
+          <div class="chip">Team Members</div>
+          <div class="member-list">
+            <div class="member-pill">
+              <div class="member-avatar" style="background:#0070f2;">TZ</div>
+              <span class="member-name">Thomas Zwerg</span>
+              <span class="member-role">C5199126 · Overall Lead + SolMgmt</span>
+            </div>
+            <div class="member-pill">
+              <div class="member-avatar" style="background:#0057d2;">MA</div>
+              <span class="member-name">Maren Autich</span>
+              <span class="member-role"><YOUR-USERNAME> · Delivery Lead</span>
+            </div>
+            <div class="member-pill">
+              <div class="member-avatar" style="background:#1b90ff;">PV</div>
+              <span class="member-name">Paul Voigt</span>
+              <span class="member-role">C5409787 · Delivery</span>
+            </div>
+            <div class="member-pill">
+              <div class="member-avatar" style="background:#4db1ff; color:#0040b0;">SH</div>
+              <span class="member-name"><YOUR-NAME></span>
+              <span class="member-role"><YOUR-C-NUMBER> · Solution Management</span>
+            </div>
+            <div class="member-pill">
+              <div class="member-avatar" style="background:#89d1ff; color:#0040b0;">FA</div>
+              <span class="member-name">Fedai Albayrak</span>
+              <span class="member-role">C5356117 · Testing</span>
+            </div>
+          </div>
+
+          <div class="section-sep"></div>
+
+          <div class="chip">Core Intelligence Team Permissions</div>
+          <div class="perm-list">
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--allow">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M2 5.5l2.5 2.5L9 3" stroke="#188918" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="perm-text">
+                <strong>CORE_TEAM=1</strong> set in <code style="font-family:monospace;font-size:.72rem;background:#f5f6f7;padding:1px 5px;border-radius:3px;color:#0040b0;">settings.local.json</code> — this environment variable unlocks both protection hooks
+              </div>
+            </div>
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--allow">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M2 5.5l2.5 2.5L9 3" stroke="#188918" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="perm-text">Can <strong>edit protected workspace files</strong> (CLAUDE.md, agents, commands, hooks, settings.json, /**)</div>
+            </div>
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--allow">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M2 5.5l2.5 2.5L9 3" stroke="#188918" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="perm-text">Can run <strong>git push</strong> via Claude Code — changes flow through repo owner (C5199126) to GitHub</div>
+            </div>
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--allow">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M2 5.5l2.5 2.5L9 3" stroke="#188918" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="perm-text">Full access to all <strong>agents, commands, Jira MCP</strong> — identical to Team plus write authority</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector: Core -> Repo -->
+      <div class="arch-connector" style="height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; position:relative;">
+        <div style="width:2px;flex:1;background:linear-gradient(to bottom,#0070f2,#002a86);"></div>
+        <div style="position:absolute;left:50%;transform:translateX(-50%);background:#f5f6f7;padding:0 12px;">
+          <span style="font-size:.62rem;font-weight:700;color:#0040b0;background:#ebf8ff;border:1px solid #a6e0ff;border-radius:20px;padding:3px 10px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;">git push · protected by hook</span>
+        </div>
+        <div style="width:2px;flex:1;background:linear-gradient(to bottom,#002a86,#002a86);"></div>
+      </div>
+
+      <!-- Layer 2: Git Repository -->
+      <div class="layer-card layer-card--repo" style="border-radius:12px;">
+        <div class="layer-card__head">
+          <div class="layer-card__head-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="5" cy="5" r="2" stroke="white" stroke-width="1.4"/>
+              <circle cx="15" cy="5" r="2" stroke="white" stroke-width="1.4"/>
+              <circle cx="5" cy="15" r="2" stroke="white" stroke-width="1.4"/>
+              <circle cx="15" cy="15" r="2" stroke="white" stroke-width="1.4"/>
+              <path d="M5 7v6M7 5h6M7 15h6M15 7v6" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="layer-card__head-title">Layer 2 — Central Git Repository</div>
+            <div class="layer-card__head-sub">github.<YOUR-DOMAIN>//Claude — single source of truth</div>
+          </div>
+          <span class="status-pill" style="margin-left:auto;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);font-size:.6rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:20px;padding:2px 8px;">Hub</span>
+        </div>
+        <div class="layer-card__body">
+
+          <div class="chip">Protection Hooks</div>
+          <div class="hook-grid">
+            <div class="hook-card hook-card--gate">
+              <div class="hook-card__name">File Edit Gate</div>
+              <div class="hook-card__file">protect-core-files.sh</div>
+              <div class="hook-card__desc">Intercepts any attempt to edit a protected file path. Checks <code style="font-family:monospace;font-size:.67rem;background:#fff;padding:1px 4px;border-radius:3px;color:#0040b0;">CORE_TEAM=1</code> — blocks with a clear error message if not set.</div>
+            </div>
+            <div class="hook-card hook-card--push">
+              <div class="hook-card__name">Push Gate</div>
+              <div class="hook-card__file">protect-git-push.sh</div>
+              <div class="hook-card__desc">Intercepts all <code style="font-family:monospace;font-size:.67rem;background:#fff;padding:1px 4px;border-radius:3px;color:#0040b0;">git push</code> commands via Claude Code. Checks <code style="font-family:monospace;font-size:.67rem;background:#fff;padding:1px 4px;border-radius:3px;color:#0040b0;">CORE_TEAM=1</code> — blocks and redirects non-core members to repo owner.</div>
+            </div>
+            <div class="hook-card hook-card--sync">
+              <div class="hook-card__name">Auto Sync</div>
+              <div class="hook-card__file">git-sync-check.sh</div>
+              <div class="hook-card__desc">Runs <code style="font-family:monospace;font-size:.67rem;background:#fff;padding:1px 4px;border-radius:3px;color:#188918;">git pull --ff-only</code> on every session start. Ensures all team members are always on the latest version with no manual action.</div>
+            </div>
+          </div>
+
+          <div class="section-sep"></div>
+
+          <div class="chip">Protected Files</div>
+          <div class="protected-grid">
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">CLAUDE.md</span>
+            </div>
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">README.md</span>
+            </div>
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">ONBOARDING.md</span>
+            </div>
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">.claude/agents/**</span>
+            </div>
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">.claude/commands/**</span>
+            </div>
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">.claude/hooks/**</span>
+            </div>
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">.claude/settings.json</span>
+            </div>
+            <div class="pf-item">
+              <svg class="pf-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="5" width="12" height="8" rx="1.5" stroke="#0040b0" stroke-width="1.2"/>
+                <path d="M4 5V4a3 3 0 016 0v1" stroke="#0040b0" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span class="pf-path">/**</span>
+            </div>
+          </div>
+
+          <div class="section-sep"></div>
+
+          <div class="chip">Knowledge Catalog</div>
+          <div class="knowledge-cols">
+            <div class="k-block">
+              <div class="k-block__label">Specialist Agents (13)</div>
+              <div class="k-items">
+                <div class="k-item"><div class="k-dot"></div>orchestrator, solution-manager, STE</div>
+                <div class="k-item"><div class="k-dot"></div>delivery-lead, program-manager</div>
+                <div class="k-item"><div class="k-dot"></div>risk-manager, workstream-lead</div>
+                <div class="k-item"><div class="k-dot"></div>cpit-lead, solution-architect</div>
+                <div class="k-item"><div class="k-dot"></div>devit, sales-cloud-v2</div>
+                <div class="k-item"><div class="k-dot"></div>testing, html-report</div>
+              </div>
+            </div>
+            <div class="k-block">
+              <div class="k-block__label">Slash Commands (7)</div>
+              <div class="k-items">
+                <div class="k-item"><div class="k-dot k-dot--cmd"></div>/-status</div>
+                <div class="k-item"><div class="k-dot k-dot--cmd"></div>/-capability-check</div>
+                <div class="k-item"><div class="k-dot k-dot--cmd"></div>/-feature-check</div>
+                <div class="k-item"><div class="k-dot k-dot--cmd"></div>/-bug-query</div>
+                <div class="k-item"><div class="k-dot k-dot--cmd"></div>/-kdd-guidance</div>
+                <div class="k-item"><div class="k-dot k-dot--cmd"></div>/-test-report, /_tech-update, /_tech-request</div>
+              </div>
+            </div>
+            <div class="k-block">
+              <div class="k-block__label">Program Context</div>
+              <div class="k-items">
+                <div class="k-item"><div class="k-dot k-dot--ctx"></div>PI26/2 (active) · PI26/3 (next)</div>
+                <div class="k-item"><div class="k-dot k-dot--ctx"></div>Release RD05.2026 · FD codes</div>
+                <div class="k-item"><div class="k-dot k-dot--ctx"></div>7 workstreams · system landscape</div>
+                <div class="k-item"><div class="k-dot k-dot--ctx"></div>Jira conventions · hierarchy</div>
+              </div>
+            </div>
+            <div class="k-block">
+              <div class="k-block__label">Integrations</div>
+              <div class="k-items">
+                <div class="k-item"><div class="k-dot k-dot--mcp"></div>SAP Jira MCP (sap-jira server)</div>
+                <div class="k-item"><div class="k-dot k-dot--mcp"></div>Knowledge Base HTML (/)</div>
+                <div class="k-item"><div class="k-dot k-dot--mcp"></div>SP / YOUR_JIRA_PROJECT /TEST projects</div>
+                <div class="k-item"><div class="k-dot k-dot--mcp"></div>KDD / BITFRCEC / BITFRFIN</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector: Repo -> Wider -->
+      <div style="height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; position:relative;">
+        <div style="width:2px;flex:1;background:linear-gradient(to bottom,#002a86,#4db1ff);"></div>
+        <div style="position:absolute;left:50%;transform:translateX(-50%);background:#f5f6f7;padding:0 12px;">
+          <span style="font-size:.62rem;font-weight:700;color:#0040b0;background:#ebf8ff;border:1px solid #a6e0ff;border-radius:20px;padding:3px 10px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;">git pull (auto-sync on every prompt)</span>
+        </div>
+        <div style="width:2px;flex:1;background:linear-gradient(to bottom,#4db1ff,#d5dadd);"></div>
+      </div>
+
+      <!-- Layer 3: Wider Team -->
+      <div class="layer-card layer-card--wider" style="border-radius:12px;">
+        <div class="layer-card__head">
+          <div class="layer-card__head-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="7" cy="7" r="2.5" stroke="#475e75" stroke-width="1.4"/>
+              <circle cx="13" cy="7" r="2.5" stroke="#475e75" stroke-width="1.4"/>
+              <path d="M2 17c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="#475e75" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M13 12c1.7.5 3 2.2 3 4.5" stroke="#475e75" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="layer-card__head-title">Layer 3 — Team</div>
+            <div class="layer-card__head-sub">All other program members — read-only, auto-synced</div>
+          </div>
+          <span class="status-pill status-pill--deny" style="margin-left:auto;">Read Only</span>
+        </div>
+        <div class="layer-card__body">
+          <div class="chip">Access Rules</div>
+          <div class="perm-list">
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--deny">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M2.5 2.5l6 6M8.5 2.5l-6 6" stroke="#aa0808" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="perm-text"><strong>No CORE_TEAM variable</strong> — protected file edits and git push are blocked automatically by the hooks</div>
+            </div>
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--deny">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M2.5 2.5l6 6M8.5 2.5l-6 6" stroke="#aa0808" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="perm-text">Any attempt to edit a protected file returns a <strong>clear error message</strong> directing the user to raise a change request with the repo owner (C5199126)</div>
+            </div>
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--info">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <circle cx="5.5" cy="5.5" r="4" stroke="#0040b0" stroke-width="1.2"/>
+                  <path d="M5.5 5v3" stroke="#0040b0" stroke-width="1.4" stroke-linecap="round"/>
+                  <circle cx="5.5" cy="3.5" r=".7" fill="#0040b0"/>
+                </svg>
+              </div>
+              <div class="perm-text"><strong>Auto-sync applies equally</strong> — git-sync-check.sh runs on every prompt, keeping every team member on the latest version</div>
+            </div>
+            <div class="perm-item">
+              <div class="perm-icon perm-icon--allow">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M2 5.5l2.5 2.5L9 3" stroke="#188918" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="perm-text"><strong>Full use of all agents, commands, and Jira MCP</strong> — all 13 specialist agents and 8 slash commands are available</div>
+            </div>
+          </div>
+
+          <div class="section-sep"></div>
+
+          <div class="chip">Available Capabilities</div>
+          <div class="cap-grid">
+            <div class="cap-item">
+              <div class="cap-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6.5" stroke="#0070f2" stroke-width="1.3"/>
+                  <path d="M5 8l2 2 4-4" stroke="#0070f2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="cap-text">
+                <div class="cap-name">13 Specialist Agents</div>
+                <div class="cap-desc">Orchestrator routes queries to Solution Manager, Delivery Lead, STE, Risk Manager, and more</div>
+              </div>
+            </div>
+            <div class="cap-item">
+              <div class="cap-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" stroke="#0070f2" stroke-width="1.3"/>
+                  <path d="M5 6.5h6M5 9.5h4" stroke="#0070f2" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="cap-text">
+                <div class="cap-name">8 Slash Commands</div>
+                <div class="cap-desc">Quick program snapshots, capability/feature DoR checks, bug queries, test reports</div>
+              </div>
+            </div>
+            <div class="cap-item">
+              <div class="cap-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="1.5" width="9" height="11" rx="1.5" stroke="#0070f2" stroke-width="1.3"/>
+                  <path d="M4.5 5.5h4M4.5 8h4M4.5 10.5h2" stroke="#0070f2" stroke-width="1.3" stroke-linecap="round"/>
+                  <circle cx="12" cy="11.5" r="2.5" fill="#ebf8ff" stroke="#0070f2" stroke-width="1.3"/>
+                  <path d="M11 11.5l.8.8L13.5 10" stroke="#0070f2" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="cap-text">
+                <div class="cap-name">SAP Jira MCP</div>
+                <div class="cap-desc">Pre-configured sap-jira MCP server for live Jira queries across SP, YOUR_JIRA_PROJECT,TEST</div>
+              </div>
+            </div>
+            <div class="cap-item">
+              <div class="cap-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1.5v13M1.5 8h13" stroke="#0070f2" stroke-width="1.3" stroke-linecap="round"/>
+                  <circle cx="8" cy="8" r="5.5" stroke="#0070f2" stroke-width="1.3"/>
+                </svg>
+              </div>
+              <div class="cap-text">
+                <div class="cap-name">Program Context</div>
+                <div class="cap-desc">PI schedule, releases, workstreams, system landscape, Jira naming conventions via CLAUDE.md</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How Protection Works -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">How Protection Works<a class="section-anchor" href="#protection" title="Link to this section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></p>
+    </div>
+
+    <div class="two-col">
+
+      <!-- Left: Decision Flow -->
+      <div class="col-panel">
+        <div class="chip">Decision flow</div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <span class="flow-title">Claude Code attempts a file edit or git push</span>
+              <span class="flow-desc">Any write to a protected file or git push command triggers a PreToolUse hook.</span>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <span class="flow-title">PreToolUse hook fires</span>
+              <span class="flow-desc"><code>protect-core-files.sh</code> (file edits) or <code>protect-git-push.sh</code> (git push) is invoked automatically by the harness.</span>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <span class="flow-title">Hook reads CORE_TEAM environment variable</span>
+              <span class="flow-desc">The hook checks whether <code>CORE_TEAM</code> is set in the session environment.</span>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num allow">4</div>
+            <div class="flow-body">
+              <span class="flow-title">If = "1" &rarr; action allowed (core team)</span>
+              <span class="flow-desc">The hook exits with code 0 and Claude Code proceeds with the action.</span>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num block">5</div>
+            <div class="flow-body">
+              <span class="flow-title">If not set &rarr; action blocked</span>
+              <span class="flow-desc">Hook exits with a non-zero code and prints a message directing the user to raise a change request with <code>C5199126</code>.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Setup -->
+      <div class="col-panel col-panel--dark">
+        <div class="setup-title">Core Intelligence Team Setup</div>
+        <div class="setup-sub">Add to <code style="font-size:.7rem;color:#89d1ff;background:rgba(137,209,255,.1);padding:1px 4px;border-radius:3px;">.claude/settings.local.json</code></div>
+        <div class="code-block"><span class="c-brace">{</span>
+  <span class="c-key">"env"</span><span class="c-brace">:</span> <span class="c-brace">{</span>
+    <span class="c-key">"CORE_TEAM"</span><span class="c-brace">:</span> <span class="c-str">"1"</span>
+  <span class="c-brace">}</span>
+<span class="c-brace">}</span></div>
+        <div class="note-pill">&#9888; Gitignored — stays local, never committed</div>
+        <p class="note-text" style="color:#8ea4b8;margin-top:14px;">
+          <strong style="color:#d1efff;">Team members:</strong> no action needed. Simply clone the repository and start using Claude Code. All agents, commands, and Jira MCP queries are fully available without any additional setup.
+        </p>
+        <p class="note-text" style="color:#8ea4b8;margin-top:10px;">
+          <strong style="color:#d1efff;">Auto-sync hook:</strong> <span style="font-family:monospace;font-size:.7rem;color:#89d1ff;">git-sync-check.sh</span> runs on every prompt — Team auto-pulls; Core Intelligence Team receives an informational question before pulling.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Access Reference Table -->
+  <div class="section-card">
+    <div class="section-card__header">
+      <p class="section-card__label">Access Reference<a class="section-anchor" href="#access-reference" title="Link to this section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></p>
+    </div>
+
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th style="width:38%;">Capability</th>
+          <th style="width:16%;">Core Intel. Team</th>
+          <th style="width:16%;">Team</th>
+          <th>Enforced By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="capability-cell">Edit protected workspace files</td>
+          <td><span class="badge badge-green">&#10003; Allowed</span></td>
+          <td><span class="badge badge-red">&#10007; Blocked</span></td>
+          <td><code class="enf-cell">protect-core-files.sh hook</code></td>
+        </tr>
+        <tr>
+          <td class="capability-cell">git push via Claude Code</td>
+          <td><span class="badge badge-green">&#10003; Allowed</span></td>
+          <td><span class="badge badge-red">&#10007; Blocked</span></td>
+          <td><code class="enf-cell">protect-git-push.sh hook</code></td>
+        </tr>
+        <tr>
+          <td class="capability-cell">Git sync check (every prompt)</td>
+          <td>
+            <span class="badge badge-grey">&#9432; Inform. only</span><br>
+            <span style="font-size:.64rem;color:#556475;line-height:1.6;">notified of new commits,<br>asked whether to pull</span>
+          </td>
+          <td>
+            <span class="badge badge-green">&#8595; Auto-pull</span><br>
+            <span style="font-size:.64rem;color:#256f3a;line-height:1.6;">enforced pull before<br>every prompt</span>
+          </td>
+          <td><code class="enf-cell">git-sync-check.sh hook</code></td>
+        </tr>
+        <tr>
+          <td class="capability-cell">Use specialist agents (13)</td>
+          <td><span class="badge badge-blue">&#10003; Always</span></td>
+          <td><span class="badge badge-blue">&#10003; Always</span></td>
+          <td><span class="badge badge-grey">&#8212;</span></td>
+        </tr>
+        <tr>
+          <td class="capability-cell">Run slash commands (7)</td>
+          <td><span class="badge badge-blue">&#10003; Always</span></td>
+          <td><span class="badge badge-blue">&#10003; Always</span></td>
+          <td><span class="badge badge-grey">&#8212;</span></td>
+        </tr>
+        <tr>
+          <td class="capability-cell">SAP Jira MCP queries</td>
+          <td><span class="badge badge-blue">&#10003; Always</span></td>
+          <td><span class="badge badge-blue">&#10003; Always</span></td>
+          <td><code class="enf-cell">sap-jira MCP server</code></td>
+        </tr>
+        <tr>
+          <td class="capability-cell">Modify settings.json directly</td>
+          <td><span class="badge badge-red">&#10007; Blocked</span></td>
+          <td><span class="badge badge-red">&#10007; Blocked</span></td>
+          <td><code class="enf-cell">permissions deny rule</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Program Intelligence Workspace &middot; PI26/3 &middot; Generated 02 Jun 2026 &middot; Maintained by C5199126
+  </div>
+
+</main>
+
+<script>
+let lastY = 0, upCount = 0;
+</script>
+</body>
+</html>

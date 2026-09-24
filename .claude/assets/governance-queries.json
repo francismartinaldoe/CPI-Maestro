@@ -1,0 +1,29 @@
+{
+  "_comment": "Fields trimmed to exactly what parse_art/parse_story consume. Removing created/updated saves payload on large result sets.",
+  "queries": {
+    "cpi_arts": {
+      "jql": "project = YOUR_JIRA_PROJECT AND issuetype = Feature AND labels = INT-CPI AND status not in (Obsolete) ORDER BY assignee ASC, fixVersion ASC, key ASC",
+      "fields": "summary,status,assignee,reporter,fixVersions,labels,components,creator,issuelinks,customfield_12740,customfield_10253,comment",
+      "page_size": 50,
+      "paginate": true
+    },
+    "stories": {
+      "jql": "project = YOUR_JIRA_PROJECT AND issuetype = Story AND labels = Interface_Build AND resolution = Unresolved ORDER BY key ASC",
+      "fields": "summary,status,assignee,reporter,fixVersions,labels,components,issuelinks,customfield_12740,customfield_10253,comment",
+      "page_size": 50,
+      "paginate": true
+    },
+    "stream_arts": {
+      "note": "Derived after cpi_arts fetch. Collect unique YOUR_JIRA_PROJECT keys from issuelinks where link type contains 'split' or 'relation' (case-insensitive) and linked key starts with YOUR_JIRA_PROJECT- and differs from the CPI ART's own key. Then fetch: project = YOUR_JIRA_PROJECT AND key in (<keys>)",
+      "fields": "summary,status,assignee,fixVersions,labels,components,issuelinks,customfield_12740,customfield_10253,comment",
+      "page_size": 50,
+      "paginate": true
+    },
+    "orphan_candidates": {
+      "jql": "project = YOUR_JIRA_PROJECT AND issuetype = Story AND resolution = Unresolved AND labels in (RICEFW, \"INT-CPI\", \"YOUR-TEAM-LABEL\", Interface_Build, IF_Type_CPI) ORDER BY created DESC",
+      "fields": "summary,status,assignee,reporter,fixVersions,labels,components,issuelinks,customfield_12740,customfield_10253,comment",
+      "page_size": 50,
+      "paginate": true
+    }
+  }
+}

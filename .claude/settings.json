@@ -1,0 +1,76 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git stash *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 -c \"import sys,json; data=json.loads\\(sys.stdin.read\\(\\)\\); result=json.loads\\(data['result']\\); [print\\(c['name']\\) for c in result if 'BRIM' in c['name'] or 'brim' in c['name'].lower\\(\\) or 'Convergent' in c['name'] or 'SOM' in c['name'] or 'CPS' in c['name']]\")",
+      "Bash(pip install *)",
+      "Bash(claude mcp *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://mcp.jira.<YOUR-DOMAIN>/mcp)",
+      "Bash(which gh *)",
+      "Bash(cmd.exe /c \"where gh\")",
+      "Bash(cmd.exe /c \"where gh.exe\")",
+      "Bash(cmd.exe /c \"winget --version\")",
+      "Bash(cmd.exe /c \"winget install --id GitHub.cli --accept-package-agreements --accept-source-agreements\")",
+      "mcp__sap-jira__jira_search",
+      "mcp__sap-jira__jira_search_fields",
+      "mcp__sap-jira__jira_get_issue",
+      "mcp__sap-jira__jira_get_project_components",
+      "mcp__sap-jira__jira_get_issue_dates",
+      "mcp__sap-jira__jira_get_transitions",
+      "mcp__sap-jira__jira_get_worklog",
+      "mcp__sap-jira__jira_get_issue_development_info",
+      "mcp__sap-jira__jira_get_issues_development_info",
+      "mcp__sap-jira__jira_get_issue_watchers",
+      "mcp__sap-jira__jira_get_link_types",
+      "mcp__sap-jira__jira_get_project_versions",
+      "mcp__sap-jira__jira_get_user_profile",
+      "mcp__sap-jira__jira_get_field_options",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)"
+    ],
+    "deny": [
+      "Write(.claude/settings.json)",
+      "Edit(.claude/settings.json)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/protect-core-files.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/protect-git-push.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/git-sync-check.sh"
+          }
+        ]
+      }
+    ]
+  }
+ 
+}

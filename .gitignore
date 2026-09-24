@@ -1,0 +1,49 @@
+# Environment — never commit secrets
+.env
+.env.local
+
+# MCP submodule — credentials and build output (never commit)
+mcp/.env*
+mcp/node_modules/
+mcp/dist/
+
+# Build output
+dist/
+*.js.map
+*.d.ts.map
+
+# Dependencies
+node_modules/
+agents/*/node_modules/
+agents/*/dist/
+
+# Agent audit logs — never commit
+logs/
+*.log
+/tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp Excel working directory
+node_xlsx_tmp/
+
+# Playwright MCP temp files — auto-generated, never commit
+.playwright-mcp/
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+cert_monitor_config.json
+scripts/rd0*.py
+scripts/rd0*.json
+scripts/rd0*.txt
+scripts/bp_iflows_dev.py
+scripts/gen_art1601_pptx.py
+scripts/gen_bp_*.py
+scripts/gen_iflow_cdc_sscv2.py
+scripts/goofy_drift_excel.py
+scripts/save_iflow_zip.py
+scripts/upload_iflow*.py
+scripts/data_cdc_*.json

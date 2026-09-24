@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# post-merge: runs after git pull
+# Ensures mcp/ submodule stays updated and rebuilt after every pull
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -z "$REPO_ROOT" ] && exit 0
+
+# Update submodule to latest
+git submodule update --init --recursive
+
+# Rebuild if source changed
+if [ -f "$REPO_ROOT/mcp/package.json" ]; then
+    cd "$REPO_ROOT/mcp"
+    # Check if source changed since last build
+    if [ ! -f "dist/index.js" ] || [ "$(find src -newer dist/index.js 2>/dev/null | head -1)" ]; then
+        echo "[maestro] Rebuilding CPI MCP server..."
+        npm install --silent && npm run build --silent
+        echo "[maestro] CPI MCP server updated."
+    fi
+fi

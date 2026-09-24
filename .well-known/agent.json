@@ -1,0 +1,114 @@
+{
+  "name": "CPIMAESTRO",
+  "version": "1.0.0",
+  "description": "SAP CPI Intelligence Hub — multi-agent platform for iFlow analysis, environment comparison, health monitoring, root cause analysis, architecture design, JIRA integration, and governance reporting.",
+  "url": "http://localhost:3000",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "authentication": {
+    "schemes": ["Bearer"]
+  },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "compare_iflow",
+      "name": "Compare iFlow across environments (MIRROR)",
+      "description": "Cross-tenant drift comparison for SAP CPI iFlows across DEV, TEST, and PROD. Evaluates 17 criteria including adapter configuration, security materials, sequence steps, externalized parameters, and deployed version. Returns a DRIFT / IN SYNC / INCOMPLETE verdict with field-level diff and promotion readiness assessment.",
+      "tags": ["sap-cpi", "iflow", "drift", "mirror", "comparison", "promotion", "devops"],
+      "examples": [
+        "Compare DEV vs TEST for iFlow DCCE_Order_Outbound",
+        "Is UpdateOpportunityInC4C ready to promote from DEV to PROD?"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "analyze_iflow",
+      "name": "Analyze and document an iFlow (FlowLens)",
+      "description": "AI-powered iFlow analysis across 11 modes: full structure explanation, Groovy script generation and simulation, XSLT generation, JIRA story context lookup, dependency map across ProcessDirect chains, batch quality scan, field mapping generation, and SAP catalog search. Supports DEV, TEST, and PROD tenants.",
+      "tags": ["sap-cpi", "iflow", "groovy", "xslt", "documentation", "analysis", "catalog"],
+      "examples": [
+        "Explain how DCCE_OrderConfirmation_Outbound works",
+        "Generate a Groovy script to log all message headers and body size"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "health_check",
+      "name": "GUARDIAN health spot-check",
+      "description": "Runs an 8-dimension GUARDIAN spot-check on a single iFlow: activation status, endpoint reachability, credential and keystore validity, value mapping completeness, smoke test, config parity, security replication, and log level. Works across DEV, TEST, and PROD. Blocks promotion to PROD on critical failures.",
+      "tags": ["sap-cpi", "health", "monitoring", "guardian", "spot-check", "certificates", "credentials"],
+      "examples": [
+        "Run a GUARDIAN health check on DCCE_S4_Invoice in PROD",
+        "Spot-check all iFlows deployed today in TEST"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "root_cause_analysis",
+      "name": "Root cause analysis for failed messages (Detective)",
+      "description": "Investigates CPI failed messages, error patterns, and trace data. Classifies root causes across 25 categories with retry intelligence. Provides remediation steps and environment-specific guardrails (no destructive operations in PROD without confirmation).",
+      "tags": ["sap-cpi", "debugging", "monitoring", "error-analysis", "rca", "failed-messages", "trace"],
+      "examples": [
+        "Why did DCCE_OrderConfirmation fail this morning?",
+        "Show all failed messages for the S4 adapter in DEV in the last 7 days"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "design_integration",
+      "name": "Design and generate a new iFlow (ArchFlow)",
+      "description": "Designs new SAP CPI integration patterns, generates iFlow ZIP packages ready for import into CPI Designer, searches the SAP Integration Suite catalog for pre-built content, and provides step-by-step CPI Designer click-by-click build instructions. Targets DEV only — never deploys without explicit confirmation.",
+      "tags": ["sap-cpi", "architecture", "design", "build", "iflow-creation", "sap-catalog"],
+      "examples": [
+        "Design an iFlow to sync S4 purchase orders to an external ERP via REST",
+        "Create a new iFlow skeleton for SFTP inbound with error alerting"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "generate_cutover_sheet",
+      "name": "Generate go-live cutover sheet (C3)",
+      "description": "Generates a 77-column Excel cutover sheet for SAP CPI go-live readiness. Integrates live CPI deployment data from all three tenants with JIRA story details, dependency map, authentication matrix, and a go/no-go assessment for the full delivery team.",
+      "tags": ["sap-cpi", "go-live", "cutover", "excel", "jira", "project-management", "c3"],
+      "examples": [
+        "Generate a cutover sheet for the S4HANA Phase 2 go-live",
+        "Create the C3 integration ownership sheet for our CPQ program"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "governance_report",
+      "name": "CPI ART governance report",
+      "description": "Runs a 13-section story compliance check against the team's DoR/DoD, generates ART governance workbooks with hierarchy trees, produces batch compliance audit reports across an entire PI increment, and scores each story with a field-level compliance checklist.",
+      "tags": ["sap-cpi", "governance", "compliance", "jira", "audit", "art", "pi-planning"],
+      "examples": [
+        "Check story YOUR_JIRA_PROJECT-1234 for governance compliance",
+        "Generate the full governance workbook for the Order Management stream"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "design_document",
+      "name": "Generate integration design document from JIRA story (Story2Design)",
+      "description": "Generates a polished PowerPoint integration design document directly from a JIRA story. Produces an 8-section markdown structure, Mermaid architecture diagram, field mapping tables, error handling flows, and applies the SAP Morning 2026 design system. Includes a mandatory Decision Gate before document generation.",
+      "tags": ["sap-cpi", "documentation", "powerpoint", "jira", "design-doc", "story2design"],
+      "examples": [
+        "Create a design document for JIRA story YOUR_JIRA_PROJECT-7490",
+        "Generate a PPTX for the DCCE Order Confirmation integration from the JIRA story"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "_readme": "SAP CPI Deployment Intelligence Agent — Ground Rules. Edit this file to control agent behaviour. Changes take effect on the next run.",
+
+  "interaction": {
+    "requireStartKeyword": false,
+    "startKeyword": "Start",
+    "runKeyword": "Run",
+    "editKeyword": "Edit",
+    "nextActions": ["Recheck", "New", "Baseline"],
+    "autoExecute": true,
+    "confirmBeforeRun": false,
+    "collectInputsConversationally": false,
+    "autonomousMode": true,
+    "silentExecution": true,
+    "neverAskMidFlow": true,
+    "neverExplainBeforeExecuting": true,
+    "presentResultsAfterCompletionOnly": true,
+    "startupMenu": true,
+    "alwaysShowStartupMenuFirst": true
+  },
+
+  "modes": {
+    "mode1": {
+      "name": "GUARDIAN",
+      "emoji": "🔵",
+      "description": "Single-environment spot-check (health, status, failures)"
+    },
+    "mode2": {
+      "name": "MIRROR",
+      "emoji": "🟣",
+      "description": "Cross-environment comparison (drift, parity, divergence)"
+    }
+  },
+
+  "triggerLogic": {
+    "caseA_iflowNameProvided": "skip discovery — run spot-check immediately on named iFlow",
+    "caseB_noNameProvided": "call get_todays_deployments → present list → wait for yes/no → run all on yes",
+    "todayFilterField": "DeployedOn",
+    "todayFilterMatchMode": "date-only",
+    "confirmationKeywords": ["yes", "y", "confirm", "proceed", "run all"],
+    "cancelKeywords": ["no", "n", "cancel", "stop", "skip"]
+  },
+
+  "defaults": {
+    "environment": "PROD",
+    "generatePptx": true,
+    "generateJson": true,
+    "smokeTestEnabled": true,
+    "skipBaselineIfMissing": true,
+    "certExpiryWarnDays": 30
+  },
+
+  "checks": {
+    "activationStatus":         { "enabled": true,  "failOnProd": true  },
+    "endpointReachability":     { "enabled": true,  "failOnProd": true  },
+    "credentialHealth":         { "enabled": true,  "failOnProd": true  },
+    "valueMappingCompleteness": { "enabled": true,  "failOnProd": false },
+    "smokeTest":                { "enabled": true,  "failOnProd": true,  "note": "Set enabled:false if iFlow endpoint requires custom auth" },
+    "configParity":             { "enabled": true,  "failOnProd": false, "note": "Skipped automatically when no baseline exists" },
+    "securityReplication":      { "enabled": true,  "failOnProd": true  },
+    "logLevel":                 { "enabled": true,  "failOnProd": false, "warnOnly": true }
+  },
+
+  "mirrorCriteria": {
+    "C1_iflowName":              { "enabled": true, "blocksPromotion": false },
+    "C2_iflowVersion":           { "enabled": true, "blocksPromotion": false },
+    "C3_runtimeStatus":          { "enabled": true, "blocksPromotion": true  },
+    "C4_deploymentTimestamp":    { "enabled": true, "blocksPromotion": false },
+    "C5_credentials":            { "enabled": true, "blocksPromotion": true  },
+    "C6_keystoreAliases":        { "enabled": true, "blocksPromotion": true  },
+    "C7_oauthConfigurations":    { "enabled": true, "blocksPromotion": true  },
+    "C8_endpointConfiguration":  { "enabled": true, "blocksPromotion": false },
+    "C9_adapterSettings":        { "enabled": true, "blocksPromotion": false },
+    "C10_valueMappings":         { "enabled": true, "blocksPromotion": true  },
+    "C11_packageMembership":     { "enabled": true, "blocksPromotion": false },
+    "C12_description":           { "enabled": true, "blocksPromotion": false },
+    "C13_externalizedParameters":{ "enabled": true, "blocksPromotion": false },
+    "C14_logLevel":              { "enabled": true, "blocksPromotion": false },
+    "C15_errorCount7d":          { "enabled": true, "blocksPromotion": false },
+    "C16_lastSuccessfulRun":     { "enabled": true, "blocksPromotion": false },
+    "C17_configurableParameters":{ "enabled": true, "blocksPromotion": false }
+  },
+
+  "escalation": {
+    "prodFailBlocksDeploy": true,
+    "warnNotifyChannel": "dev-channel",
+    "failNotifyChannel": "ops-channel",
+    "p1Threshold": "FAIL",
+    "rollbackOnSmokeTestFail": true
+  },
+
+  "reporting": {
+    "pptxOutputDir": "./reports/pptx",
+    "excelOutputDir": "./reports/excel",
+    "compassOutputDir": "./reports/compass",
+    "timestampFormat": "YYYYMMDD",
+    "fileNaming": {
+      "guardianSingle": "GUARDIAN_{ENV}_{IFLOW}_{DATE}.pptx",
+      "guardianBatch":  "GUARDIAN_{ENV}_BATCH_{DATE}.pptx",
+      "mirrorSingle":   "MIRROR_{SRC}_vs_{TGT}_{IFLOW}_{DATE}.pptx",
+      "mirrorBatch":    "MIRROR_{SRC}_vs_{TGT}_BATCH_{DATE}.pptx"
+    },
+    "includeRawDataInJson": false,
+    "maxReportAgeDays": 30
+  },
+
+  "outputFormat": {
+    "headerTemplate": "## 📊 {MODE} Report — {iflowName}",
+    "guardianColumns": ["#", "Check", "Status", "Detail", "Auto-Fix?", "Escalation"],
+    "mirrorColumns": ["#", "Criteria", "{SRC} Value", "{TGT} Value", "Status"],
+    "showSummaryLine": true,
+    "showGoLiveVerdict": true,
+    "showPromotionReadiness": true,
+    "showReportPaths": true,
+    "showNextActionsPrompt": true
+  },
+
+  "session": {
+    "retainContextAcrossCalls": true,
+    "rememberLastIflow": true,
+    "rememberLastPackage": true,
+    "rememberLastEnvironment": true,
+    "maxSessionRunHistory": 50
+  },
+
+  "search": {
+    "namMatchCaseInsensitive": true,
+    "filterToIntegrationFlowsOnly": true,
+    "maxSearchResults": 20,
+    "requireAtLeastOneCriterion": false
+  },
+
+  "smokeTest": {
+    "timeoutMs": 10000,
+    "expectedStatusCodes": [200, 201, 202],
+    "treat403AsSkip": true,
+    "note": "Set treat403AsSkip:true when endpoint requires caller-specific auth"
+  },
+
+  "display": {
+    "showRunIdInReport": true,
+    "showDeployedDateInReport": true,
+    "showEscalationColumn": true,
+    "showAutoFixColumn": true,
+    "truncateDetailAt": 80,
+    "statusIcons": {
+      "PASS": "✅",
+      "WARN": "⚠️",
+      "FAIL": "❌",
+      "SKIP": "⏭️"
+    },
+    "driftIcons": {
+      "MATCH": "✅ MATCH",
+      "DRIFT": "⚠️ DRIFT",
+      "MISSING": "❌ MISSING",
+      "EXTRA": "➕ EXTRA"
+    },
+    "mirrorDriftLabels": {
+      "inSync": "🟢 IN SYNC",
+      "drift": "🟡 DRIFT",
+      "incomplete": "🔴 INCOMPLETE"
+    }
+  }
+}

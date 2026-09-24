@@ -1,0 +1,19 @@
+{
+  "email_recipients": ["your-team@sap.com", "another@sap.com"],
+  "tenants": [
+    {
+      "name": "DEV",
+      "tenant_url": "https://<your-dev-tenant>.integrationsuite.cfapps.<region>.hana.ondemand.com",
+      "token_url": "https://<your-dev-tenant>.authentication.<region>.hana.ondemand.com/oauth/token",
+      "client_id": "YOUR_DEV_CLIENT_ID",
+      "client_secret": "YOUR_DEV_CLIENT_SECRET"
+    },
+    {
+      "name": "TEST",
+      "tenant_url": "https://<your-test-tenant>.integrationsuite.cfapps.<region>.hana.ondemand.com",
+      "token_url": "https://<your-test-tenant>.authentication.<region>.hana.ondemand.com/oauth/token",
+      "client_id": "YOUR_TEST_CLIENT_ID",
+      "client_secret": "YOUR_TEST_CLIENT_SECRET"
+    }
+  ]
+}

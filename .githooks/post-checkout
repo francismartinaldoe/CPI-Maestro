@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# post-checkout: runs after git clone or git checkout
+# Ensures mcp/ submodule is initialized, built, and credential placeholders exist
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -z "$REPO_ROOT" ] && exit 0
+
+# Initialize submodule if empty
+if [ ! -f "$REPO_ROOT/mcp/package.json" ]; then
+    echo "[maestro] Initializing mcp/ submodule..."
+    git submodule update --init --recursive
+fi
+
+# Build if dist/index.js missing
+if [ ! -f "$REPO_ROOT/mcp/dist/index.js" ]; then
+    echo "[maestro] Building CPI MCP server..."
+    cd "$REPO_ROOT/mcp" && npm install --silent && npm run build --silent
+    echo "[maestro] CPI MCP server ready."
+fi
+
+# Create credential placeholder files if they don't exist yet
+for ENV in dev test prod; do
+    ENV_FILE="$REPO_ROOT/mcp/.env.$ENV"
+    if [ ! -f "$ENV_FILE" ]; then
+        cp "$REPO_ROOT/mcp-credentials.example" "$ENV_FILE"
+        echo "[maestro] Created mcp/.env.$ENV — fill in your BTP credentials."
+    fi
+done

@@ -1,0 +1,19 @@
+{
+  "_readme": "Gatekeeper-Goofy iFlow Watchlist — Add iFlows here to include them in batch MIRROR comparison reports. Run /batch-compare to generate a combined HTML report for all entries.",
+  "defaultSource": "DEV",
+  "defaultTarget": "TEST",
+  "iflows": [
+    {
+      "id": "<YOUR-IFLOW-ID>",
+      "name": "<Your iFlow Display Name>",
+      "package": "YOUR_PACKAGE_ID",
+      "notes": ""
+    },
+    {
+      "id": "<YOUR-SECOND-IFLOW-ID>",
+      "name": "<Your Second iFlow Display Name>",
+      "package": "YOUR_PACKAGE_ID_2",
+      "notes": ""
+    }
+  ]
+}

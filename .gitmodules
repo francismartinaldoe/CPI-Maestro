@@ -1,0 +1,3 @@
+[submodule "mcp"]
+	path = mcp
+	url = https://github.<YOUR-DOMAIN>/YOUR-ORG/CPI_MCP.git

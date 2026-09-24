@@ -1,0 +1,54 @@
+{
+  "name": "maestro",
+  "version": "1.0.0",
+  "description": "Natural-language orchestrator that routes CPI intelligence requests to Gatekeeper-Goofy and FlowLens AI sub-agents",
+  "type": "module",
+  "main": "dist/cli/index.js",
+  "bin": {
+    "maestro": "dist/cli/index.js",
+    "CPI_MCP": "dist/mcp/CPI_MCP/index.js",
+    "JIRA_MCP": "dist/mcp/JIRA_MCP/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli/index.ts",
+    "dev:server": "tsx src/server/index.ts",
+    "dev:web": "cd src/web && npm run dev",
+    "dev:CPI_MCP": "tsx src/mcp/CPI_MCP/index.ts",
+    "dev:JIRA_MCP": "tsx src/mcp/JIRA_MCP/index.ts",
+    "start": "node dist/cli/index.js",
+    "start:server": "node dist/server/index.js",
+    "start:CPI_MCP": "node dist/mcp/CPI_MCP/index.js",
+    "start:JIRA_MCP": "node dist/mcp/JIRA_MCP/index.js",
+    "build:web": "cd src/web && npm install && npm run build",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/adm-zip": "^0.5.8",
+    "adm-zip": "^0.5.17",
+    "axios": "^1.7.0",
+    "chalk": "^5.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "exceljs": "4.4.0",
+    "express": "^4.18.2",
+    "open": "^11.0.0",
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "rimraf": "^5.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  },
+  "overrides": {
+    "uuid": ">=11.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

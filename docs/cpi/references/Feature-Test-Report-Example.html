@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Feature Test Execution Report - FE24.2026</title>
+<style>
+  @font-face {
+    font-family: '72';
+    font-weight: 400;
+    src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Regular.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: '72';
+    font-weight: 700;
+    src: url('https://sapui5.hana.ondemand.com/resources/sap/ui/core/themes/sap_horizon/fonts/72-Bold.woff2') format('woff2');
+  }
+
+  :root {
+    --tx: #12171c;
+    --ts: #8ea4b8;
+    --tm: #556475;
+    --br: #0070f2;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: '72', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    background: #fff;
+    color: var(--tx);
+    min-height: 100vh;
+    padding-top: 56px;
+  }
+
+  /* ── Top Bar ── */
+  .top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    background: #f5f6f7;
+    border-bottom: 1px solid #e8eaed;
+    transform: translateY(0);
+    transition: none;
+  }
+  .top-bar--hidden { transform: translateY(-100%); }
+  .top-bar__inner {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+  }
+  .top-bar__logo   { height: 32px; width: auto; display: block; }
+  .top-bar__divider {
+    width: 1px;
+    height: 22px;
+    background: #d5dadd;
+    margin: 0 16px;
+    flex-shrink: 0;
+  }
+  .top-bar__title-group { display: flex; align-items: baseline; gap: 14px; }
+  .top-bar__product { font-size: 17px; font-weight: 700; color: #12171c; white-space: nowrap; }
+  .top-bar__app { font-size: 17px; font-weight: 400; color: #354a5f; white-space: nowrap; }
+  .top-bar__pi {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0040b0;
+    background: #ebf8ff;
+    border: 1px solid #a6e0ff;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .top-bar__date { margin-left: auto; font-size: 12px; color: #8ea4b8; white-space: nowrap; }
+
+  /* ── Lead Wrapper ── */
+  .lead {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── Section Cards ── */
+  .section-card {
+    background: #fff;
+    border: 1px solid #d9dde0;
+    border-radius: 12px;
+    padding: 32px 40px;
+    min-height: 180px;
+  }
+  .section-card--summary {
+    background: #fff;
+  }
+  .section-card__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .section-card__icon { width: 32px; height: 32px; display: block; }
+  .section-card__label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #002a86;
+    margin-bottom: 20px;
+  }
+  .section-card__header .section-card__label { margin-bottom: 0; }
+
+  /* ── KPI Strip ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .kpi {
+    padding: .8rem 1.1rem;
+    background: #fff;
+    border-radius: .65rem;
+    border: 1px solid rgba(0,112,242,.09);
+    box-shadow: 0 1px 4px rgba(0,50,165,.06);
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    min-width: 0;
+  }
+  .kpi-l              { display:inline-flex; align-items:center; gap:.4rem; font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#5b738b; margin-bottom:.75rem; }
+  .kpi-l::before      { content:''; display:inline-block; width:3px; height:11px; border-radius:2px; background:#002a86; flex-shrink:0; }
+  .kpi-v {
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: var(--tx);
+    line-height: 1;
+  }
+  /* Shared bottom pill */
+  .kpi-pill {
+    margin-top: auto;
+    width: 100%;
+    border: 1px solid rgba(0,112,242,.14);
+    border-radius: .35rem;
+    padding: .42rem .55rem;
+    font-size: .65rem;
+    color: var(--ts);
+  }
+  .kpi-pill strong { color: var(--tm); font-weight: 700; }
+  .kpi-pill .c-vh  { color: #C9372C; font-weight: 700; }
+  .kpi-pill .c-tm  { color: var(--tm); font-weight: 700; }
+
+  /* Tile 1 & 3 — hero body min-height */
+  .kpi-body { min-height: 3.2rem; }
+
+  /* Tile 2 — execution hero row */
+  .kpi-hero-wrap { padding-bottom: .25rem; }
+  .kpi-hero-row  { display: flex; align-items: baseline; gap: .3rem; }
+  .kpi-denom     { font-size: .95rem; font-weight: 700; color: var(--tm); }
+
+  /* Tile 2 — progress bar */
+  .kpi-bar-row   { display: flex; align-items: center; gap: .4rem; width: 100%; }
+  .kpi-bar-track {
+    flex: 1;
+    height: 10.5px;
+    border-radius: 5.25px;
+    background: rgba(0,112,242,.1);
+    overflow: hidden;
+  }
+  .kpi-bar-fill  {
+    height: 100%;
+    width: var(--w, 0%);
+    background: var(--br);
+    border-radius: 5.25px;
+  }
+  .kpi-pct       { font-size: .9rem; font-weight: 600; color: var(--br); white-space: nowrap; }
+  .kpi-pill--mt  { margin-top: .5rem; }
+
+  /* Tile 3 — bug priority grid */
+  .kpi-bug-grid {
+    display: grid;
+    grid-template-columns: max-content 1px max-content;
+    column-gap: .9rem;
+    align-items: end;
+  }
+  .kpi-bug-divider {
+    height: 1.85rem;
+    background: rgba(0,0,0,.08);
+    margin-bottom: .35rem;
+    align-self: end;
+  }
+  .kpi-pri-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .2rem;
+    margin-top: .25rem;
+  }
+  .kpi-pri-name  { font-size: .68rem; color: var(--tm); }
+  .kpi-bug-cell       { position:relative; cursor:default; display:inline-block; border-radius:.4rem; padding:.2rem .4rem; margin:-.2rem -.4rem; transition:background .15s; }
+  .kpi-bug-cell:hover { background:rgba(0,112,242,.06); }
+  .kpi-bug-cell:hover .ob-tip { display:block; }
+  .ob-tip             { display:none; position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%); background:#fff; border-radius:.65rem; padding:.6rem .8rem; font-size:.68rem; white-space:nowrap; z-index:200; box-shadow:0 4px 20px rgba(0,50,165,.14); min-width:180px; border:1px solid rgba(0,112,242,.12); }
+  .ob-tip::before     { content:''; position:absolute; top:-5px; left:50%; transform:translateX(-50%); border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:5px solid rgba(0,112,242,.12); }
+  .ob-tip::after      { content:''; position:absolute; top:-4px; left:50%; transform:translateX(-50%); border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:5px solid #fff; }
+  .ob-tip-row         { padding:.2rem 0; display:flex; align-items:flex-start; gap:.5rem; }
+  .ob-tip-row + .ob-tip-row { border-top:1px solid rgba(0,112,242,.08); margin-top:.1rem; }
+  .ob-tip-id          { font-family:monospace; font-weight:700; color:#0040b0; text-decoration:none; white-space:nowrap; flex-shrink:0; font-size:.65rem; }
+  .ob-tip-id:hover    { text-decoration:underline; }
+  .ob-tip-who         { flex:1; color:#354a5e; line-height:1.4; }
+  .ob-tip-date        { font-size:.6rem; color:#8ea4b8; white-space:nowrap; margin-left:auto; }
+  .ob-tip-more        { font-size:.6rem; color:#8ea4b8; text-align:center; padding:.2rem 0 .02rem; margin-top:.1rem; letter-spacing:.12em; border-top:1px solid rgba(0,112,242,.08); }
+  /* ---- Feature Testing Overview ---- */
+  .feat-section        { display:flex; flex-direction:column; gap:14px; }
+  .feat-tbl            { width:100%; border-collapse:collapse; font-family:'72',Arial,sans-serif; }
+  .feat-tbl th         { background:#fff; color:#223548; font-size:.68rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:.55rem 1rem; border-bottom:2px solid rgba(0,112,242,.12); white-space:nowrap; text-align:left; }
+  .feat-tbl td         { padding:.65rem 1rem; border-bottom:1px solid rgba(0,112,242,.07); vertical-align:middle; font-size:.78rem; color:var(--tx); }
+  .feat-tbl tbody tr:hover td { background:#ebf8ff; }
+  .feat-tbl .tr-oos td { opacity:.62; }
+  /* Domain stickers */
+  .fd-dom      { display:inline-flex; align-items:center; font-size:.53rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; padding:.12rem .42rem; border-radius:3px; margin-right:.45rem; vertical-align:middle; white-space:nowrap; }
+  .fd-dom-sc, .fd-dom-cpq, .fd-dom-brim { background:#f5f6f7; color:#6b7f90; border:1px solid #e4e7ea; }
+  .feat-sum            { max-width:18rem; line-height:1.4; }
+.fs                  { display:inline-flex; align-items:center; font-size:.62rem; font-weight:700; padding:.2rem .55rem; border-radius:2rem; white-space:nowrap; }
+  .fs-val              { background:rgba(0,112,242,.08); color:#0070f2; border:1px solid rgba(0,112,242,.22); }
+  .fs-rfd              { background:#e8f5ec; color:#188918; border:1px solid rgba(24,137,24,.22); }
+  .fs-rfiv             { background:rgba(0,112,242,.05); color:#5b738b; border:1px solid rgba(0,112,242,.14); }
+  .fs-dev              { background:#fff4e0; color:#e76500; border:1px solid rgba(231,101,0,.22); }
+  .fs-devc             { background:rgba(0,112,242,.05); color:#0040b0; border:1px solid rgba(0,112,242,.18); }
+  .fs-obs              { background:rgba(142,164,184,.1); color:#8ea4b8; border:1px solid rgba(142,164,184,.28); }
+  .fs-rdev             { background:#f5f6f7; color:#5b738b; border:1px solid #d5dadd; }
+  .fw-exec             { display:flex; flex-direction:column; gap:.3rem; min-width:9rem; }
+  .fw-exec-top         { display:flex; align-items:center; gap:.35rem; flex-wrap:nowrap; }
+  .fw-exec-frac        { margin-right:auto; display:inline-flex; align-items:baseline; gap:.15rem; color:var(--ts); }
+  .fw-exec-done        { font-size:.82rem; font-weight:700; color:#0040b0; }
+  .fw-exec-total       { font-size:.72rem; font-weight:400; color:var(--ts); }
+  .fw-exec-track       { height:.375rem; background:rgba(0,112,242,.12); border-radius:4px; overflow:hidden; }
+  .fw-exec-fill        { height:100%; background:#0040b0; border-radius:6px; }
+  .fw-er               { display:inline-flex; font-size:.58rem; font-weight:700; padding:.1rem .32rem; border-radius:2rem; }
+  .fw-er-p             { background:#e8f5ec; color:#188918; }
+  .fw-er-f             { background:#fce8e8; color:#aa0808; }
+  .fw-er-b             { background:#fff4e0; color:#e76500; }
+  .fw-er-a             { background:rgba(0,0,0,.07); color:#475e75; }
+  .fw-done             { font-size:.72rem; font-weight:600; color:#188918; white-space:nowrap; }
+  .feat-oos-sep td     { padding:0; border-top:1px dashed rgba(142,164,184,.35); }
+  .feat-oos-inner      { display:flex; align-items:center; gap:.35rem; padding:.42rem .6rem; cursor:pointer; color:var(--ts); font-size:.68rem; background:#f5f6f7; }
+  .feat-oos-icon       { display:inline-flex; width:14px; height:14px; border-radius:50%; border:1.5px solid var(--br); color:var(--br); align-items:center; justify-content:center; font-size:10px; flex-shrink:0; }
+
+  /* Tile 4 — execution windows */
+  .kpi-wins { display: flex; flex-direction: column; gap: .45rem; width: 100%; }
+  .kpi-win  {
+    width: 100%;
+    background: rgba(0,112,242,.04);
+    border: 1px solid rgba(0,112,242,.13);
+    border-radius: .45rem;
+    padding: .45rem .55rem;
+  }
+  .kpi-win__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .4rem;
+    margin-bottom: .32rem;
+  }
+  .kpi-win__name   { font-size: .64rem; font-weight: 700; color: var(--tx); }
+  .kpi-win__badge  {
+    font-size: .54rem;
+    font-weight: 700;
+    padding: .07rem .38rem;
+    border-radius: 2rem;
+    background: #0070f2;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .kpi-win__row    { display: flex; align-items: center; gap: .45rem; }
+  .kpi-win__dates  { font-size: .59rem; color: var(--tm); white-space: nowrap; }
+  .kpi-win__track  {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(0,112,242,.1);
+    overflow: hidden;
+  }
+  .kpi-win__fill   { width: var(--w, 0%); height: 100%; background: #0070f2; border-radius: 2px; }
+  .kpi-win__counter { font-size: .57rem; color: var(--ts); white-space: nowrap; }
+
+  /* ── Bug Trend Section ── */
+  .bugs-wrap        { display: flex; gap: 28px; }
+  .bugs-left        { flex: 3; min-width: 0; background: #fff; border-radius: .65rem; border: 1px solid rgba(0,112,242,.09); box-shadow: 0 1px 4px rgba(0,50,165,.06); padding: 1.2rem 1.4rem; display: flex; flex-direction: column; gap: 14px; }
+  .bugs-right       { flex: 1; display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+  .bug-chart-wrap   { position: relative; height: 280px; }
+  .bug-legend       { display: flex; gap: 16px; align-items: center; padding-top: 4px; }
+  .tes-legend-line--added    { background: #000000; }
+  .tes-legend-line--resolved { background: #188918; }
+  /* Open Bugs card */
+  .ob-card          { flex: 1; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(34,53,72,.20); }
+  .ob-label         { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: #5b738b; text-transform: uppercase; margin-bottom: 14px; }
+  .ob-bar-track     { height: 8px; border-radius: 4px; background: #d5dadd; overflow: hidden; margin-bottom: 16px; }
+  .ob-bar-fill      { height: 100%; border-radius: 6px; background: #188918; }
+  .ob-counts        { display: flex; gap: 20px; align-items: baseline; margin-bottom: 16px; }
+  .ob-num           { font-size: 1.8rem; font-weight: 900; color: #000; line-height: 1; }
+  .ob-num-label     { font-size: 10px; font-weight: 600; color: #8396a8; margin-left: 3px; }
+  .ob-num--resolved { color: #188918; }
+  .ob-pri-row       { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 0; }
+  .ob-pri           { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #223548; }
+  .ob-pri-count     { font-weight: 700; }
+  /* Info card */
+  .info-card        { background: #fff; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 4px rgba(34,53,72,.20); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+  .info-picto       { width: 56px; height: 56px; }
+  .info-eyebrow     { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: #5b738b; text-transform: uppercase; }
+  .info-body        { font-size: 11px; color: #475e75; line-height: 1.5; }
+  .btn-jira         { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 8px; border: 1px solid #475e75; background: #fff; color: #0040b0; cursor: pointer; font-family: '72', Arial, sans-serif; text-decoration: none; }
+  .btn-jira:hover   { background: rgba(0,0,0,.06); }
+
+  /* ── Bug Table ── */
+  .bug-table-section  { margin-top: 28px; background:#fff; border-radius:.65rem; border:1px solid rgba(0,112,242,.09); box-shadow:0 1px 4px rgba(0,50,165,.06); padding:1.2rem 1.4rem; display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+  .bug-tbl            { width:100%; border-collapse:collapse; font-family:'72',Arial,sans-serif; }
+  .bug-tbl th         { background:#fff; color:#223548; font-size:.68rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:.55rem 1rem; border-bottom:2px solid rgba(0,112,242,.12); white-space:nowrap; text-align:left; }
+  .bug-tbl td         { padding:.65rem 1rem; border-bottom:1px solid rgba(0,112,242,.07); vertical-align:middle; font-size:.78rem; color:var(--tx); }
+  .bug-tbl tbody tr:hover td { background:#ebf8ff; }
+  .bug-tbl tbody tr.tr-resolved td { opacity:.62; }
+  .jira-pri           { display:inline-flex; align-items:center; gap:.28rem; font-size:.775rem; font-weight:400; white-space:nowrap; color:var(--tx); }
+  .jira-pri-veryhigh svg { color:#C9372C; }
+  .jira-pri-high svg  { color:#E2483D; }
+  .jira-pri-med svg   { color:#FF8B00; }
+  .jira-pri-low svg   { color:#8ea4b8; }
+  .badge              { display:inline-flex; align-items:center; font-size:.62rem; font-weight:700; padding:.2rem .55rem; border-radius:2rem; white-space:nowrap; letter-spacing:.025em; }
+  .b-done             { background:#188918; color:#fff; }
+  .b-open             { background:#f5f6f7; color:#475e75; border:1px solid rgba(0,112,242,.2); }
+  .b-rev              { background:rgba(0,112,242,.08); color:var(--br); border:1px solid rgba(0,112,242,.22); }
+  .jira-btn           { font-size:.66rem; font-weight:600; color:#0040b0; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:3px; }
+  .jira-btn:hover     { text-decoration:underline; }
+  .b-nobug            { display:inline-block; background:rgba(142,164,184,.1); color:var(--ts); border:1px solid rgba(142,164,184,.28); font-size:.58rem; font-weight:700; padding:.08rem .42rem; border-radius:.25rem; letter-spacing:.04em; text-transform:uppercase; margin-left:.35rem; vertical-align:middle; }
+  .bug-sum            { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.5; cursor:default; }
+  .bug-sum__tip       { display:none; position:absolute; left:0; top:calc(100% + 6px); z-index:300; background:#fff; border:1px solid rgba(0,112,242,.12); border-radius:.65rem; padding:.55rem .8rem; font-size:.72rem; line-height:1.55; color:var(--tx); box-shadow:0 4px 20px rgba(0,50,165,.14); min-width:200px; max-width:26rem; white-space:normal; pointer-events:none; }
+  td.has-sum-tip      { position:relative; }
+  td.has-sum-tip:hover .bug-sum__tip { display:block; }
+  .c-barea            { font-size:.68rem; color:var(--tm); line-height:1.45; }
+  .c-bwho             { font-size:.69rem; color:var(--tm); }
+  .b-av-wrap          { display:inline-flex; align-items:center; gap:.42rem; vertical-align:middle; }
+  .b-av               { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; width:22px; height:22px; border-radius:50%; font-size:.5rem; font-weight:700; color:#fff; letter-spacing:.02em; }
+  .c-bdate            { font-size:.69rem; color:var(--ts); white-space:nowrap; }
+  .bug-resolved-sep td { padding:0; border-top:1px dashed rgba(142,164,184,.35); }
+  .bug-sep-inner      { display:flex; align-items:center; gap:.35rem; padding:.42rem .6rem; cursor:pointer; color:var(--ts); font-size:.68rem; font-weight:500; user-select:none; background:#f5f6f7; }
+  .bug-sep-inner:hover { color:var(--tm); }
+  .bug-sep-icon       { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; border:1.5px solid var(--br); color:var(--br); font-size:.72rem; flex-shrink:0; }
+  .tr-resolved        { display:none; }
+
+  /* ── Test Execution Status ── */
+  .section-card--exec    { min-height: 0; }
+  .tes-wrap              { display: flex; gap: 28px; }
+  .tes-left              { flex: 3; background: #fff; border-radius: .65rem; border: 1px solid rgba(0,112,242,.09); box-shadow: 0 1px 4px rgba(0,50,165,.06); padding: 1.2rem 1.4rem; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .tes-right             { flex: 1; background: #fff; border-radius: .65rem; border: 1px solid rgba(0,112,242,.09); box-shadow: 0 1px 4px rgba(0,50,165,.06); padding: 1.2rem 1.4rem; display: flex; flex-direction: column; align-items: center; gap: 16px; min-width: 0; }
+  .tes-right-header      { width: 100%; }
+  .tes-chip              { display:inline-flex; align-items:center; gap:.4rem; font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#5b738b; margin-bottom:.65rem; }
+  .tes-chip::before      { content:''; display:inline-block; width:3px; height:11px; border-radius:2px; background:#002a86; flex-shrink:0; }
+  .tes-subheader         { margin-top: 10px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .tes-tabs              { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tes-tab               { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 2rem; border: 1px solid #d9dde0; background: #fff; color: var(--tm); cursor: pointer; white-space: nowrap; font-family: '72', Arial, Helvetica, sans-serif; }
+  .tes-tab--active       { background: #0070f2; border-color: #0070f2; color: #fff; }
+  .tes-type-label        { font-size: 11px; font-weight: 600; color: var(--ts); background: #f5f6f7; padding: 3px 8px; border-radius: 6px; }
+  .tes-stats             { font-size: 11.5px; color: var(--tx); margin-left: auto; background: #f5f6f7; padding: 3px 10px; border-radius: 6px; border: 1px solid transparent; align-self: center; }
+  .tes-stats strong      { color: var(--tx); }
+  .tes-chart-wrap        { position: relative; flex: 1; min-height: 240px; width: 100%; }
+  .tes-chart-legend      { display: flex; gap: 20px; align-items: center; }
+  .tes-legend-item       { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--tm); }
+  .tes-legend-line       { width: 20px; height: 2px; border-radius: 1px; }
+  .tes-legend-line--plan   { background: #89d1ff; }
+  .tes-legend-line--actual { background: #0040b0; }
+  /* Exec donut */
+  .exec-donut-wrap  { flex-shrink: 0; position: relative; width: 160px; height: 160px; }
+  .exec-donut       { width: 160px; height: 160px; }
+  .exec-track       { stroke: #eaecee; }
+  .exec-center      { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+  .exec-big-pct     { font-size: 1.9rem; font-weight: 900; color: var(--tx); line-height: 1; }
+  .exec-sub         { font-size: .6rem; font-weight: 600; color: var(--ts); text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+  .exec-donut circle:not(.exec-track)             { transition:opacity .15s; cursor:pointer; }
+  .exec-donut.is-hovering circle:not(.exec-track) { opacity:.22; }
+  .exec-legend      { width: 100%; display: flex; flex-direction: column; gap: .7rem; }
+  .exec-row         { display: flex; align-items: center; gap: .55rem; }
+  .exec-dot         { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .exec-dot--passed     { background: #256f3a; }
+  .exec-dot--failed     { background: #aa0808; }
+  .exec-dot--blocked    { background: #e76500; }
+  .exec-dot--aborted    { background: #475e75; }
+  .exec-dot--notstarted { background: #f0f2f4; border: 1px solid #e0e4e7; box-sizing: border-box; }
+  .exec-label       { font-size: .75rem; color: var(--tx); flex: 1; }
+  .exec-count       { font-size: .72rem; font-weight: 700; color: var(--tm); white-space: nowrap; }
+  /* Execution Status filter tags (SAP Tags/Outlined) */
+  .es-tags          { display: flex; flex-wrap: wrap; gap: 5px; }
+  .es-tag           { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; border: 1px solid #a9b4be; background: #fff; color: #223548; cursor: pointer; font-family: '72', Arial, Helvetica, sans-serif; }
+  .es-tag--active   { border-color: #0070f2; color: #0070f2; }
+  .es-tag:hover:not(.es-tag--active) { background: #f5f6f7; }
+  .tes-right .es-tags { flex-wrap: nowrap; }
+  .tes-right .es-tag  { font-size: 11px; padding: 3px 5px; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar__inner">
+    <svg class="top-bar__logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 412.38 204" aria-label="SAP"><defs><style>.cls-1,.cls-2{fill-rule:evenodd;}.cls-1{fill:url(#sap-grad);}.cls-2{fill:#fff;}</style><linearGradient id="sap-grad" x1="206.19" x2="206.19" y2="204" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00b8f1"/><stop offset="0.02" stop-color="#01b6f0"/><stop offset="0.31" stop-color="#0d90d9"/><stop offset="0.58" stop-color="#1775c8"/><stop offset="0.82" stop-color="#1c65bf"/><stop offset="1" stop-color="#1e5fbb"/></linearGradient></defs><polyline class="cls-1" points="0 204 208.41 204 412.38 0 0 0 0 204"/><path class="cls-2" d="M244.73,38.36l-40.6,0v96.52L168.67,38.33H133.51l-30.27,80.72C100,98.7,79,91.67,62.4,86.4,51.46,82.89,39.85,77.72,40,72c.09-4.68,6.23-9,18.38-8.38,8.17.43,15.37,1.09,29.71,8l14.1-24.55C89.06,40.42,71,36.21,56.17,36.19h-.09c-17.28,0-31.68,5.6-40.6,14.83A34.23,34.23,0,0,0,5.77,74.7C5.54,87.15,10.11,96,19.71,103c8.1,5.94,18.46,9.79,27.6,12.62,11.27,3.49,20.47,6.53,20.36,13A9.57,9.57,0,0,1,65,135c-2.81,2.9-7.13,4-13.09,4.1-11.49.24-20-1.56-33.61-9.59L5.77,154.42a93.77,93.77,0,0,0,46,12.22l2.11,0c14.24-.25,25.74-4.31,34.92-11.71.53-.41,1-.84,1.49-1.28L86.17,164.5H123l6.19-18.82a67.46,67.46,0,0,0,21.68,3.43,68.33,68.33,0,0,0,21.16-3.25l6,18.64h60.14v-39h13.11c31.71,0,50.46-16.15,50.46-43.2C301.74,52.19,283.52,38.36,244.73,38.36ZM150.91,121a36.93,36.93,0,0,1-13-2.28l12.87-40.59H151l12.65,40.71A38.5,38.5,0,0,1,150.91,121Zm96.2-23.33h-8.94V64.91h8.94c11.93,0,21.44,4,21.44,16.14,0,12.6-9.51,16.57-21.44,16.57"/></svg>
+    <div class="top-bar__divider"></div>
+    <div class="top-bar__title-group">
+      <span class="top-bar__product"></span>
+      <span class="top-bar__app">Feature Test Execution Report <span class="top-bar__pi">FD24.2026</span></span>
+    </div>
+    <span class="top-bar__date">Report as of 18 May 2026</span>
+  </div>
+</header>
+
+<main class="lead">
+
+  <div class="section-card section-card--summary">
+    <div class="section-card__header">
+      <p class="section-card__label">Summary</p>
+    </div>
+
+    <div class="kpi-strip">
+
+      <!-- Tile 1: Features -->
+      <div class="kpi">
+        <div class="kpi-l">Features</div>
+        <div class="kpi-body">
+          <div class="kpi-v">44</div>
+        </div>
+        <div class="kpi-pill">
+          <strong>28 in test scope</strong>&thinsp;·&thinsp;16 out of test scope
+        </div>
+      </div>
+
+      <!-- Tile 2: Test Case Execution -->
+      <div class="kpi">
+        <div class="kpi-l">Test Case Execution</div>
+        <div class="kpi-hero-wrap">
+          <div class="kpi-hero-row">
+            <span class="kpi-v">325</span>
+            <span class="kpi-denom">/</span>
+            <span class="kpi-denom">375</span>
+          </div>
+        </div>
+        <div class="kpi-bar-row">
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" style="--w:87%"></div>
+          </div>
+          <span class="kpi-pct">87%</span>
+        </div>
+        <div class="kpi-pill kpi-pill--mt">
+          <strong>149 automated TCs</strong>&thinsp;·&thinsp;226 manual TCs
+        </div>
+      </div>
+
+      <!-- Tile 3: Critical Open Bugs -->
+      <div class="kpi">
+        <div class="kpi-l">Critical Open Bugs</div>
+        <div class="kpi-body">
+          <div class="kpi-bug-grid">
+            <div class="kpi-bug-cell">
+              <div class="kpi-v">2</div>
+              <div class="kpi-pri-label">
+                <svg width="12" height="16" viewBox="0 0 16 20" fill="none" stroke="#C9372C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 L8 6 L13 12"/><path d="M3 19 L8 13 L13 19"/></svg>
+                <span class="kpi-pri-name">Very High</span>
+              </div>
+              <div class="ob-tip">
+                <div class="ob-tip-row"><a class="ob-tip-id" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7423" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-7423</a><span class="ob-tip-who">Pricing issues for Indirect Thailand sales org 0036</span><span class="ob-tip-date">May 15</span></div>
+                <div class="ob-tip-row"><a class="ob-tip-id" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7471" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-7471</a><span class="ob-tip-who">Automation CPQ - Error when placing quote to S4</span><span class="ob-tip-date">May 18</span></div>
+              </div>
+            </div>
+            <div class="kpi-bug-divider"></div>
+            <div class="kpi-bug-cell">
+              <div class="kpi-v">3</div>
+              <div class="kpi-pri-label">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#E2483D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>
+                <span class="kpi-pri-name">High</span>
+              </div>
+              <div class="ob-tip" style="white-space:normal;width:28rem">
+                <div class="ob-tip-row"><a class="ob-tip-id" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7408" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-7408</a><span class="ob-tip-who">Wrong Prices are reflecting in BRIM system for Amendment scenarios</span><span class="ob-tip-date">May 14</span></div>
+                <div class="ob-tip-row"><a class="ob-tip-id" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7483" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-7483</a><span class="ob-tip-who">OSS: 612951/2026 - Unable to view 3Partner Account and 1 End Customer Account in C4C application</span><span class="ob-tip-date">May 18</span></div>
+                <div class="ob-tip-row"><a class="ob-tip-id" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7491" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-7491</a><span class="ob-tip-who">Subscription Contracts are not getting displayed when pulling the assets in CPQ</span><span class="ob-tip-date">May 18</span></div>
+                            </div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-pill">
+          Already resolved:&thinsp;<span class="c-tm">1</span> Very High&thinsp;·&thinsp;<span class="c-tm">17</span> High
+        </div>
+      </div>
+
+      <!-- Tile 4: Execution Windows -->
+      <div class="kpi">
+        <div class="kpi-l">Execution Windows</div>
+        <div class="kpi-wins">
+          <div class="kpi-win">
+            <div class="kpi-win__header">
+              <span class="kpi-win__name">Sales Org Onboarding</span>
+              <span class="kpi-win__badge">Active</span>
+            </div>
+            <div class="kpi-win__row">
+              <span class="kpi-win__dates">May 5–19</span>
+              <div class="kpi-win__track">
+                <div class="kpi-win__fill" style="--w:91%"></div>
+              </div>
+              <span class="kpi-win__counter">Day 10 / 11</span>
+            </div>
+          </div>
+          <div class="kpi-win">
+            <div class="kpi-win__header">
+              <span class="kpi-win__name">Feature Testing</span>
+              <span class="kpi-win__badge">Active</span>
+            </div>
+            <div class="kpi-win__row">
+              <span class="kpi-win__dates">May 11–22</span>
+              <div class="kpi-win__track">
+                <div class="kpi-win__fill" style="--w:40%"></div>
+              </div>
+              <span class="kpi-win__counter">Day 6 / 15</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-card section-card--exec">
+    <div class="section-card__header">
+      <p class="section-card__label">Test Execution Status</p>
+    </div>
+    <div class="tes-wrap">
+
+      <!-- LEFT: Burnup chart -->
+      <div class="tes-left">
+        <div>
+          <div class="tes-chip">Burnup</div>
+          <div class="tes-subheader">
+            <div class="es-tags">
+              <button type="button" class="es-tag es-tag--active" data-view="all">All</button>
+              <span class="tes-type-label">Type</span>
+              <button type="button" class="es-tag" data-view="auto">Automated</button>
+              <button type="button" class="es-tag" data-view="manual">Manual</button>
+            </div>
+            <div class="tes-stats" id="burnupStats">Planned <strong>375</strong>&ensp;·&ensp;Executed <strong>325</strong> · 87%&ensp;·&ensp;Remaining <strong>50</strong> · 13%</div>
+          </div>
+        </div>
+        <div class="tes-chart-wrap">
+          <canvas id="burnupChart"></canvas>
+        </div>
+        <div class="tes-chart-legend">
+          <div class="tes-legend-item">
+            <div class="tes-legend-line tes-legend-line--plan"></div>
+            Planned Test Case Executions
+          </div>
+          <div class="tes-legend-item">
+            <div class="tes-legend-line tes-legend-line--actual"></div>
+            Actual Test Executions
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Execution status donut -->
+      <div class="tes-right">
+        <div class="tes-right-header">
+          <div class="tes-chip">Execution Status</div>
+          <div class="tes-subheader">
+            <div class="es-tags">
+              <button type="button" class="es-tag es-tag--active" data-es-view="all">All</button>
+              <button type="button" class="es-tag" data-es-view="direct">Direct</button>
+              <button type="button" class="es-tag" data-es-view="indirect">Indirect</button>
+              <button type="button" class="es-tag" data-es-view="salesorg">Sales Org</button>
+              <button type="button" class="es-tag" data-es-view="l2o">L2O</button>
+            </div>
+          </div>
+        </div>
+        <div class="exec-donut-wrap">
+          <svg class="exec-donut" viewBox="0 0 160 160">
+            <circle class="exec-track" cx="80" cy="80" r="60" fill="none" stroke-width="20"/>
+            <circle id="es-c0" cx="80" cy="80" r="60" fill="none" stroke="#256f3a" stroke-width="20"
+              transform="rotate(-90 80 80)"
+              stroke-dasharray="175.38 376.99" stroke-dashoffset="-1.50"/>
+            <circle id="es-c1" cx="80" cy="80" r="60" fill="none" stroke="#aa0808" stroke-width="20"
+              transform="rotate(-90 80 80)"
+              stroke-dasharray="28.57 376.99" stroke-dashoffset="-178.38"/>
+            <circle id="es-c2" cx="80" cy="80" r="60" fill="none" stroke="#e76500" stroke-width="20"
+              transform="rotate(-90 80 80)"
+              stroke-dasharray="110.35 376.99" stroke-dashoffset="-208.45"/>
+            <circle id="es-c3" cx="80" cy="80" r="60" fill="none" stroke="#475e75" stroke-width="20"
+              transform="rotate(-90 80 80)"
+              stroke-dasharray="5.91 376.99" stroke-dashoffset="-320.30"/>
+            <circle id="es-c4" cx="80" cy="80" r="60" fill="none" stroke="#f0f2f4" stroke-width="20"
+              transform="rotate(-90 80 80)"
+              stroke-dasharray="49.27 376.99" stroke-dashoffset="-327.71"/>          </svg>
+          <div class="exec-center">
+            <span class="exec-big-pct">87%</span>
+            <span class="exec-sub">executed</span>
+          </div>
+        </div>
+        <div class="exec-legend">
+          <div class="exec-row">
+            <div class="exec-dot exec-dot--passed"></div>
+            <span class="exec-label">Passed</span>
+            <span class="exec-count" data-es-key="passed">178 / 375</span>
+          </div>
+          <div class="exec-row">
+            <div class="exec-dot exec-dot--failed"></div>
+            <span class="exec-label">Failed</span>
+            <span class="exec-count" data-es-key="failed">29 / 375</span>
+          </div>
+          <div class="exec-row">
+            <div class="exec-dot exec-dot--blocked"></div>
+            <span class="exec-label">Blocked</span>
+            <span class="exec-count" data-es-key="blocked">112 / 375</span>
+          </div>
+          <div class="exec-row">
+            <div class="exec-dot exec-dot--aborted"></div>
+            <span class="exec-label">Aborted</span>
+            <span class="exec-count" data-es-key="aborted">6 / 375</span>
+          </div>
+          <div class="exec-row">
+            <div class="exec-dot exec-dot--notstarted"></div>
+            <span class="exec-label">Not Started</span>
+            <span class="exec-count" data-es-key="notstarted">50 / 375</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-card section-card--exec">
+    <div class="section-card__header">
+      <p class="section-card__label">Feature Testing Bugs</p>
+    </div>
+
+    <div class="bugs-wrap">
+
+      <!-- LEFT: Bug Trend Chart -->
+      <div class="bugs-left">
+        <div>
+          <span class="tes-chip">Bug Trend</span>
+          <div class="tes-subheader">
+            <div class="tes-tabs">
+              <button type="button" class="tes-tab tes-tab--active" data-bug-view="all">All</button>
+            </div>
+            <span class="tes-type-label">Priority</span>
+            <div class="tes-tabs">
+              <button type="button" class="es-tag" data-bug-view="vh">Very High</button>
+              <button type="button" class="es-tag" data-bug-view="high">High</button>
+              <button type="button" class="es-tag" data-bug-view="medium">Medium</button>
+              <button type="button" class="es-tag" data-bug-view="low">Low</button>
+            </div>
+          </div>
+        </div>
+        <div class="bug-chart-wrap">
+          <canvas id="bugChart"></canvas>
+        </div>
+        <div class="tes-chart-legend">
+          <div class="tes-legend-item">
+            <div class="tes-legend-line tes-legend-line--added"></div>
+            Bugs Added
+          </div>
+          <div class="tes-legend-item">
+            <div class="tes-legend-line tes-legend-line--resolved"></div>
+            Bugs Resolved
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Open bugs + info -->
+      <div class="bugs-right">
+
+        <!-- Open Bugs card -->
+        <div class="ob-card">
+          <div class="tes-chip" style="margin-bottom:14px">Open Bugs</div>
+          <div class="ob-bar-track">
+            <div class="ob-bar-fill" style="width:78.0%"></div>
+          </div>
+          <div class="ob-counts">
+            <div>
+              <span class="ob-num ob-num--resolved">46</span><span class="ob-num-label">RESOLVED</span>
+            </div>
+            <div>
+              <span class="ob-num">13</span><span class="ob-num-label">OPEN</span>
+            </div>
+          </div>
+          <div class="ob-pri-row">
+            <div class="ob-pri">
+              <svg width="12" height="16" viewBox="0 0 16 20" fill="none" stroke="#C9372C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 L8 6 L13 12"/><path d="M3 19 L8 13 L13 19"/></svg>
+              <span class="ob-pri-count">2</span> Very High
+            </div>
+            <div class="ob-pri">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#E2483D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>
+              <span class="ob-pri-count">3</span> High
+            </div>
+            <div class="ob-pri">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#ffb300" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 L13 5 M3 11 L13 11"/></svg>
+              <span class="ob-pri-count">8</span> Medium
+            </div>
+            <div class="ob-pri">
+              <svg width="12" height="10" viewBox="0 0 16 12" fill="none" stroke="#5b738b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3 L8 9 L13 3"/></svg>
+              <span class="ob-pri-count">0</span> Low
+            </div>
+          </div>
+        </div>
+
+        <!-- Info card -->
+        <div class="info-card">
+          <span class="tes-chip" style="align-self:flex-start">Full Bug Dashboard</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" class="info-picto" aria-hidden="true">
+            <polyline fill="#0070f2" stroke="none" points="220.2 82.8 180.9 82.8 180.9 43.5"/>
+            <rect fill="#1a2733" stroke="none" x="161.3" y="93.2" width="27.5" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="161.3" y="132.5" width="27.5" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="161.3" y="112.9" width="27.5" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="110.2" y="93.2" width="39.3" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="110.2" y="132.5" width="39.3" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="110.2" y="112.9" width="39.3" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="59.1" y="93.2" width="39.3" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="59.1" y="132.5" width="39.3" height="2.5"/>
+            <rect fill="#1a2733" stroke="none" x="59.1" y="112.9" width="39.3" height="2.5"/>
+            <rect fill="#1b90ff" stroke="none" x="59.1" y="153.4" width="39.3" height="11.8"/>
+            <path fill="#1a2733" stroke="none" d="M99.6,166.5h-41.8v-14.3h41.8v14.3ZM60.3,164h36.8v-9.3h-36.8v9.3Z"/>
+            <path fill="#1a2733" stroke="none" d="M190,166.5h-30v-14.3h30v14.3ZM162.5,164h25v-9.3h-25v9.3Z"/>
+            <rect fill="#2ce0bf" stroke="none" x="110.2" y="153.4" width="39.3" height="11.8"/>
+            <path fill="#1a2733" stroke="none" d="M150.7,166.5h-41.8v-14.3h41.8v14.3ZM111.4,164h36.8v-9.3h-36.8v9.3Z"/>
+            <rect fill="#89d1ff" stroke="none" x="27.6" y="184.9" width="192.6" height="11.8"/>
+            <path fill="#1a2733" stroke="none" d="M221.5,82.3l-40-40H26.4v5.2h-7.7v158.3h197.6v-7.7h5.2c0-.1,0-.1,0-.1v-115.6ZM182.2,46.5l35,35h-35v-35ZM219,195.4H28.9v-9.3h190.1v9.3ZM219,183.6H28.9V44.7h150.8v39.3h39.3v99.6Z"/>
+          </svg>
+          <p class="info-body">This report only includes Feature Testing bugs for FD24.2026. Bugs of other test phases are available below.</p>
+          <a class="btn-jira" href="https://jira.<YOUR-DOMAIN>/secure/Dashboard.jspa?selectPageId=208893" target="_blank" rel="noopener">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 11 L11 1 M5 1 L11 1 L11 7"/></svg>
+            Full bug dashboard in Jira
+          </a>
+        </div>
+
+      </div><!-- /bugs-right -->
+    </div><!-- /bugs-wrap -->
+    <div id="bugs-section" class="bug-table-section" style="margin-top:28px">
+      <div style="margin-bottom:12px">
+        <span class="tes-chip">Bug Details</span>
+        <div class="tes-subheader">
+          <div class="es-tags">
+            <button type="button" class="es-tag es-tag--active" data-filter="all">All</button>
+          </div>
+          <span class="tes-type-label">Priority</span>
+          <div class="es-tags">
+            <button type="button" class="es-tag" data-filter="veryhigh">Very High</button>
+            <button type="button" class="es-tag" data-filter="high">High</button>
+            <button type="button" class="es-tag" data-filter="medium">Medium</button>
+            <button type="button" class="es-tag" data-filter="low">Low</button>
+          </div>
+          <span class="tes-type-label">Status</span>
+          <div class="es-tags">
+            <button type="button" class="es-tag" data-filter="todo">To Do</button>
+            <button type="button" class="es-tag" data-filter="inprogress">In Progress</button>
+            <button type="button" class="es-tag" data-filter="inreview">In Review</button>
+            <button type="button" class="es-tag" data-filter="done">Done</button>
+          </div>
+          <span id="bug-count" style="margin-left:auto;font-size:.62rem;font-weight:600;color:var(--ts);white-space:nowrap;padding:.1rem .5rem">13 items selected</span>
+        </div>
+      </div>
+      <table class="bug-tbl">
+          <thead>
+            <tr>
+              <th style="width:2rem;text-align:center">#</th>
+              <th style="width:7rem">Issue</th>
+              <th>Summary</th>
+              <th style="width:5rem">Priority</th>
+              <th style="width:6rem">Status</th>
+              <th style="width:10rem">Area</th>
+              <th style="width:9rem">Assignee</th>
+              <th style="width:4.5rem">Reported</th>
+            </tr>
+          </thead>
+                    <tbody>
+          <tr data-priority="veryhigh" data-status="review" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">1</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7423" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7423<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Pricing issues for Indirect Thailand sales org 0036</div></td>
+            <td><span class="jira-pri jira-pri-veryhigh"><svg width="11" height="14" viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 L8 6 L13 12"/><path d="M3 19 L8 13 L13 19"/></svg>Very High</span></td>
+            <td><span class="badge b-rev">In Progress</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Thangarasu, Vijayakumar</td>
+            <td class="c-bdate">May 15</td>
+          </tr>
+          <tr data-priority="veryhigh" data-status="review" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">2</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7471" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7471<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Automation CPQ - Error when placing quote to S4</div></td>
+            <td><span class="jira-pri jira-pri-veryhigh"><svg width="11" height="14" viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 L8 6 L13 12"/><path d="M3 19 L8 13 L13 19"/></svg>Very High</span></td>
+            <td><span class="badge b-rev">In Progress</span></td>
+            <td class="c-barea">Order to Cash</td>
+            <td class="c-bwho">Sharma, Nipoon</td>
+            <td class="c-bdate">May 18</td>
+          </tr>
+          <tr data-priority="high" data-status="review" data-nobug="true">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">3</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7408" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7408<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Wrong Prices are reflecting in BRIM system for Amendment scenarios<span class="b-nobug">NoBug</span></div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-rev">In Review</span></td>
+            <td class="c-barea">Demand to Portfolio</td>
+            <td class="c-bwho">KUMAR, SANDIP</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr data-priority="high" data-status="review" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">4</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7483" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7483<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">OSS: 612951/2026 &#x2014; Unable to view 3Partner Account and 1 End Customer Account in C4C application</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-rev">In Progress</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Bitale, Pooja</td>
+            <td class="c-bdate">May 18</td>
+          </tr>
+          <tr data-priority="high" data-status="open" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">5</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7491" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7491<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Subscription Contracts are not getting displayed when pulling the assets in CPQ</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-open">To Do</span></td>
+            <td class="c-barea">Order to Cash</td>
+            <td class="c-bwho">Goel, Tushar</td>
+            <td class="c-bdate">May 18</td>
+          </tr>
+          <tr data-priority="medium" data-status="review" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">6</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7336" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7336<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Quote got triggered even when Channel Partner is missing in Involved Parties Tab</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-rev">In Progress</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Palanisamy, Keerthana</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr data-priority="medium" data-status="open" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">7</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7384" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7384<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">DCCE and DECS services are not working for Amendment Opportunity</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-open">To Do</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Leydecker, Matti</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr data-priority="medium" data-status="review" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">8</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7421" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7421<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">The sales office and sales group were mapped incorrectly from Sales Cloud to Harmony</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-rev">In Review</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">CJ, Chandramathi</td>
+            <td class="c-bdate">May 15</td>
+          </tr>
+          <tr data-priority="medium" data-status="review" data-nobug="true">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">9</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7439" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7439<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Quote Status dropdown is not displayed when the Quote Status is &quot;Order Out from Signature&quot;<span class="b-nobug">NoBug</span></div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-rev">In Progress</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Thangarasu, Vijayakumar</td>
+            <td class="c-bdate">May 15</td>
+          </tr>
+          <tr data-priority="medium" data-status="review" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">10</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7443" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7443<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">For Sales org 0006 Amendment Scenario, Incorrect details are displayed under Config section</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-rev">In Progress</span></td>
+            <td class="c-barea">Order to Cash, Rev Accounting</td>
+            <td class="c-bwho">Mehrotra, Ankush</td>
+            <td class="c-bdate">May 15</td>
+          </tr>
+          <tr data-priority="medium" data-status="open" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">11</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7493" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7493<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Able to view Partner Discount for SAP Lean IX(SOM) as -0.0%</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-open">To Do</span></td>
+            <td class="c-barea">Demand to Portfolio</td>
+            <td class="c-bwho">Reddy, Akhilesh</td>
+            <td class="c-bdate">May 18</td>
+          </tr>
+          <tr data-priority="medium" data-status="open" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">12</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7495" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7495<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Contract Start Date and Contract End date is not visible for SAP LEAN IX(SOM) product in Configurator Screen</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-open">To Do</span></td>
+            <td class="c-barea">Order to Cash</td>
+            <td class="c-bwho">S, Ragunath</td>
+            <td class="c-bdate">May 18</td>
+          </tr>
+          <tr data-priority="medium" data-status="open" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">13</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7497" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7497<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">For Sales Org 011, the Back Office PO Change ODI is failing for the new line item</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-open">To Do</span></td>
+            <td class="c-barea">Order to Cash</td>
+            <td class="c-bwho">Tom, Ajay</td>
+            <td class="c-bdate">May 18</td>
+          </tr>
+          <!-- resolved separator -->
+          <tr id="bug-resolved-sep" class="bug-resolved-sep" title="Click to show resolved bugs">
+            <td colspan="8">
+              <span class="bug-sep-inner">
+                <span class="bug-sep-icon">+</span>
+                <span class="bug-sep-label">46 resolved &#x2014; click to show</span>
+              </span>
+            </td>
+          </tr>
+          <tr class="tr-resolved" data-priority="veryhigh" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">14</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7293" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7293<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">DCCE case is not trigger for CC Flex after all mandatory fields maintain</div></td>
+            <td><span class="jira-pri jira-pri-veryhigh"><svg width="11" height="14" viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 L8 6 L13 12"/><path d="M3 19 L8 13 L13 19"/></svg>Very High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Palanisamy, Keerthana</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">15</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7441" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7441<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Recurring Discount Automatically populating 100% but in Line items still the value is 0%</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Reddy, Akhilesh</td>
+            <td class="c-bdate">May 15</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">16</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7419" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7419<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">DCCE related fields are not transferred from CR To TR</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Kumar, Pranoy</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="true">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">17</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7418" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7418<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Product Option is visible in C4C after triggering of CCFLEX/VARResell Quote<span class="b-nobug">NoBug</span></div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Obsolete</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">18</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7417" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7417<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Indirect Partners are not transferred from CR to TR after discontinuing a CC Flex opportunity</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Kumar, Pranoy</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">19</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7415" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7415<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Indirect Partner contacts are not transferred from CR to TR after discontinuing a CC Flex opportunity</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Kumar, Pranoy</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">20</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7380" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7380<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Harmony opportunity Id not displayed for SAP Switzerland after opportunity has been discontinued in Sales Cloud</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">CJ, Chandramathi</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">21</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7374" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7374<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">DCCE approval is triggered for Indirect CC Flex Quotes even when discounting below LEP is not allowed</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Satya Raj Vemavarapu, Salman</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">22</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7347" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7347<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">DCCE approval is triggered even when Offer Expiration Date is blank</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Thangarasu, Vijayakumar</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">23</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7337" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7337<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Opportunity got created for VARRESELL scenario when the End customer is Public Sector</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">24</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7296" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7296<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">DCCE case is not trigger for CC Plus after all mandatory fields maintain</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Palanisamy, Keerthana</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">25</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7289" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7289<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Involved Parties section is hidden, and an indirect deal opportunity can be created without adding a channel partner</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Palanisamy, Keerthana</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">26</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7204" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7204<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">The proper asset not been added in the product section &#x2014; (Direct) New sales org-0010</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">Paul, Hannok P.</td>
+            <td class="c-bdate">May 7</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="true">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">27</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7161" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7161<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Prices are not populating for Product Addons only for SAP Signavio Cloud Product<span class="b-nobug">NoBug</span></div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Demand to Portfolio<br>Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 6</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">28</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7150" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7150<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Contracting Language field is Empty for Sales org (Ireland) 0059</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">Paul, Hannok P.</td>
+            <td class="c-bdate">May 6</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="true">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">29</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7148" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7148<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Products are not extended for New sales Orgs<span class="b-nobug">NoBug</span></div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Demand to Portfolio</td>
+            <td class="c-bwho">HN, Namratha</td>
+            <td class="c-bdate">May 6</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">30</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7127" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7127<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Price Lists are missing for the Sales Orgs &#x2014; VarResell and CCFlex</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 5</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="high" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">31</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7071" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7071<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Prices not appearing in CPQ for 19 New sales org onboarded on RD##</div></td>
+            <td><span class="jira-pri jira-pri-high"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L8 5 L13 11"/></svg>High</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">HN, Namratha</td>
+            <td class="c-bdate">May 4</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">32</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7444" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7444<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">For Sales Org 0010 Amendment Scenario, Incorrect details are displayed under Config section</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Obsolete</span></td>
+            <td class="c-barea">Order to Cash, Rev Accounting</td>
+            <td class="c-bwho">Shivakumar, Yogesh</td>
+            <td class="c-bdate">May 15</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">33</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7440" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7440<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Channel Partner Business Lead is not updating in the CPQ Quote even though updated in C4C</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 15</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">34</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7398" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7398<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">In CC Flex scenarios, users can edit the quote status and view &quot;Rejected&quot; option even when quote is in &quot;Deal In Progress&quot; status</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Sahu, Auro Kumar</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">35</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7377" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7377<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Opportunity transitions from Sales Cloud to Harmony not copying contact related information</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">CJ, Chandramathi</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">36</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7376" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7376<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">System allows auto approval for Indirect Quotes even when price is below LEP without showing validation message</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Sahu, Auro Kumar</td>
+            <td class="c-bdate">May 14</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">37</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7368" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7368<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">&#x2018;Replaced by opportunity ID&#x2019; &amp; &#x2018;Harmony Opp ID&#x2019; fields accept invalid values instead of restricting to valid Opp IDs</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">BS, Aishwarya</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">38</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7365" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7365<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Channel Partner error is displayed in Harmony for Direct Opportunity</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">CJ, Chandramathi</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">39</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7351" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7351<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">MCCA ID is not available in Icertis Info Tab for Existing Customer</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">40</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7342" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7342<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Restricted pricing fields are displayed in the Product section after adding a 1CMAT product to the quote for CC Flex</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Demand to Portfolio<br>Manage Partners</td>
+            <td class="c-bwho">Reddy, Akhilesh</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">41</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7339" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7339<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Deal Eligibility Status button is editable in the DECS section for VAR Resell</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Palanisamy, Keerthana</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">42</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7321" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7321<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Sales Cloud YOUR_JIRA_PROJECT-1208 - Rename Crystal Ball to Account Intelligence</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Account Intelligence</td>
+            <td class="c-bwho">Sicilia, Luke</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">43</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7295" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7295<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">The stage status is not updating in Outreach after initiating a discovery call</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Demand Generation</td>
+            <td class="c-bwho">Paul, Hannok P.</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">44</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7294" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7294<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Incorrect Partner Motion data and editable Deal Eligibility Status field in DECS section</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Palanisamy, Keerthana</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">45</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7292" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7292<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Billing Schedule field value should be Invoicing in Advance</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">46</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7288" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7288<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Order Placement Blocked for both DualCMAT and OneCMAT products</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Demand to Portfolio<br>Manage Partners</td>
+            <td class="c-bwho">Pandey, Gaurav</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">47</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7287" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7287<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Error message is not displayed when selecting the status as &quot;Lost&quot; without maintaining a competitor</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">CJ, Chandramathi</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">48</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7285" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7285<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Rename of Reason for Status description for Lost Status is not Correct for Price and Product</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">CJ, Chandramathi</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">49</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7284" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7284<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Reason for Status for the lost is not matching as per attached Excel</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">CJ, Chandramathi</td>
+            <td class="c-bdate">May 12</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">50</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7274" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7274<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">End Customer and Channel Partner not visible in Guided Selling Tab</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Obsolete</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 11</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">51</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7272" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7272<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Opportunity Type should show &quot;Partner Sales Opportunity&quot;</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 11</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">52</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7270" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7270<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">No Option to Select Channel Partner Contact during Opportunity Creation</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 11</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">53</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7268" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7268<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Unable to view Involved Parties Tab during Opportunity Creation</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Manage Partners</td>
+            <td class="c-bwho">Ghosh, Mukul</td>
+            <td class="c-bdate">May 11</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">54</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7264" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7264<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Distribution Channel is not displayed in the Opportunity header section after Opportunity creation</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Palanisamy, Keerthana</td>
+            <td class="c-bdate">May 11</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="true">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">55</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7263" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7263<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Contract Duration and Forecast Category fields are missing in New Opportunity creation page<span class="b-nobug">NoBug</span></div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Jothikrishnan, Gomathi</td>
+            <td class="c-bdate">May 11</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">56</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7257" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7257<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">Revenue Split section visible for Indirect Opportunities [OSS-595728]</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal<br>Manage Partners</td>
+            <td class="c-bwho">Jothikrishnan, Gomathi</td>
+            <td class="c-bdate">May 11</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">57</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7195" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7195<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">ODI step: &quot;PC Replication to IS&quot; got failed for the sales org 0006/Signavio</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Order to Cash<br>Rev Accounting</td>
+            <td class="c-bwho">BS, Aishwarya</td>
+            <td class="c-bdate">May 7</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="medium" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">58</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7190" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7190<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">1CMAT Signavio Product Displays Conflict Message</div></td>
+            <td><span class="jira-pri jira-pri-medium"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="4.5" width="11" height="2.2" rx="1.1"/><rect x="2.5" y="9.3" width="11" height="2.2" rx="1.1"/></svg>Medium</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Demand to Portfolio</td>
+            <td class="c-bwho">Kabsch, Doreen</td>
+            <td class="c-bdate">May 7</td>
+          </tr>
+          <tr class="tr-resolved" data-priority="low" data-status="resolved" data-nobug="false">
+            <td style="text-align:center;color:var(--ts);font-size:.72rem">59</td>
+            <td><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-7366" target="_blank" rel="noopener" style="font-size:.66rem">YOUR_JIRA_PROJECT-7366<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+            <td><div class="bug-sum">OSS 646362/2026 - Status field is automatically changing to &#x201C;Discontinued&#x201D; when random text is entered</div></td>
+            <td><span class="jira-pri jira-pri-low"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 L8 11 L13 5"/></svg>Low</span></td>
+            <td><span class="badge b-done">Done</span></td>
+            <td class="c-barea">Deal Execution &amp; Renewal</td>
+            <td class="c-bwho">BS, Aishwarya</td>
+            <td class="c-bdate">May 13</td>
+          </tr>
+          </tbody>
+        </table>
+      <div id="bug-empty" style="display:none;text-align:center;padding:2rem 1rem;color:var(--ts);font-size:.78rem;">
+        No items match the selected filters. &nbsp;<button onclick="document.querySelector('#bugs-section [data-filter=all]').click()" style="font-size:.72rem;font-weight:600;color:var(--br);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline">Clear filters</button>
+      </div>
+    </div>
+  </div>
+  <div class="section-card section-card--feat">
+    <div class="section-card__header">
+      <p class="section-card__label">Feature Testing Overview</p>
+    </div>
+    <div id="feat-section" class="feat-section">
+      <div class="tes-subheader" style="flex-wrap:wrap;gap:.4rem .6rem">
+        <div class="es-tags">
+          <button type="button" class="es-tag es-tag--active" data-ffilt="all">All</button>
+        </div>
+        <span class="tes-type-label">Type</span>
+        <div class="es-tags">
+          <button type="button" class="es-tag" data-ffilt="auto">Automated</button>
+          <button type="button" class="es-tag" data-ffilt="manual">Manual</button>
+        </div>
+        <span class="tes-type-label">Domain</span>
+        <div class="es-tags">
+          <button type="button" class="es-tag" data-ffilt="sc">Sales Cloud</button>
+          <button type="button" class="es-tag" data-ffilt="cpq">CPQ</button>
+          <button type="button" class="es-tag" data-ffilt="brim">BRIM</button>
+        </div>
+        <span class="tes-type-label">Dimension</span>
+        <div class="es-tags">
+          <button type="button" class="es-tag" data-ffilt="direct">Direct</button>
+          <button type="button" class="es-tag" data-ffilt="indirect">Indirect</button>
+          <button type="button" class="es-tag" data-ffilt="salesorg">Sales Org</button>
+          <button type="button" class="es-tag" data-ffilt="l2o">L2O</button>
+        </div>
+        <span id="feat-count" style="margin-left:auto;font-size:.72rem;color:var(--ts)">28 items</span>
+      </div>
+      <table class="feat-tbl">
+        <thead>
+          <tr>
+            <th style="width:2rem">#</th>
+            <th>Feature</th>
+            <th>Status</th>
+            <th>Summary</th>
+            <th>Test Execution</th>
+            <th style="white-space:nowrap">Auto TCs</th>
+          </tr>
+        </thead>
+                  <tbody>
+      <tr data-auto="yes" data-domain="brim" data-dim="salesorg">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">1</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1322" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1322<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-brim">BRIM</span>[YOUR-TEAM-LABEL] Onboarding new countries as part of RD##</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">77</span>&thinsp;/&thinsp;<span class="fw-exec-total">95</span></span><span class="fw-er fw-er-p">15P</span><span class="fw-er fw-er-f">2F</span><span class="fw-er fw-er-b">60B</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:81%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)">57</td>
+      </tr>
+      <tr data-auto="yes" data-domain="cpq" data-dim="salesorg">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">2</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1451" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1451<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-cpq">CPQ</span>[YOUR-TEAM-LABEL] PI##/## Sales Org Onboarding in CR CPQ</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">71</span>&thinsp;/&thinsp;<span class="fw-exec-total">76</span></span><span class="fw-er fw-er-p">18P</span><span class="fw-er fw-er-f">9F</span><span class="fw-er fw-er-b">43B</span><span class="fw-er fw-er-a">1A</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:93%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)">57</td>
+      </tr>
+      <tr data-auto="no" data-domain="cpq" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">3</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1212" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1212<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-cpq">CPQ</span>[YOUR-TEAM-LABEL][Indirect] Contracting Agreement Changes for T&amp;C — CCFlex and VAR Quotes</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">25</span>&thinsp;/&thinsp;<span class="fw-exec-total">25</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="yes" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">4</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-743" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-743<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] ETS Check — PI3 Updates</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">25</span>&thinsp;/&thinsp;<span class="fw-exec-total">25</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)">25</td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">5</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1249" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1249<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] Amendment and Outreach Improvements (Partner) High Touch only</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">20</span>&thinsp;/&thinsp;<span class="fw-exec-total">20</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="yes" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">6</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-893" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-893<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] TEM Create opportunity in C4Cv2.0</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">18</span>&thinsp;/&thinsp;<span class="fw-exec-total">18</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)">2</td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">7</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1274" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1274<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-dev">In Development</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][OPPT] Involved Parties and Contacts for Opportunity</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">1</span>&thinsp;/&thinsp;<span class="fw-exec-total">18</span></span><span class="fw-er fw-er-f">1F</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:6%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">8</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-860" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-860<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][OPPT] Sales Cloud — User Experience Enhancements</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">13</span>&thinsp;/&thinsp;<span class="fw-exec-total">14</span></span><span class="fw-er fw-er-p">11P</span><span class="fw-er fw-er-f">1F</span><span class="fw-er fw-er-a">1A</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:93%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="cpq" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">9</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-936" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-936<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-cpq">CPQ</span>[YOUR-TEAM-LABEL] PI##/## Partner Enhancements</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">22</span>&thinsp;/&thinsp;<span class="fw-exec-total">22</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">10</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1211" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1211<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-devc">Dev Completed</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][][OPPT] Change Business Model and Distribution Channel in Partner Motion HT</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">0</span>&thinsp;/&thinsp;<span class="fw-exec-total">9</span></span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:0%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">11</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1136" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1136<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-dev">In Development</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] Enhance copy functionality from CR &lt;&gt; TR</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">8</span>&thinsp;/&thinsp;<span class="fw-exec-total">8</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="yes" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">12</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1066" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1066<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] AR Check Enablement for Opportunity and Quote</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">6</span>&thinsp;/&thinsp;<span class="fw-exec-total">6</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)">6</td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">13</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-840" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-840<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][LDM]: Activity-based Outbound Lead Creation</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">5</span>&thinsp;/&thinsp;<span class="fw-exec-total">5</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">14</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1054" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1054<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] UI Changes for Indirect Opportunity</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">4</span>&thinsp;/&thinsp;<span class="fw-exec-total">4</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="yes" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">15</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-972" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-972<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] Merge Discontinued / List Reasons incl Competitor with TR per Distribution Channel</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">2</span>&thinsp;/&thinsp;<span class="fw-exec-total">2</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)">2</td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">16</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1280" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1280<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>: Enable removing contact relationships in C4C</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">2</span>&thinsp;/&thinsp;<span class="fw-exec-total">2</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="cpq" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">17</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1194" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1194<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-cpq">CPQ</span>[YOUR-TEAM-LABEL] PI##/## General Enhancements</td>
+        <td><span style="font-size:.65rem;color:var(--ts);font-style:italic">TCs consolidated under YOUR_JIRA_PROJECT-1451</span></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">18</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1209" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1209<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][OPPT] Account cannot be Public Sector for CCFlex and CCPlus opportunity</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">2</span>&thinsp;/&thinsp;<span class="fw-exec-total">2</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">19</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-959" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-959<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] Clean up Revenue Split view for TEM/Partner</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">4</span>&thinsp;/&thinsp;<span class="fw-exec-total">4</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">20</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1448" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1448<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][LDM]: Refine Lead Stage Reasons at SQL Stage</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">2</span>&thinsp;/&thinsp;<span class="fw-exec-total">2</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">21</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1150" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1150<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] Trigger DCCE case only after all mandatory checks</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">1</span>&thinsp;/&thinsp;<span class="fw-exec-total">1</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">22</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1225" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1225<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-obs">Obsolete</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] SAP Custom AI Service: AskQ2C Agent as URL Mashup in OPPT</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">1</span>&thinsp;/&thinsp;<span class="fw-exec-total">1</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">23</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1218" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1218<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][OPPT] [Cloud Choice Plus] Scv2 Standardized Activity-Based Commission Model</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">1</span>&thinsp;/&thinsp;<span class="fw-exec-total">1</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="yes" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">24</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-756" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-756<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][OPPT] Attachment Type in C4C</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">1</span>&thinsp;/&thinsp;<span class="fw-exec-total">1</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)">1</td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">25</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-792" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-792<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][MDM][OPPT] C4C Open Transaction Check for Contact Deactivation — Part 1 (SAP Sales Cloud)</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">1</span>&thinsp;/&thinsp;<span class="fw-exec-total">1</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">26</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-795" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-795<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfd">Ready for Deployment</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [MDM][OPPT] C4C Usability — Hide Unneeded fields</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">1</span>&thinsp;/&thinsp;<span class="fw-exec-total">1</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">27</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1293" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1293<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL]: Business Roles &amp; Authorizations SCV2 for AE Role (Direct Role)</td>
+        <td><span style="font-size:.65rem;color:var(--ts);font-style:italic">TCs consolidated under YOUR_JIRA_PROJECT-1451</span></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">28</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1208" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1208<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-val">Validation</span></td>
+        <td class="feat-sum"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] SAP Custom AI Service: CrystalBall &amp; CompeteGPT</td>
+        <td><div class="fw-exec"><div class="fw-exec-top"><span class="fw-exec-frac"><span class="fw-exec-done">12</span>&thinsp;/&thinsp;<span class="fw-exec-total">12</span></span><span class="fw-done">&#10003;&thinsp;Done</span></div><div class="fw-exec-track"><div class="fw-exec-fill" style="width:100%"></div></div></div></td>
+        <td style="text-align:center;color:var(--ts)"><span style="color:var(--ts)">—</span></td>
+      </tr>
+      <tr id="feat-oos-sep" class="feat-oos-sep">
+        <td colspan="6">
+          <div class="feat-oos-inner">
+            <span class="feat-oos-icon">+</span>
+            <span class="feat-oos-label">16 out of scope — click to show</span>
+          </div>
+        </td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">29</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1104" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1104<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][MDM] Additional Master Account Fields needed in C4C<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — MDG concepts cannot be validated as part of FET</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">30</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1251" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1251<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL]: [MDM] Sales Cloud Product Filter Configuration<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Testing team lacks access to Product Group config</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">31</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1390" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1390<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[] [MDM] SCV2 — Replicate Additional Sales Direct Relationships from CRM to C4C<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — CRM-only changes, outside C4C/CPQ/BRIM scope</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">32</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-852" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-852<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][MDM][OPPT] C4C Open Transaction Check for Contact Deactivation — Part 2 (SAP CRM)<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — API/backend testing not in FET scope</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">33</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-881" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-881<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] Manage Deal — Indirect: Attachment syncup between C4Cv2 and SAP4Me<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Low Touch, not in scope for Test Factory</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">34</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-922" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-922<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][LDM]: Embedded SAC Reports<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Access/role changes (ESAC admin required)</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="indirect">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">35</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-952" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-952<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] Update Partner Opportunities to Partner Store (API)<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Low Touch, not in scope for Test Factory</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">36</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-975" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-975<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL][MDM] CI/CD Transportation Management Part 1 — Cutover {Enabler}<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Cutover activity, not FET</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="cpq" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">37</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1180" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1180<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-cpq">CPQ</span>[YOUR-TEAM-LABEL] Performance Enhancements<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Enabler, no functional test cases assigned</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="cpq" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">38</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1189" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1189<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-cpq">CPQ</span>[YOUR-TEAM-LABEL] CPQ2.0 Team MaxAttention Service Integration Check for RD##.26 May Go-Live<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Enabler, no functional test cases assigned</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">39</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1190" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1190<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rdev">Ready for Development</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] C4CV2.0 Team MaxAttention Service Integration Check for RD##.26 May Go-Live<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Enabler, no functional test cases assigned</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">40</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1191" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1191<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-dev">In Development</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] Integration Team — MaxAttention Service Integration Check for RD##.26 May Go-Live<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Enabler, no functional test cases assigned</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="brim" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">41</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1192" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1192<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rdev">Ready for Development</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-brim">BRIM</span>[YOUR-TEAM-LABEL] MaxAttention Service Going Live Support for RD##.26 May Go-Live<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Enabler, no functional test cases assigned</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="cpq" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">42</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1226" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1226<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-cpq">CPQ</span>Validate DevIT and reduce Technical Debt in PI##/##<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Enabler, no functional test cases assigned</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="direct">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">43</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1324" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1324<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [OPPT] Roll-out RD## — Cutover Activity<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — Cutover activity, not FET</span></td>
+      </tr>
+      <tr class="tr-oos" style="display:none" data-auto="no" data-domain="sc" data-dim="l2o">
+        <td style="text-align:center;color:var(--ts);font-size:.72rem;width:2rem">44</td>
+        <td style="white-space:nowrap"><a class="jira-btn" href="https://jira.<YOUR-DOMAIN>/browse/YOUR_JIRA_PROJECT-1409" target="_blank" rel="noopener">YOUR_JIRA_PROJECT-1409<svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 8 2M4 2h4v4"/></svg></a></td>
+        <td><span class="fs fs-rfiv">Ready for In Validation</span></td>
+        <td class="feat-sum" colspan="3"><span class="fd-dom fd-dom-sc">Sales Cloud</span>[YOUR-TEAM-LABEL] [SCV2][MDM] Automatic Employee ID Mapping with MDG System ID in Sales Cloud<br><span style="font-size:.65rem;color:var(--ts)">Out of Test Scope — MDG / Enabler</span></td>
+      </tr>
+        </tbody>
+      </table>
+      <div id="feat-empty" style="display:none;text-align:center;padding:2rem;color:var(--ts);font-size:.82rem">
+        No features match the selected filters.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  var bar = document.querySelector('.top-bar');
+  var lastY = 0;
+  var upCount = 0;
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY;
+    if (y <= 0) {
+      bar.classList.remove('top-bar--hidden');
+      upCount = 0;
+    } else if (y > lastY) {
+      bar.classList.add('top-bar--hidden');
+      upCount = 0;
+    } else if (y < lastY) {
+      upCount++;
+      if (upCount >= 2) {
+        bar.classList.remove('top-bar--hidden');
+      }
+    }
+    lastY = y;
+  }, { passive: true });
+}());
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  var LABELS = ['','5th','6th','7th','8th','11th','12th','13th','14th','15th','18th','19th','20th','21st','22nd'];
+  var TODAY_IDX = 10;
+  var DATA = {
+    all:    { planned: [0,2,21,59,97,177,237,293,328,335,375,375,375,375,375],    actual: [0,4,5,11,20,23,24,117,165,234,325,null,null,null,null] },
+    auto:   { planned: [0,0,17,33,50,83,100,117,132,132,132,132,132,132,132],     actual: [0,0,0,4,13,16,16,39,55,89,141,null,null,null,null] },
+    manual: { planned: [0,2,4,26,47,94,137,176,196,203,243,243,243,243,243],      actual: [0,4,5,7,7,7,8,78,110,145,184,null,null,null,null] }
+  };
+
+  function drawRoundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  var todayPlugin = {
+    id: 'todayLine',
+    beforeDatasetsDraw: function (chart) {
+      var ctx = chart.ctx;
+      var xScale = chart.scales.x;
+      var yScale = chart.scales.y;
+      var x = xScale.getPixelForValue(LABELS[TODAY_IDX]);
+      var top = yScale.top;
+      var bottom = yScale.bottom;
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(0,112,242,0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
+      ctx.stroke();
+      ctx.restore();
+    },
+    afterDraw: function (chart) {
+      var ctx = chart.ctx;
+      var xScale = chart.scales.x;
+      var yScale = chart.scales.y;
+      var x = xScale.getPixelForValue(LABELS[TODAY_IDX]);
+      var top = yScale.top;
+      var bw = 48, bh = 18;
+      ctx.save();
+      ctx.fillStyle = '#0070f2';
+      drawRoundRect(ctx, x - bw / 2, top - 24, bw, bh, 4);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 10px "72", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('TODAY', x, top - 24 + bh / 2);
+      ctx.restore();
+    }
+  };
+
+  var STATS = {
+    all:    { planned: 375, executed: 325, pct: 87, remaining: 50,  rpct: 13 },
+    auto:   { planned: 149, executed: 141, pct: 95, remaining: 8,   rpct: 5  },
+    manual: { planned: 226, executed: 184, pct: 81, remaining: 42,  rpct: 19 }
+  };
+  var statsEl = document.getElementById('burnupStats');
+  var chart = new Chart(document.getElementById('burnupChart'), {
+    type: 'line',
+    plugins: [todayPlugin],
+    data: {
+      labels: LABELS,
+      datasets: [
+        { label: 'Planned', data: DATA.all.planned, borderColor: '#89d1ff', borderWidth: 2, pointBackgroundColor: '#89d1ff', pointRadius: function(ctx){ return ctx.dataIndex === 0 ? 0 : 3; }, pointHoverRadius: function(ctx){ return ctx.dataIndex === 0 ? 0 : 5; }, tension: 0.35, fill: false, order: 2 },
+        { label: 'Actual',  data: DATA.all.actual,  borderColor: '#0040b0', borderWidth: 2, pointBackgroundColor: '#0040b0', pointRadius: function(ctx){ return ctx.dataIndex === 0 ? 0 : 3; }, pointHoverRadius: function(ctx){ return ctx.dataIndex === 0 ? 0 : 5; }, tension: 0.35, fill: false, spanGaps: false, order: 1 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 52, left: 4, right: 4, bottom: 4 } },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 11, family: '"72", Arial' }, color: '#556475' },
+          title: { display: true, text: 'May 2026', font: { size: 11, family: '"72", Arial' }, color: '#8ea4b8' }
+        },
+        y: {
+          min: -8, max: 400,
+          afterBuildTicks: function (axis) { axis.ticks = [0, 94, 188, 281, 375].map(function (v) { return { value: v }; }); },
+          grid: { display: false },
+          ticks: { font: { size: 11, family: '"72", Arial' }, color: '#556475' },
+          title: { display: true, text: '# of Test Executions', font: { size: 11, family: '"72", Arial' }, color: '#8ea4b8' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: function(item) { return item.dataIndex !== 0; },
+          backgroundColor: function (ctx) {
+            var pts = ctx.tooltip.dataPoints;
+            if (pts && pts[0].datasetIndex === 1) return 'rgba(0,64,176,0.88)';
+            return 'rgba(27,144,255,0.82)';
+          },
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.88)',
+          titleFont: { size: 11, weight: 'bold', family: '"72", Arial' },
+          bodyFont:  { size: 10, family: '"72", Arial' },
+          padding: { x: 10, y: 6 },
+          cornerRadius: 6,
+          displayColors: false,
+          callbacks: {
+            title: function (items) {
+              var item = items[0];
+              var idx  = item.dataIndex;
+              var ds   = item.chart.data.datasets[item.datasetIndex].data;
+              var val  = ds[idx];
+              var prev = idx > 0 ? (ds[idx - 1] || 0) : 0;
+              return '+' + (val - prev) + ' TCs';
+            },
+            label: function (item) {
+              var val = item.parsed.y;
+              return item.datasetIndex === 0
+                ? val + ' of 375 planned'
+                : val + ' of 375 · actual';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  document.querySelectorAll('[data-view]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('[data-view]').forEach(function (b) { b.classList.remove('es-tag--active'); });
+      btn.classList.add('es-tag--active');
+      var v = btn.dataset.view;
+      chart.data.datasets[0].data = DATA[v].planned;
+      chart.data.datasets[1].data = DATA[v].actual;
+      chart.update();
+      var s = STATS[v];
+      statsEl.innerHTML = 'Planned <strong>' + s.planned + '</strong>&ensp;·&ensp;Executed <strong>' + s.executed + '</strong> · ' + s.pct + '%&ensp;·&ensp;Remaining <strong>' + s.remaining + '</strong> · ' + s.rpct + '%';
+    });
+  });
+
+  /* ── Donut filter ── */
+  var ES_DATA = {
+    all:      { passed:178, failed:29, blocked:112, aborted:6,  notstarted:50  },
+    direct:   { passed:46,  failed:11, blocked:9,   aborted:4,  notstarted:10  },
+    indirect: { passed:90,  failed:7,  blocked:0,   aborted:1,  notstarted:17  },
+    salesorg: { passed:33,  failed:11, blocked:103, aborted:1,  notstarted:23  },
+    l2o:      { passed:9,   failed:0,  blocked:0,   aborted:0,  notstarted:0   }
+  };
+
+  function updateDonut(view) {
+    var d = ES_DATA[view];
+    var keys = ['passed','failed','blocked','aborted','notstarted'];
+    var counts = keys.map(function(k){ return d[k]; });
+    var total = counts.reduce(function(a,b){ return a+b; }, 0);
+    var C = 376.99, GAP = 1.5;
+    var nonZero = counts.filter(function(c){ return c > 0; }).length;
+    var arcSpace = nonZero > 0 ? C - nonZero * GAP : C;
+    var cum = GAP;
+    counts.forEach(function(count, i) {
+      var da = total > 0 ? (count / total * arcSpace) : 0;
+      var el = document.getElementById('es-c' + i);
+      if (el) {
+        el.setAttribute('stroke-dasharray', da.toFixed(2) + ' ' + C);
+        el.setAttribute('stroke-dashoffset', '-' + cum.toFixed(2));
+      }
+      if (da > 0) cum += da + GAP;
+    });
+    var executed = d.passed + d.failed + d.blocked + d.aborted;
+    var pct = total > 0 ? Math.round(executed / total * 100) : 0;
+    document.querySelector('.exec-big-pct').textContent = pct + '%';
+    keys.forEach(function(k) {
+      var el = document.querySelector('[data-es-key="' + k + '"]');
+      if (el) el.textContent = d[k] + ' / ' + total;
+    });
+  }
+
+  document.querySelectorAll('[data-es-view]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-es-view]').forEach(function(b){ b.classList.remove('es-tag--active'); });
+      btn.classList.add('es-tag--active');
+      updateDonut(btn.dataset.esView);
+    });
+  });
+
+  /* ── Bug Trend Chart ── */
+  var BUG_DATA = {
+    all:    { added:[0,1,2,5,8,9,25,36,45,52,59,null,null,null,null],    resolved:[0,0,1,3,5,6,8,11,30,39,46,null,null,null,null] },
+    vh:     { added:[0,1,1,1,1,1,2,2,2,2,3,null,null,null,null],          resolved:[0,0,0,0,0,0,1,1,1,1,1,null,null,null,null] },
+    high:   { added:[0,0,1,2,4,4,9,14,19,22,24,null,null,null,null],      resolved:[0,0,0,1,2,2,3,5,12,16,21,null,null,null,null] },
+    medium: { added:[0,0,0,2,3,4,12,17,21,25,28,null,null,null,null],     resolved:[0,0,1,2,3,4,4,5,15,19,20,null,null,null,null] },
+    low:    { added:[0,0,0,0,0,0,2,3,3,3,4,null,null,null,null],           resolved:[0,0,0,0,0,0,0,0,2,3,4,null,null,null,null] }
+  };
+
+  var radiusFn = function(ctx) {
+    if (ctx.dataIndex === 0) return 0;
+    var data = ctx.dataset.data;
+    var cur = data[ctx.dataIndex], prev = data[ctx.dataIndex - 1];
+    if (cur === null || cur === undefined) return 0;
+    return cur > (prev || 0) ? 3 : 0;
+  };
+  var hoverFn = function(ctx) {
+    if (ctx.dataIndex === 0) return 0;
+    var data = ctx.dataset.data;
+    var cur = data[ctx.dataIndex], prev = data[ctx.dataIndex - 1];
+    if (cur === null || cur === undefined) return 0;
+    return cur > (prev || 0) ? 5 : 0;
+  };
+
+  var bugChart = new Chart(document.getElementById('bugChart'), {
+    type: 'line',
+    plugins: [todayPlugin],
+    data: {
+      labels: LABELS,
+      datasets: [
+        {
+          label: 'Bugs Added',
+          data: BUG_DATA.all.added,
+          borderColor: '#000000',
+          backgroundColor: 'transparent',
+          fill: false,
+          borderWidth: 2.5,
+          tension: 0.35,
+          pointBackgroundColor: '#000000',
+          pointRadius: radiusFn,
+          pointHoverRadius: hoverFn,
+          pointHitRadius: 10,
+          spanGaps: false,
+          order: 1
+        },
+        {
+          label: 'Bugs Resolved',
+          data: BUG_DATA.all.resolved,
+          borderColor: '#188918',
+          backgroundColor: 'transparent',
+          fill: false,
+          borderWidth: 2.5,
+          tension: 0.35,
+          pointBackgroundColor: '#188918',
+          pointRadius: radiusFn,
+          pointHoverRadius: hoverFn,
+          pointHitRadius: 10,
+          spanGaps: false,
+          order: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 52, left: 4, right: 4, bottom: 0 } },
+      interaction: { mode: 'nearest', intersect: true },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: function(item) {
+            if (item.dataIndex === 0) return false;
+            var data = item.dataset.data;
+            var cur = data[item.dataIndex];
+            return cur !== null && cur !== undefined;
+          },
+          backgroundColor: function(ctx) {
+            var pts = ctx.tooltip.dataPoints;
+            if (pts && pts[0].datasetIndex === 1) return 'rgba(24,137,24,0.88)';
+            return 'rgba(0,0,0,0.88)';
+          },
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.88)',
+          titleFont: { size: 11, weight: 'bold', family: '"72", Arial' },
+          bodyFont:  { size: 10, family: '"72", Arial' },
+          padding: { x: 10, y: 6 },
+          cornerRadius: 6,
+          displayColors: false,
+          callbacks: {
+            title: function(items) {
+              var item = items[0];
+              var idx  = item.dataIndex;
+              var ds   = item.chart.data.datasets[item.datasetIndex].data;
+              var val  = ds[idx] || 0;
+              var prev = idx > 0 ? (ds[idx - 1] || 0) : 0;
+              var delta = val - prev;
+              if (item.datasetIndex === 0) {
+                return delta > 0 ? '+' + delta + ' added' : val + ' total added';
+              }
+              return delta > 0 ? '+' + delta + ' resolved' : val + ' total resolved';
+            },
+            label: function(item) {
+              if (item.datasetIndex === 1) {
+                return item.parsed.y + ' of 53';
+              }
+              return '';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 11, family: '"72", Arial' }, color: '#556475' },
+          title: { display: true, text: 'May 2026', font: { size: 11, family: '"72", Arial' }, color: '#8ea4b8' }
+        },
+        y: {
+          min: 0,
+          suggestedMax: 60,
+          grid: { display: false },
+          ticks: { font: { size: 11, family: '"72", Arial' }, color: '#556475', stepSize: 10 },
+          title: { display: true, text: '# of Bugs', font: { size: 11, family: '"72", Arial' }, color: '#8ea4b8' }
+        }
+      }
+    }
+  });
+
+  document.querySelectorAll('[data-bug-view]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-bug-view]').forEach(function(b) {
+        b.classList.remove('tes-tab--active', 'es-tag--active');
+      });
+      var isFull = btn.classList.contains('tes-tab');
+      btn.classList.add(isFull ? 'tes-tab--active' : 'es-tag--active');
+      var v = btn.dataset.bugView;
+      bugChart.data.datasets[0].data = BUG_DATA[v].added;
+      bugChart.data.datasets[1].data = BUG_DATA[v].resolved;
+      bugChart.update('none');
+    });
+  });
+
+  // Bug table filter & resolved toggle
+  (function () {
+    var bugSec = document.getElementById('bugs-section');
+    if (!bugSec) return;
+    var bugActive = new Set();
+    var resolvedCollapsed = true;
+
+    var bugFilterMap = {
+      'veryhigh':   { group: 'priority', test: function(tr){ return tr.dataset.priority === 'veryhigh'; } },
+      'high':       { group: 'priority', test: function(tr){ return tr.dataset.priority === 'high'; } },
+      'medium':     { group: 'priority', test: function(tr){ return tr.dataset.priority === 'medium'; } },
+      'low':        { group: 'priority', test: function(tr){ return tr.dataset.priority === 'low'; } },
+      'todo':       { group: 'status',   test: function(tr){ return tr.dataset.status === 'open'; } },
+      'inprogress': { group: 'status',   test: function(tr){ var b=tr.querySelector('.badge.b-rev'); return b && b.textContent.trim()==='In Progress'; } },
+      'inreview':   { group: 'status',   test: function(tr){ var b=tr.querySelector('.badge.b-rev'); return b && b.textContent.trim()==='In Review'; } },
+      'done':       { group: 'status',   test: function(tr){ return tr.dataset.status === 'resolved'; } }
+    };
+
+    function applyBugFilter() {
+      var groupMap = {};
+      bugActive.forEach(function(f) {
+        var g = bugFilterMap[f].group;
+        if (!groupMap[g]) groupMap[g] = [];
+        groupMap[g].push(f);
+      });
+      var vis = 0;
+      document.querySelectorAll('.bug-tbl tbody tr').forEach(function (tr) {
+        if (tr.id === 'bug-resolved-sep') return;
+        if (resolvedCollapsed && tr.classList.contains('tr-resolved')) { tr.style.display = 'none'; return; }
+        var show = Object.keys(groupMap).length === 0 || Object.keys(groupMap).every(function(g) {
+          return groupMap[g].some(function(f) { return bugFilterMap[f].test(tr); });
+        });
+        tr.style.display = show ? 'table-row' : 'none';
+        if (show) vis++;
+      });
+      bugSec.querySelectorAll('[data-filter]').forEach(function (b) {
+        b.classList.toggle('es-tag--active', b.dataset.filter === 'all' ? bugActive.size === 0 : bugActive.has(b.dataset.filter));
+      });
+      var el = document.getElementById('bug-count');
+      if (el) el.textContent = vis + ' items selected';
+      var empty = document.getElementById('bug-empty');
+      if (empty) empty.style.display = vis === 0 ? '' : 'none';
+    }
+
+    function setResolvedCollapsed(collapsed) {
+      resolvedCollapsed = collapsed;
+      var sep = document.getElementById('bug-resolved-sep');
+      if (sep) {
+        sep.querySelector('.bug-sep-icon').textContent  = collapsed ? '+' : '\u2212';
+        sep.querySelector('.bug-sep-label').textContent = collapsed
+          ? '46 resolved — click to show'
+          : '46 resolved — click to hide';
+        sep.title = collapsed ? 'Click to show resolved bugs' : 'Click to hide resolved bugs';
+      }
+      applyBugFilter();
+    }
+
+    function toggleBugFilter(f) {
+      if (f === 'all') { bugActive.clear(); }
+      else if (bugActive.has(f)) { bugActive.delete(f); }
+      else { bugActive.add(f); }
+      applyBugFilter();
+    }
+
+    var sep = document.getElementById('bug-resolved-sep');
+    if (sep) {
+      sep.addEventListener('click', function () {
+        if (!resolvedCollapsed) bugActive.delete('done');
+        setResolvedCollapsed(!resolvedCollapsed);
+      });
+    }
+
+    bugSec.querySelectorAll('[data-filter]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (btn.dataset.filter === 'done' && resolvedCollapsed) setResolvedCollapsed(false);
+        toggleBugFilter(btn.dataset.filter);
+      });
+    });
+
+    setResolvedCollapsed(true);
+  }());
+
+
+  // Feature Testing Overview filter + OOS toggle
+  (function () {
+    var featSec = document.getElementById('feat-section');
+    if (!featSec) return;
+    var featActive = new Set();
+    var oosCollapsed = true;
+    var featFilterMap = {
+      'auto':     { group:'type', test:function(tr){return tr.dataset.auto==='yes';} },
+      'manual':   { group:'type', test:function(tr){return tr.dataset.auto==='no';} },
+      'sc':       { group:'domain', test:function(tr){return tr.dataset.domain==='sc';} },
+      'cpq':      { group:'domain', test:function(tr){return tr.dataset.domain==='cpq';} },
+      'brim':     { group:'domain', test:function(tr){return tr.dataset.domain==='brim';} },
+      'direct':   { group:'dim', test:function(tr){return tr.dataset.dim==='direct';} },
+      'indirect': { group:'dim', test:function(tr){return tr.dataset.dim==='indirect';} },
+      'salesorg': { group:'dim', test:function(tr){return tr.dataset.dim==='salesorg';} },
+      'l2o':    { group:'dim', test:function(tr){return tr.dataset.dim==='l2o';} }
+    };
+    function applyFeatFilter() {
+      var groupMap = {};
+      featActive.forEach(function(f){
+        var g = featFilterMap[f].group;
+        if (!groupMap[g]) groupMap[g] = [];
+        groupMap[g].push(f);
+      });
+      var vis = 0;
+      document.querySelectorAll('.feat-tbl tbody tr').forEach(function(tr) {
+        if (tr.id === 'feat-oos-sep') return;
+        if (oosCollapsed && tr.classList.contains('tr-oos')) { tr.style.display='none'; return; }
+        var show = Object.keys(groupMap).length === 0 || Object.keys(groupMap).every(function(g){
+          return groupMap[g].some(function(f){ return featFilterMap[f].test(tr); });
+        });
+        tr.style.display = show ? 'table-row' : 'none';
+        if (show) vis++;
+      });
+      featSec.querySelectorAll('[data-ffilt]').forEach(function(b){
+        b.classList.toggle('es-tag--active', b.dataset.ffilt==='all' ? featActive.size===0 : featActive.has(b.dataset.ffilt));
+      });
+      var el = document.getElementById('feat-count');
+      if (el) el.textContent = vis + ' items';
+      var empty = document.getElementById('feat-empty');
+      if (empty) empty.style.display = vis === 0 ? '' : 'none';
+    }
+    function setOosCollapsed(collapsed) {
+      oosCollapsed = collapsed;
+      var sep = document.getElementById('feat-oos-sep');
+      if (sep) {
+        sep.querySelector('.feat-oos-icon').textContent = collapsed ? '+' : '−';
+        sep.querySelector('.feat-oos-label').textContent = collapsed
+          ? '16 out of scope — click to show'
+          : '16 out of scope — click to hide';
+      }
+      applyFeatFilter();
+    }
+    var osSep = document.getElementById('feat-oos-sep');
+    if (osSep) osSep.addEventListener('click', function(){ setOosCollapsed(!oosCollapsed); });
+    featSec.querySelectorAll('[data-ffilt]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var f = btn.dataset.ffilt;
+        if (f === 'all') { featActive.clear(); }
+        else if (featActive.has(f)) { featActive.delete(f); }
+        else { featActive.add(f); }
+        applyFeatFilter();
+      });
+    });
+    setOosCollapsed(true);
+  }());
+
+  // bug-sum: add full-text tooltip when clamped
+  (function () {
+    document.querySelectorAll('.bug-sum').forEach(function (el) {
+      if (el.scrollHeight <= el.offsetHeight + 2) return;
+      var text = Array.from(el.childNodes)
+        .filter(function (n) { return n.nodeType === 3; })
+        .map(function (n) { return n.textContent.trim(); })
+        .join(' ');
+      if (!text) text = el.textContent.trim();
+      var tip = document.createElement('div');
+      tip.className = 'bug-sum__tip';
+      tip.textContent = text;
+      var td = el.closest('td');
+      td.classList.add('has-sum-tip');
+      td.appendChild(tip);
+    });
+  }());
+
+  // assignee avatars: deterministic colour circle with initials
+  (function () {
+    var PAL = [
+      '#1872CE','#107E3E','#B44F00','#6E2090','#0F828F',
+      '#C2185B','#00627A','#354A5E','#8B5E00','#2D7F5E',
+      '#5040A0','#B03060','#006480','#7B4B2A','#1D5C8A',
+      '#4B7A1A','#8B2252','#3D6B6B','#6B3A6B','#2E5A2E'
+    ];
+    function initials(name) {
+      var p = name.split(', ');
+      if (p.length >= 2) return (p[0][0] + p[1][0]).toUpperCase();
+      var w = name.trim().split(/\s+/);
+      return (w[0][0] + (w[w.length - 1][0] || '')).toUpperCase();
+    }
+    var nameColor = {}, idx = 0;
+    document.querySelectorAll('td.c-bwho').forEach(function (td) {
+      var name = td.textContent.trim();
+      if (!name || name === '—') return;
+      if (!nameColor[name]) nameColor[name] = PAL[idx++ % PAL.length];
+    });
+    document.querySelectorAll('td.c-bwho').forEach(function (td) {
+      var name = td.textContent.trim();
+      if (!name || name === '—') return;
+      var av = document.createElement('span');
+      av.className = 'b-av';
+      av.style.background = nameColor[name];
+      av.textContent = initials(name);
+      var txt = document.createElement('span');
+      txt.textContent = name;
+      var wrap = document.createElement('span');
+      wrap.className = 'b-av-wrap';
+      wrap.appendChild(av);
+      wrap.appendChild(txt);
+      td.textContent = '';
+      td.appendChild(wrap);
+    });
+  }());
+
+  // donut hover: update centre label on segment / legend-row hover
+  (function () {
+    var SEG = {
+      'es-c0': { key:'passed',     label:'PASSED'      },
+      'es-c1': { key:'failed',     label:'FAILED'      },
+      'es-c2': { key:'blocked',    label:'BLOCKED'     },
+      'es-c3': { key:'aborted',    label:'ABORTED'     },
+      'es-c4': { key:'notstarted', label:'NOT STARTED' }
+    };
+    var bigPct = document.querySelector('.exec-big-pct');
+    var sub    = document.querySelector('.exec-sub');
+    var donut  = document.querySelector('.exec-donut');
+
+    function activeData() {
+      var v = document.querySelector('[data-es-view].es-tag--active');
+      return ES_DATA[(v && v.dataset.esView) || 'all'];
+    }
+    function showSeg(key, label, segEl) {
+      bigPct.dataset.def = bigPct.textContent;
+      sub.dataset.def    = sub.textContent;
+      bigPct.textContent = activeData()[key];
+      sub.textContent    = label;
+      donut.classList.add('is-hovering');
+      if (segEl) segEl.style.opacity = '1';
+    }
+    function restore(segEl) {
+      if (bigPct.dataset.def) bigPct.textContent = bigPct.dataset.def;
+      if (sub.dataset.def)    sub.textContent    = sub.dataset.def;
+      donut.classList.remove('is-hovering');
+      if (segEl) segEl.style.opacity = '';
+    }
+
+    Object.keys(SEG).forEach(function (id) {
+      var meta = SEG[id], el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('mouseenter', function () { showSeg(meta.key, meta.label, el); });
+      el.addEventListener('mouseleave', function () { restore(el); });
+    });
+
+    document.querySelectorAll('.exec-row').forEach(function (row) {
+      var countEl = row.querySelector('[data-es-key]');
+      if (!countEl) return;
+      var key   = countEl.dataset.esKey;
+      var label = key === 'notstarted' ? 'NOT STARTED' : key.toUpperCase();
+      var segId = Object.keys(SEG).find(function (id) { return SEG[id].key === key; });
+      var segEl = segId ? document.getElementById(segId) : null;
+      row.style.cursor = 'pointer';
+      row.addEventListener('mouseenter', function () { showSeg(key, label, segEl); });
+      row.addEventListener('mouseleave', function () { restore(segEl); });
+    });
+  }());
+
+  // ob-tip: cap at 5 rows, append "··· N more" if overflow
+  (function () {
+    document.querySelectorAll('.ob-tip').forEach(function (tip) {
+      var rows = Array.from(tip.querySelectorAll('.ob-tip-row'));
+      if (rows.length === 0) { tip.style.cssText = 'display:none!important'; return; }
+      if (rows.length > 5) {
+        var overflow = rows.length - 5;
+        rows.slice(5).forEach(function (r) { r.style.display = 'none'; });
+        var more = document.createElement('div');
+        more.className = 'ob-tip-more';
+        more.textContent = '· · ·  ' + overflow + ' more';
+        tip.appendChild(more);
+      }
+    });
+  }());
+
+}());
+</script>
+
+</body>
+</html>

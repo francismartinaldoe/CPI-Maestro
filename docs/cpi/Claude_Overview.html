@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Claude Code — System Overview v4</title>
+<style>
+:root{--br:#0070f2;--dk:#0050c8;--sky:#4db1ff;--fog:#bae8ff;--t:#e8f2ff;
+      --n950:#000d2e;--pos:#256f3a;--wrn:#e76500;--err:#aa0808;--ts:#6e7d9a;
+      --s1:0 2px 8px rgba(0,112,242,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'72',Arial,Helvetica,sans-serif;background:#f5f6f7;color:#12171c;font-size:.875rem;line-height:1.6;padding-top:56px}
+.top-bar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;background:#f5f6f7;border-bottom:1px solid #e8eaed;transition:transform 220ms ease-in-out}
+.top-bar__inner{width:100%;max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center}
+.top-bar__logo{height:32px;width:auto;display:block;flex-shrink:0}
+.top-bar__divider{width:1px;height:22px;background:#d5dadd;margin:0 16px;flex-shrink:0}
+.top-bar__title-group{display:flex;align-items:baseline;gap:14px}
+.top-bar__product{font-size:17px;font-weight:700;color:#12171c;white-space:nowrap}
+.top-bar__app{font-size:17px;font-weight:400;color:#354a5f;white-space:nowrap}
+.top-bar__date{margin-left:auto;font-size:12px;color:#8ea4b8;white-space:nowrap}
+.hero{background:linear-gradient(160deg,#eef4ff 0%,#f5f9ff 55%,#fff 100%);
+      border-bottom:1px solid #dde8f8}
+.hero-inner{max-width:1200px;margin:0 auto;padding:2.5rem 2rem 2rem}
+.hero-eye{display:flex;align-items:center;gap:.5rem;font-size:.75rem;font-weight:700;
+          color:var(--br);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.hero-dot{width:.5rem;height:.5rem;background:var(--br);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:1.75rem;font-weight:800;color:var(--n950)}
+.hero-sub{color:var(--ts);margin-top:.4rem;max-width:60ch;font-size:.84rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.ph-b{background:var(--t);color:var(--dk);border-radius:.3rem;padding:.2rem .65rem;font-size:.75rem;font-weight:700}
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;
+      max-width:1200px;margin:1.5rem auto;padding:0 2rem}
+.kc{background:#fff;border-radius:.6rem;padding:.9rem 1rem;
+    box-shadow:var(--s1);border-top:3px solid var(--br)}
+.kl{font-size:.7rem;color:var(--ts);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.kv{font-size:1.4rem;font-weight:800;color:var(--dk);line-height:1;margin:.2rem 0}
+.ks{font-size:.72rem;color:var(--ts)}
+.layout{display:grid;grid-template-columns:13rem 1fr;max-width:1200px;margin:0 auto}
+.nav{padding:1.5rem 1rem;position:sticky;top:88px;height:calc(100vh - 88px);
+     overflow-y:auto;border-right:1px solid #e4eaf8;background:#fafcff}
+.nav-h{font-size:.68rem;font-weight:700;color:var(--ts);text-transform:uppercase;
+       letter-spacing:.07em;margin-bottom:.4rem;margin-top:1rem}
+.nav-h:first-child{margin-top:0}
+.sb-lk{display:block;padding:.3rem .5rem;border-radius:.35rem;color:#3a4a6a;
+       text-decoration:none;font-size:.78rem;transition:background .15s,color .15s}
+.sb-lk:hover{background:var(--t);color:var(--dk)}
+.sb-lk.active{background:var(--t);color:var(--dk);font-weight:700;
+              border-left:3px solid var(--br);padding-left:.35rem}
+.main{padding:1.75rem 2rem 4rem;min-width:0}
+.sect{background:#fff;border-radius:.75rem;padding:1.5rem;
+      margin-bottom:1.5rem;box-shadow:var(--s1);scroll-margin-top:3rem}
+.sect-h{display:flex;align-items:center;gap:.6rem;font-size:1rem;font-weight:700;
+        color:var(--dk);margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid #e8f0ff}
+.ico{font-size:1.1rem}
+.sect-anchor{display:inline-flex;align-items:center;margin-left:8px;opacity:0;transition:opacity .15s;color:#8ea4b8;text-decoration:none;vertical-align:middle}
+.sect-anchor svg{width:14px;height:14px;fill:currentColor}
+.sect-anchor:hover{color:#0070f2}
+.sect:hover .sect-anchor{opacity:1}
+.sub{font-size:.78rem;font-weight:700;color:var(--ts);text-transform:uppercase;
+     letter-spacing:.06em;margin:.9rem 0 .5rem}
+.sub:first-child{margin-top:0}
+.p{font-size:.84rem;color:#3a4a6a;margin-bottom:.6rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.79rem;margin:.5rem 0}
+.tbl th{background:var(--t);color:var(--dk);font-weight:700;text-align:left;padding:.5rem .75rem}
+.tbl td{padding:.5rem .75rem;border-bottom:1px solid #e8f0ff;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#fafcff}
+code{background:#f0f4fb;color:var(--dk);padding:.1em .4em;border-radius:.25rem;
+     font-size:.78rem;font-family:'Cascadia Code',Consolas,monospace}
+pre{background:var(--n950);color:#e2ecff;padding:.9rem 1.1rem;border-radius:.5rem;
+    font-size:.76rem;overflow-x:auto;line-height:1.7;
+    font-family:'Cascadia Code',Consolas,monospace;margin:.5rem 0}
+.al{border-radius:.5rem;padding:.65rem .9rem;margin:.6rem 0;
+    font-size:.8rem;display:flex;gap:.5rem;align-items:flex-start}
+.al-i{background:var(--t);color:var(--dk);border-left:3px solid var(--br)}
+.al-w{background:#fff8ed;color:#7a4500;border-left:3px solid var(--wrn)}
+.chip{display:inline-block;border-radius:.3rem;padding:.1em .55em;font-size:.72rem;font-weight:700}
+.cb{background:var(--t);color:var(--dk)}
+.ca{background:#fff8ed;color:#7a4500}
+.cr{background:#ffeaf4;color:#6a0020}
+.cn{background:#f0f0f0;color:#444}
+.cg{background:#edfbf2;color:#1a4a2a}
+.svg-card{background:#fff;border-radius:.75rem;padding:1.25rem;
+          box-shadow:var(--s1);margin:.75rem 0;overflow:hidden}
+.svg-lbl{font-size:.72rem;font-weight:700;color:var(--ts);text-transform:uppercase;
+         letter-spacing:.06em;margin-bottom:.75rem}
+.intro-band{background:#fff;border-bottom:1px solid #e4eaf8;padding:1.5rem 2rem 1.75rem;max-width:1200px;margin:0 auto}
+.intro-band .sect-h{display:flex;align-items:center;gap:.6rem;font-size:1rem;font-weight:700;color:var(--dk);margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid #e8f0ff}
+.intro-band .p{font-size:.84rem;color:#3a4a6a;margin-bottom:.6rem}
+.intro-grid{display:flex;gap:1rem;margin-top:1.2rem;flex-wrap:wrap}
+.intro-col{flex:1;min-width:180px;background:#ebf8ff;border-left:3px solid #0070f2;
+           padding:1rem;border-radius:.5rem}
+.intro-col-title{font-weight:700;color:#0050c8;font-size:.85rem;margin-bottom:.35rem}
+.intro-col-body{font-size:.8rem;color:#3a4a6a;line-height:1.55}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.nav{display:none}
+  .krow{grid-template-columns:repeat(2,1fr);padding:0 1rem}.intro-grid{flex-direction:column}.intro-band{padding:1rem}}
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar__inner">
+    <svg class="top-bar__logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412.38 204" aria-label="SAP"><defs><style>.cls-1,.cls-2{fill-rule:evenodd}.cls-1{fill:url(#og)}.cls-2{fill:#fff}</style><linearGradient id="og" x1="206.19" x2="206.19" y2="204" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00b8f1"/><stop offset=".02" stop-color="#01b6f0"/><stop offset=".31" stop-color="#0d90d9"/><stop offset=".58" stop-color="#1775c8"/><stop offset=".82" stop-color="#1c65bf"/><stop offset="1" stop-color="#1e5fbb"/></linearGradient></defs><polyline class="cls-1" points="0 204 208.41 204 412.38 0 0 0 0 204"/><path class="cls-2" d="M244.73,38.36l-40.6,0v96.52L168.67,38.33H133.51l-30.27,80.72C100,98.7,79,91.67,62.4,86.4,51.46,82.89,39.85,77.72,40,72c.09-4.68,6.23-9,18.38-8.38,8.17.43,15.37,1.09,29.71,8l14.1-24.55C89.06,40.42,71,36.21,56.17,36.19h-.09c-17.28,0-31.68,5.6-40.6,14.83A34.23,34.23,0,0,0,5.77,74.7C5.54,87.15,10.11,96,19.71,103c8.1,5.94,18.46,9.79,27.6,12.62,11.27,3.49,20.47,6.53,20.36,13A9.57,9.57,0,0,1,65,135c-2.81,2.9-7.13,4-13.09,4.1-11.49.24-20-1.56-33.61-9.59L5.77,154.42a93.77,93.77,0,0,0,46,12.22l2.11,0c14.24-.25,25.74-4.31,34.92-11.71.53-.41,1-.84,1.49-1.28L86.17,164.5H123l6.19-18.82a67.46,67.46,0,0,0,21.68,3.43,68.33,68.33,0,0,0,21.16-3.25l6,18.64h60.14v-39h13.11c31.71,0,50.46-16.15,50.46-43.2C301.74,52.19,283.52,38.36,244.73,38.36ZM150.91,121a36.93,36.93,0,0,1-13-2.28l12.87-40.59H151l12.65,40.71A38.5,38.5,0,0,1,150.91,121Zm96.2-23.33h-8.94V64.91h8.94c11.93,0,21.44,4,21.44,16.14,0,12.6-9.51,16.57-21.44,16.57"/></svg>
+    <div class="top-bar__divider"></div>
+    <div class="top-bar__title-group">
+      <span class="top-bar__product">Program</span>
+      <span class="top-bar__app">Claude Code — System Overview</span>
+    </div>
+    <span class="top-bar__date">02 Jun 2026</span>
+  </div>
+</header>
+<div style="background:#eef4ff;border-bottom:1px solid #dde8f8;position:sticky;top:56px;z-index:99;">
+  <div style="width:100%;max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:1.5rem;height:2rem;font-size:.75rem;font-weight:600;">
+    <span style="color:#0050c8;font-weight:700;">&#9654; Overview</span>
+    <a href="Central_Claude_System.html" style="color:#0070f2;text-decoration:none;">Central System</a>
+    <a href="Knowledge_Base.html" style="color:#0070f2;text-decoration:none;">Knowledge Base</a>
+    <a href="setup/mcp-auth-guide.html" style="color:#0070f2;text-decoration:none;">MCP Auth Guide</a>
+    <a href="https://pages.github.<YOUR-DOMAIN>/public/changelog/" target="_blank" style="color:#0070f2;text-decoration:none;margin-left:auto;">🆕 What's New</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude/blob/main/ONBOARDING.md" target="_blank" style="color:#0070f2;text-decoration:none;">Onboarding</a>
+    <a href="https://github.<YOUR-DOMAIN>//Claude" target="_blank" style="color:#0070f2;text-decoration:none;">&#128279; Git Repository</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eye"><span class="hero-dot"></span>Program — Claude Code Workspace</div>
+    <h1>System Overview</h1>
+    <div class="hero-sub">Architecture, agents, commands, file inventory, interaction patterns, and technical background.</div>
+    <div class="hero-meta">
+      <span class="ph-b">Git: github.<YOUR-DOMAIN>//Claude</span>
+      <span class="ph-b">Branch: main</span>
+      <span class="ph-b">72 files</span>
+      <span class="ph-b">Updated: 02 Jun 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO — full width -->
+<div class="intro-band">
+<section id="intro">
+<div class="sect-h"><span class="ico">💡</span>What is Claude Code?<a class="sect-anchor" href="#intro" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">Claude Code is the program intelligence workspace for the NextGen Cloud Selling () program at SAP + Accenture. It combines Claude Code (Anthropic's AI coding assistant) with a curated set of-specific agents, commands, and knowledge — all distributed via a single git repository.</p>
+<p class="p">Every team member clones one repository and gets immediate access to 13 specialist AI agents covering Solution Management, Delivery, Architecture, Testing, Risk, DevIT, and more. The workspace connects directly to SAP Jira via MCP, enabling live queries against SP, YOUR_JIRA_PROJECT, YOUR_JIRA_PROJECT,TEST,KDD, and DevIT projects.</p>
+<p class="p">The setup is zero-maintenance: a git hook auto-pulls the latest agents, commands, and knowledge before every prompt. There is nothing to configure — clone, authenticate Jira once, and start working.</p>
+<div class="intro-grid">
+  <div class="intro-col">
+    <div class="intro-col-title">Single Setup</div>
+    <div class="intro-col-body">One git clone installs 13 agents, 8 commands, all knowledge, and live Jira access.</div>
+  </div>
+  <div class="intro-col">
+    <div class="intro-col-title">Always Current</div>
+    <div class="intro-col-body">Git hook auto-pulls before every prompt. Agents and commands are always the latest version.</div>
+  </div>
+  <div class="intro-col">
+    <div class="intro-col-title">Zero Config</div>
+    <div class="intro-col-body">No manual steps after initial Jira authentication. Claude handles workspace issues automatically.</div>
+  </div>
+</div>
+</section>
+</div>
+
+<div class="krow">
+  <div class="kc"><div class="kl">Agents</div><div class="kv">13</div><div class="ks">specialist subagents</div></div>
+  <div class="kc"><div class="kl">Commands</div><div class="kv">8</div><div class="ks">slash commands</div></div>
+  <div class="kc"><div class="kl">Total Files</div><div class="kv">72</div><div class="ks">in git repository</div></div>
+  <div class="kc"><div class="kl">MCP Server</div><div class="kv">1</div><div class="ks">SAP Jira · HTTP/OAuth</div></div>
+  <div class="kc" style="border-top-color:var(--pos)">
+    <div class="kl">Auto-Sync</div>
+    <div class="kv" style="color:var(--pos)">✓</div>
+    <div class="ks">git pull on every prompt</div>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="nav">
+  <div class="nav-h">Sections</div>
+  <a class="sb-lk" href="#intro">What is Claude?</a>
+  <a class="sb-lk" href="#agents">Agents</a>
+  <a class="sb-lk" href="#commands">Commands</a>
+  <a class="sb-lk" href="#interactions">Interactions</a>
+  <a class="sb-lk" href="#-public">Shared Outputs</a>
+  <a class="sb-lk" href="#knowledge">Knowledge Sources</a>
+  <a class="sb-lk" href="#arch">Architecture</a>
+  <a class="sb-lk" href="#gitsync">Git Sync</a>
+  <a class="sb-lk" href="#files">File Inventory</a>
+  <a class="sb-lk" href="#technical">Technical Background</a>
+</nav>
+<main class="main">
+
+<!-- AGENTS -->
+<section id="agents" class="sect">
+<div class="sect-h"><span class="ico">🤖</span>Agents<a class="sect-anchor" href="#agents" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">13 specialist subagents defined in <code>.claude/agents/</code>. The <strong>orchestrator</strong> is the central hub — it routes queries to the right specialist or answers cross-domain questions directly. Each agent carries full domain knowledge for its area.</p>
+<div class="svg-card">
+  <div class="svg-lbl">Agent Routing Hub</div>
+
+<svg viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:740px;display:block;margin:0 auto;font-family:Inter,Arial,sans-serif">
+
+  <!-- spoke lines -->
+  <line x1="400" y1="285" x2="340" y2="100" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="460" y2="100" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="558" y2="155" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="620" y2="220" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="620" y2="330" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="558" y2="415" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="460" y2="470" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="340" y2="470" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="242" y2="415" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="180" y2="330" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="180" y2="220" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="242" y2="155" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+  <line x1="400" y1="285" x2="400" y2="80" stroke="#0070f2" stroke-width="1.5" stroke-opacity=".4"/>
+
+  <!-- satellite agent nodes — 13 unique positions -->
+  <rect x="266" y="81" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="340" y="105" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">STE</text>
+  <rect x="326" y="42" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="400" y="66" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Solution Manager</text>
+  <rect x="386" y="81" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="460" y="105" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Delivery Lead</text>
+  <rect x="484" y="136" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="558" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Program Manager</text>
+  <rect x="546" y="201" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="620" y="225" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Risk Manager</text>
+  <rect x="546" y="311" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="620" y="335" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Workstream Lead</text>
+  <rect x="484" y="396" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="558" y="420" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">CPIT Lead</text>
+  <rect x="386" y="451" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="460" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Solution Arch.</text>
+  <rect x="266" y="451" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="340" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">DevIT</text>
+  <rect x="168" y="396" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="242" y="420" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Sales Cloud v2</text>
+  <rect x="106" y="311" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="180" y="335" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Testing</text>
+  <rect x="106" y="201" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="180" y="225" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">HTML Report</text>
+  <rect x="168" y="136" width="148" height="38" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/><text x="242" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="#0050c8">Orchestrator</text>
+
+  <!-- centre: Orchestrator -->
+  <rect x="316" y="259" width="168" height="52" rx="10"
+        fill="#0050c8" stroke="#000d2e" stroke-width="2"/>
+  <text x="400" y="281" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">-orchestrator</text>
+  <text x="400" y="298" text-anchor="middle" font-size="9" fill="#bae8ff">central routing hub</text>
+
+  <!-- legend -->
+  <rect x="20" y="530" width="14" height="14" rx="3" fill="#0050c8"/>
+  <text x="40" y="542" font-size="10" fill="#3a4a6a">Orchestrator — receives all queries, routes to specialists</text>
+  <rect x="20" y="552" width="14" height="14" rx="3" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/>
+  <text x="40" y="564" font-size="10" fill="#3a4a6a">Specialist agent — full domain knowledge, optional Jira MCP access</text>
+</svg>
+</div>
+<table class="tbl" style="margin-top:1rem">
+<tr><th>Agent</th><th>Domain</th><th>Auto-Spawned When</th><th>MCP</th></tr>
+<tr><td><strong>-orchestrator</strong></td><td>Central routing</td><td>Any query; cross-domain questions; unclear domain</td><td><span class="chip cn">Optional</span></td></tr>
+<tr><td><strong>-solution-manager</strong></td><td>Solution Increments · Capabilities · Gates</td><td>Capability DoR · quality gate review · Solution Increment scope</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-ste</strong></td><td>Jira quality · DoR/DoD</td><td>Jira field checks · DoR validation · capability creation · Gate 3.1/3.2</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-delivery-lead</strong></td><td>PI health · delivery</td><td>PI status · cross-WS delivery · release tracking</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-program-manager</strong></td><td>PMO · reporting</td><td>Status reports · SteerCo prep · RAG status</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-risk-manager</strong></td><td>RAID · ROAM · blockers</td><td>Risk scoring · ROAM classification · blocked issues</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-workstream-lead</strong></td><td>WS planning · features</td><td>Feature flow · activity backlog · spillover</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-cpit-lead</strong></td><td>IT portfolio · DevIT</td><td>DevIT status · RICEFW scope · IT governance</td><td><span class="chip cr">Required</span></td></tr>
+<tr><td><strong>-solution-architect</strong></td><td>KDD · SDD · DAB</td><td>KDD triggers · architecture decisions · feasibility</td><td><span class="chip cn">Optional</span></td></tr>
+<tr><td><strong>-devit</strong></td><td>DevIT requests · PDD slips</td><td>DevIT status across SCV2/CPQ/Ent/CDP/BRIM · overdue PDD</td><td><span class="chip cr">Required</span></td></tr>
+<tr><td><strong>-sales-cloud-v2</strong></td><td>SCV2 / C4C functional</td><td>SCV2 config questions · YOUR_JIRA_PROJECT C4C-tagged features</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-testing</strong></td><td>Test execution · bugs · OSS</td><td>Test plans · BAT/E2E BAT · bug management · OSS tracking</td><td><span class="chip cb">Recommended</span></td></tr>
+<tr><td><strong>-html-report</strong></td><td>SAP Morning HTML reports</td><td>Generating Test Reports · KPI dashboards · status HTML deliverables</td><td><span class="chip cn">Optional</span></td></tr>
+</table>
+</section>
+
+<!-- COMMANDS -->
+<section id="commands" class="sect">
+<div class="sect-h"><span class="ico">⌨️</span>Slash Commands<a class="sect-anchor" href="#commands" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">Invoke with <code>/command-name [optional-arg]</code> directly in Claude Code. Commands produce structured outputs and query SAP Jira MCP where available.</p>
+<table class="tbl">
+<tr><th>Command</th><th>Syntax</th><th>Argument</th><th>Output</th><th>MCP</th></tr>
+<tr><td><strong>/_tech-update</strong></td><td><code>/_tech-update</code></td><td>—</td><td>Git status · last commit · local file drift detection · MCP auth status</td><td>No</td></tr>
+<tr><td><strong>/-status</strong></td><td><code>/-status</code></td><td>—</td><td>PI · release · sprint · test % · bug counts (live from Jira)</td><td>Recommended</td></tr>
+<tr><td><strong>/-capability-check</strong></td><td><code>/-capability-check SP-XXXX</code></td><td>SP Jira ID</td><td>DoR checklist · gap owners · READY verdict</td><td>Recommended</td></tr>
+<tr><td><strong>/-feature-check</strong></td><td><code>/-feature-check YOUR_JIRA_PROJECT-XXXX</code></td><td>YOUR_JIRA_PROJECT Jira ID</td><td>Label check (7) + field check (8) · READY FOR PIP verdict</td><td>Recommended</td></tr>
+<tr><td><strong>/-bug-query</strong></td><td><code>/-bug-query [FD24.26]</code></td><td>FD code (opt.)</td><td>Standard JQL + bug counts by severity and status</td><td>Recommended</td></tr>
+<tr><td><strong>/-kdd-guidance</strong></td><td><code>/-kdd-guidance [KDD-XXXX|new]</code></td><td>KDD ID or "new"</td><td>Type classification · creation checklist · DAB timing</td><td>Optional</td></tr>
+<tr><td><strong>/-test-report</strong></td><td><code>/-test-report [FD24.26]</code></td><td>FD code (opt.)</td><td>HTML Feature Test Execution Report (SAP Morning design)</td><td>Recommended</td></tr>
+<tr><td><strong>/_tech-request</strong></td><td><code>/_tech-request</code></td><td>—</td><td>Submit a functionality request to Core Intelligence Team via GitHub Issue — select type from pop-up, submitted directly from Claude Code</td><td>No</td></tr>
+<tr><td><strong>/_som-capability-gate</strong></td><td><code>/_som-capability-gate</code></td><td>—</td><td>Gate 3.1 readiness dashboard for next PI — published to <a href="https://pages.github.<YOUR-DOMAIN>/public/prod/output/capability-gate/latest.html" target="_blank">public</a></td><td>Yes</td></tr>
+</table>
+</section>
+
+<!-- INTERACTIONS -->
+<section id="interactions" class="sect">
+<div class="sect-h"><span class="ico">🔀</span>Interaction Patterns<a class="sect-anchor" href="#interactions" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+
+<div class="sub">Agent Routing — User Intent Map</div>
+<table class="tbl">
+<tr><th>User says…</th><th>Routes to</th><th>May also use</th></tr>
+<tr><td>"What capabilities are ready for PI26/3?"</td><td>-solution-manager</td><td>-ste (DoR check)</td></tr>
+<tr><td>"Check DoR for SP-1234"</td><td>/-capability-check → -ste</td><td>-solution-manager</td></tr>
+<tr><td>"Show open bugs for FD24.26"</td><td>/-bug-query → Jira MCP directly</td><td>—</td></tr>
+<tr><td>"What are the top risks this PI?"</td><td>-risk-manager</td><td>-delivery-lead</td></tr>
+<tr><td>"Prepare a SteerCo summary"</td><td>-program-manager</td><td>-delivery-lead, -risk-manager</td></tr>
+<tr><td>"Do we need a KDD for this?"</td><td>-solution-architect</td><td>-cpit-lead (if DevIT path)</td></tr>
+<tr><td>"How is the O2C workstream tracking?"</td><td>-workstream-lead</td><td>-delivery-lead</td></tr>
+<tr><td>"How do I raise a DevIT for SCV2?"</td><td>-cpit-lead</td><td>-solution-architect</td></tr>
+</table>
+
+<div class="sub">Command vs Agent — Decision Guide</div>
+<table class="tbl">
+<tr><th>Use a Slash Command when…</th><th>Use an Agent when…</th></tr>
+<tr><td>Task is structured with a known output format</td><td>Query is open-ended or requires analysis</td></tr>
+<tr><td>Looking up a specific Jira item by ID</td><td>Spanning multiple Jira items or workstreams</td></tr>
+<tr><td>Running a standard query (bug JQL, status snap)</td><td>Generating reports, risk assessments, or process guidance</td></tr>
+<tr><td>Quick check or verification</td><td>Walking through a multi-step process</td></tr>
+</table>
+
+<div class="sub">SAP Jira MCP — Projects and Use Cases</div>
+<table class="tbl">
+<tr><th>Project</th><th>Contains</th><th>Primary Command / Agent</th></tr>
+<tr><td><code>SP</code></td><td>Solution Increments, Capabilities</td><td>/-capability-check · -solution-manager · -ste</td></tr>
+<tr><td><code>YOUR_JIRA_PROJECT</code></td><td>Features, Requests, Impediments</td><td>/-feature-check · -ste · -workstream-lead</td></tr>
+<tr><td><code>YOUR_JIRA_PROJECT</code></td><td>Stories, Bugs</td><td>/-bug-query · -delivery-lead · -risk-manager</td></tr>
+<tr><td><code>TEST</code></td><td>Test Cases, Test Plans (TEST-10734)</td><td>/-status · -delivery-lead</td></tr>
+<tr><td><code>KDD</code></td><td>KDDs (Design), Risks</td><td>/-kdd-guidance · -solution-architect · -risk-manager</td></tr>
+<tr><td><code>BITFRCEC</code></td><td>DevIT Feature Requests (DEV-IT items)</td><td>-cpit-lead</td></tr>
+</table>
+</section>
+
+<!--/PUBLIC SHARED OUTPUTS -->
+<section id="-public" class="sect">
+<div class="sect-h"><span class="ico">🌐</span>Shared Outputs — public<a class="sect-anchor" href="#-public" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">HTML reports and dashboards generated by Claude Code commands are published to a central GitHub Pages site — accessible to the whole team via browser, no tool installation needed.</p>
+<p class="p">Repository: <a href="https://github.<YOUR-DOMAIN>/public" target="_blank">github.<YOUR-DOMAIN>/public</a> &nbsp;·&nbsp; Pages: <a href="https://pages.github.<YOUR-DOMAIN>/public/" target="_blank"><strong>pages.github.<YOUR-DOMAIN>/public/</strong></a></p>
+<table class="tbl" style="margin-top:.75rem">
+<tr><th>Area</th><th>Purpose</th><th>Push rule</th></tr>
+<tr><td><code>test/output/&lt;command&gt;/</code></td><td>Draft outputs · team review · member-specific versions</td><td>Push freely — no confirmation needed</td></tr>
+<tr><td><code>prod/output/&lt;command&gt;/</code></td><td>Final confirmed outputs · shareable with stakeholders</td><td>Explicit user confirmation required · AI badge removed automatically</td></tr>
+</table>
+<div class="sub" style="margin-top:1rem">File naming &amp; structure</div>
+<p class="p">Every output file is saved twice: a timestamped archive copy (<code>YYYY/MM/YYYYMMDD_hhmm_name.html</code>) and a stable <code>latest.html</code> link for sharing. Index pages are regenerated automatically after every push.</p>
+<div class="sub">Commands that publish to public</div>
+<table class="tbl">
+<tr><th>Command</th><th>Subfolder</th><th>Output</th></tr>
+<tr><td><strong>/_som-capability-gate</strong></td><td><code>capability-gate/</code></td><td>Gate 3.1 readiness dashboard for the next PI — colour-coded by DoR status</td></tr>
+</table>
+<p class="p" style="margin-top:.75rem">More commands will publish to public as new outputs are built. The test index and What's New changelog are always up to date at the Pages URL above.</p>
+</section>
+
+
+
+
+<!-- KNOWLEDGE SOURCES -->
+<section id="knowledge" class="sect">
+<div class="sect-h"><span class="ico">📚</span>Knowledge Sources<a class="sect-anchor" href="#knowledge" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">The agents and commands draw on these knowledge sources. Key reference content has been extracted and committed to the git repository under <code>/knowledge/</code> and <code>/references/</code> — links below point to the live git files where available. Original source documents (Excel, PDF, PPTX) remain on OneDrive/SharePoint.</p>
+
+<div class="al al-i">ℹ️ Files marked <strong>git</strong> are in the repository — accessible via git pull or GitHub. Files marked <strong>OneDrive</strong> are on SharePoint — open from your OneDrive sync or ask the Program Intelligence Core Team.</div>
+
+<div class="sub">Central Info Basis</div>
+<table class="tbl">
+<tr><th>Document</th><th>Sheets / Sections</th><th>Used By</th></tr>
+<tr><td><code>20260505_Claude_Infobasis_v01.xlsx</code> <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>General · Definitions · Jira naming convention · Sol management · Delivery · Testing</td><td>orchestrator · all specialist agents</td></tr>
+</table>
+
+<div class="sub">Process &amp; Reference Documents</div>
+<table class="tbl">
+<tr><th>Document</th><th>Type</th><th>Purpose</th><th>Used By</th></tr>
+<tr><td>SAP Sales Cloud v2 Set-Up Guide <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>PDF</td><td>SCV2 functional &amp; config reference (~18K lines)</td><td>-sales-cloud-v2</td></tr>
+<tr><td>Capability Workflow.png <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>PNG</td><td>Authoritative 8-status capability workflow diagram</td><td>-solution-manager</td></tr>
+<tr><td>Solution Mgmt Playbook v1.1 <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>PPTX</td><td>Solution Management roles &amp; responsibilities</td><td>-solution-manager · -ste · -solution-architect</td></tr>
+<tr><td>Release Document RD02 <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>PDF</td><td>RD02.2026 release scope</td><td>-delivery-lead · -program-manager</td></tr>
+<tr><td>Release Document RD08 v1.0 <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>PDF</td><td>RD08.2026 release scope</td><td>-delivery-lead · -program-manager</td></tr>
+<tr><td>Release Document RD10 <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>PDF</td><td>RD10.2026 release scope</td><td>-delivery-lead · -program-manager</td></tr>
+<tr><td>Topics to change in Claude set up_May25.docx <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>DOCX</td><td>Correction list applied to all affected files</td><td>(historical input — applied)</td></tr>
+<tr><td>20260519_Claude_Infobasis_v01.csv <span style="font-size:.7rem;background:#fff8ed;color:#e76500;padding:1px 6px;border-radius:3px;font-weight:700;">OneDrive</span></td><td>CSV</td><td>Newer Delivery sheet export from Infobasis</td><td>orchestrator · -delivery-lead</td></tr>
+</table>
+
+<div class="sub">HTML Report Generation</div>
+<table class="tbl">
+<tr><th>Document</th><th>Purpose</th><th>Used By</th></tr>
+<tr><td><a href="https://github.<YOUR-DOMAIN>//Claude/blob/main//references/SAP-Claude-Prompt-Guide.html" target="_blank"><code>SAP-Claude-Prompt-Guide.html</code></a> <span style="font-size:.7rem;background:#edfbf2;color:#256f3a;padding:1px 6px;border-radius:3px;font-weight:700;">git</span></td><td>5 prompts (page scaffold · KPI strip · table · line chart · donut) — SAP Morning design system</td><td>-html-report · /-test-report</td></tr>
+<tr><td><a href="https://github.<YOUR-DOMAIN>//Claude/blob/main//references/Feature-Test-Report-Example.html" target="_blank"><code>Feature-Test-Report-Example.html</code></a> <span style="font-size:.7rem;background:#edfbf2;color:#256f3a;padding:1px 6px;border-radius:3px;font-weight:700;">git</span></td><td>Best-practice example output — Feature Test Execution Report</td><td>-html-report · /-test-report</td></tr>
+</table>
+
+
+<div class="sub">Git-hosted Knowledge Files</div>
+<p class="p">These files are committed to the repository and auto-loaded into every team member's Claude instance. No manual download needed — they update on every <code>git pull</code>.</p>
+<table class="tbl">
+<tr><th>File</th><th>Content</th><th>Used By</th></tr>
+<tr><td><a href="https://github.<YOUR-DOMAIN>//Claude/blob/main//Knowledge_Base.html" target="_blank">Knowledge_Base.html</a> <span style="font-size:.7rem;background:#edfbf2;color:#256f3a;padding:1px 6px;border-radius:3px;font-weight:700;">git</span></td><td>Full Knowledge Base — all programme definitions, processes, Jira rules, glossary</td><td>All agents</td></tr>
+<tr><td><a href="https://github.<YOUR-DOMAIN>//Claude/blob/main//knowledge/" target="_blank">/knowledge/*.md</a> <span style="font-size:.7rem;background:#edfbf2;color:#256f3a;padding:1px 6px;border-radius:3px;font-weight:700;">git</span></td><td>17 knowledge files: workstream status, DevIT tracker, DAB/KDD register, people &amp; roles, PI planning, architecture decisions, risk register, PTN decisions, programme milestones and more</td><td>All agents</td></tr>
+<tr><td><a href="https://github.<YOUR-DOMAIN>//Claude/blob/main//knowledge/confluence-ncsp.md" target="_blank">confluence-ncsp.md</a> · <a href="https://github.<YOUR-DOMAIN>//Claude/blob/main//knowledge/confluence-dcp.md" target="_blank">confluence-dcp.md</a> <span style="font-size:.7rem;background:#edfbf2;color:#256f3a;padding:1px 6px;border-radius:3px;font-weight:700;">git</span></td><td>Crawled Confluence spaces: NCSP programme knowledge + DCP/Partner Store</td><td>-solution-architect · -solution-manager</td></tr>
+<tr><td><a href="https://github.<YOUR-DOMAIN>//Claude/blob/main//knowledge/ptn-decisions.md" target="_blank">ptn-decisions.md</a> <span style="font-size:.7rem;background:#edfbf2;color:#256f3a;padding:1px 6px;border-radius:3px;font-weight:700;">git</span></td><td>24 C&amp;P Path to NorthStar architecture decisions (SCV2, SOM, CMAT, AI, billing)</td><td>-solution-architect · -cpit-lead</td></tr>
+</table>
+
+<div class="sub">DevIT Dashboard</div>
+<table class="tbl">
+<tr><th>Source</th><th>Content</th><th>Used By</th></tr>
+<tr><td><a href="https://pages.github.<YOUR-DOMAIN>/<YOUR-USERNAME>/devitdashboard/">github.<YOUR-DOMAIN>/<YOUR-USERNAME>/devitdashboard</a></td><td>Live dashboard for 5 products (SCV2, CPQ, Ent, CDP, BRIM) · refresh script · dated JSON snapshots</td><td>-devit · -cpit-lead</td></tr>
+</table>
+
+<div class="sub">SharePoint References</div>
+<table class="tbl">
+<tr><th>Topic</th><th>Cadence</th><th>Link</th></tr>
+<tr><td>DAB Meetings folder</td><td>2× weekly review · 2× monthly decision</td><td><a href="https://sap.sharepoint.com/:f:/r/teams/NextGenCloudSelling/Shared%20Documents/08%20E2E%20Architecture%20Workstream/05_Design%20Authority%20Board/01_DAB%20Meetings">Open</a></td></tr>
+<tr><td>Newsletter</td><td>—</td><td><a href="https://sap.sharepoint.com/:f:/r/teams/NextGenCloudSelling/Shared%20Documents/General/06_Communications/Newsletter">Open</a></td></tr>
+<tr><td>Signavio Process Update Status</td><td>Per capability</td><td><a href="https://sap.sharepoint.com/teams/NextGenCloudSelling/Shared%20Documents/Forms/AllItems.aspx?id=%2Fteams%2FNextGenCloudSelling%2FShared%20Documents%2FGeneral%2F03%5FWorkstreams%20%26%20Process%20Steps%2FSignavio%20Process%20Update%20Status">Open</a></td></tr>
+<tr><td>Summits</td><td>Periodic</td><td><a href="https://sap.sharepoint.com/teams/NextGenCloudSelling/Shared%20Documents/Forms/AllItems.aspx">Open</a></td></tr>
+</table>
+
+<div class="al al-i">ℹ️ Full source path tracking: <a href="../loaded-files-log.md"><code>loaded-files-log.md</code></a> at the repo root lists every external file ingested with date and purpose. Update this log whenever new reference materials are added to the workspace.</div>
+</section>
+<!-- ARCHITECTURE -->
+<section id="arch" class="sect">
+<div class="sect-h"><span class="ico">🏗️</span>System Architecture<a class="sect-anchor" href="#arch" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">The git repository is the single source of truth. Every team member's workspace auto-pulls on each prompt — agents, commands, and settings are always current before Claude processes any input.</p>
+<div class="svg-card">
+  <div class="svg-lbl">End-to-End System Flow</div>
+
+<svg viewBox="0 0 900 590" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:900px;display:block;margin:0 auto;font-family:Inter,Arial,sans-serif">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#0070f2"/></marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#256f3a"/></marker>
+  </defs>
+
+  <!-- Git Repo -->
+  <rect x="200" y="8" width="500" height="58" rx="8" fill="#000d2e"/>
+  <text x="450" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="#7ec8ff">Git Repository — Single Source of Truth</text>
+  <text x="450" y="51" text-anchor="middle" font-size="10" fill="#8a9ab8">github.<YOUR-DOMAIN>//Claude · branch: main · 72 files</text>
+
+  <!-- Arrow 1: git → Claude Code -->
+  <line x1="450" y1="66" x2="450" y2="102" stroke="#0070f2" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="318" y="72" width="264" height="18" rx="4" fill="#fff" fill-opacity=".9"/>
+  <text x="450" y="84" text-anchor="middle" font-size="9" fill="#0070f2" font-weight="600">auto-pulled on every prompt via git-sync hook</text>
+
+  <!-- Claude Code box -->
+  <rect x="20" y="102" width="860" height="116" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/>
+  <text x="450" y="125" text-anchor="middle" font-size="13" font-weight="700" fill="#0050c8">Claude Code  ·  VSCode Extension</text>
+
+  <!-- CLAUDE.md -->
+  <rect x="42" y="134" width="180" height="68" rx="6" fill="#fff" stroke="#b8d4f8"/>
+  <text x="132" y="154" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">CLAUDE.md</text>
+  <text x="132" y="170" text-anchor="middle" font-size="9" fill="#6e7d9a">context + rules</text>
+  <text x="132" y="184" text-anchor="middle" font-size="9" fill="#6e7d9a">agent / command index</text>
+  <text x="132" y="196" text-anchor="middle" font-size="9" fill="#6e7d9a">auto-loaded on open</text>
+
+  <!-- git-sync-check.sh -->
+  <rect x="360" y="134" width="180" height="68" rx="6" fill="#fff" stroke="#b8d4f8"/>
+  <text x="450" y="154" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">git-sync-check.sh</text>
+  <text x="450" y="170" text-anchor="middle" font-size="9" fill="#6e7d9a">UserPromptSubmit hook</text>
+  <text x="450" y="184" text-anchor="middle" font-size="9" fill="#6e7d9a">git fetch + pull --ff-only</text>
+  <text x="450" y="196" text-anchor="middle" font-size="9" fill="#6e7d9a">fires before every prompt</text>
+
+  <!-- settings.json -->
+  <rect x="678" y="134" width="180" height="68" rx="6" fill="#fff" stroke="#b8d4f8"/>
+  <text x="768" y="154" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">settings.json</text>
+  <text x="768" y="170" text-anchor="middle" font-size="9" fill="#6e7d9a">MCP server config</text>
+  <text x="768" y="184" text-anchor="middle" font-size="9" fill="#6e7d9a">deny rules (file protection)</text>
+  <text x="768" y="196" text-anchor="middle" font-size="9" fill="#6e7d9a">hook registration</text>
+
+  <!-- Arrows: Claude Code → Agents + Commands -->
+  <line x1="210" y1="218" x2="210" y2="282" stroke="#0070f2" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="690" y1="218" x2="690" y2="282" stroke="#0070f2" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- Agents -->
+  <rect x="20" y="282" width="380" height="80" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/>
+  <text x="210" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#0050c8">13 Specialist Agents</text>
+  <text x="210" y="323" text-anchor="middle" font-size="9" fill="#6e7d9a">.claude/agents/</text>
+  <text x="210" y="340" text-anchor="middle" font-size="9" fill="#3a4a6a">orchestrator · solution-manager · ste · delivery-lead · program-manager · risk-manager</text>
+  <text x="210" y="354" text-anchor="middle" font-size="9" fill="#3a4a6a">workstream-lead · cpit-lead · solution-architect · devit · sales-cloud-v2 · testing · html-report</text>
+
+  <!-- Commands -->
+  <rect x="500" y="282" width="380" height="80" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/>
+  <text x="690" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#0050c8">8 Slash Commands</text>
+  <text x="690" y="323" text-anchor="middle" font-size="9" fill="#6e7d9a">.claude/commands/</text>
+  <text x="690" y="340" text-anchor="middle" font-size="9" fill="#3a4a6a">/_tech-update · /-status · /-capability-check · /-feature-check</text>
+  <text x="690" y="354" text-anchor="middle" font-size="9" fill="#3a4a6a">/-bug-query · /-kdd-guidance · /-test-report · /_tech-request</text>
+
+  <!-- Arrows: → MCP -->
+  <line x1="210" y1="362" x2="360" y2="434" stroke="#0070f2" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="690" y1="362" x2="540" y2="434" stroke="#0070f2" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- MCP -->
+  <rect x="260" y="434" width="380" height="58" rx="8" fill="#edfbf2" stroke="#6fcf97" stroke-width="1.5"/>
+  <text x="450" y="458" text-anchor="middle" font-size="12" font-weight="700" fill="#256f3a">SAP Jira MCP  (sap-jira)</text>
+  <text x="450" y="477" text-anchor="middle" font-size="9" fill="#6e7d9a">https://mcp.jira.<YOUR-DOMAIN>/mcp  ·  HTTP  ·  OAuth 2.0 / SAP SSO</text>
+
+  <!-- Arrows: MCP → Jira projects -->
+  <line x1="295" y1="492" x2="95"  y2="526" stroke="#256f3a" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="338" y1="492" x2="239" y2="526" stroke="#256f3a" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="400" y1="492" x2="383" y2="526" stroke="#256f3a" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="500" y1="492" x2="527" y2="526" stroke="#256f3a" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="562" y1="492" x2="671" y2="526" stroke="#256f3a" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="605" y1="492" x2="815" y2="526" stroke="#256f3a" stroke-width="1.5" marker-end="url(#ag)"/>
+
+  <!-- Jira project boxes — 6 boxes, 130px wide, starting x=15, 14px gaps -->
+  <rect x="15"  y="526" width="130" height="32" rx="5" fill="#f0f4fb" stroke="#b8d4f8"/>
+  <text x="80"  y="546" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">SP</text>
+  <rect x="159" y="526" width="130" height="32" rx="5" fill="#f0f4fb" stroke="#b8d4f8"/>
+  <text x="224" y="546" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">YOUR_JIRA_PROJECT</text>
+  <rect x="303" y="526" width="130" height="32" rx="5" fill="#f0f4fb" stroke="#b8d4f8"/>
+  <text x="368" y="546" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">YOUR_JIRA_PROJECT</text>
+  <rect x="447" y="526" width="130" height="32" rx="5" fill="#f0f4fb" stroke="#b8d4f8"/>
+  <text x="512" y="546" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">TEST</text>
+  <rect x="591" y="526" width="130" height="32" rx="5" fill="#f0f4fb" stroke="#b8d4f8"/>
+  <text x="656" y="546" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">KDD</text>
+  <rect x="735" y="526" width="130" height="32" rx="5" fill="#f0f4fb" stroke="#b8d4f8"/>
+  <text x="800" y="546" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">BITFRCEC</text>
+</svg>
+</div>
+</section>
+
+<!-- GIT SYNC -->
+<section id="gitsync" class="sect">
+<div class="sect-h"><span class="ico">🔄</span>Git Sync — Every Prompt<a class="sect-anchor" href="#gitsync" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">The <code>UserPromptSubmit</code> hook fires <strong>before Claude processes any input</strong>. If the local repo is behind <code>origin/main</code>, it pulls automatically. Claude receives a summary of what changed.</p>
+<div class="svg-card">
+  <div class="svg-lbl">Hook Execution Flow</div>
+
+<svg viewBox="0 0 860 120" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:860px;display:block;margin:.5rem auto;font-family:Inter,Arial,sans-serif">
+  <defs>
+    <marker id="af" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#0070f2"/></marker>
+  </defs>
+
+  <!-- Step boxes -->
+  <rect x="10"  y="20" width="140" height="60" rx="8" fill="#000d2e"/>
+  <text x="80"  y="45" text-anchor="middle" font-size="10" font-weight="700" fill="#7ec8ff">User types</text>
+  <text x="80"  y="61" text-anchor="middle" font-size="10" font-weight="700" fill="#7ec8ff">a prompt</text>
+  <text x="80"  y="74" text-anchor="middle" font-size="8"  fill="#8a9ab8">any input</text>
+
+  <line x1="150" y1="50" x2="172" y2="50" stroke="#0070f2" stroke-width="2" marker-end="url(#af)"/>
+
+  <rect x="172" y="20" width="152" height="60" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/>
+  <text x="248" y="43" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">git-sync-check.sh</text>
+  <text x="248" y="58" text-anchor="middle" font-size="9"  fill="#3a4a6a">git fetch origin</text>
+  <text x="248" y="72" text-anchor="middle" font-size="8"  fill="#6e7d9a">UserPromptSubmit hook</text>
+
+  <line x1="324" y1="50" x2="346" y2="50" stroke="#0070f2" stroke-width="2" marker-end="url(#af)"/>
+
+  <rect x="346" y="20" width="152" height="60" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/>
+  <text x="422" y="43" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">Up to date?</text>
+  <text x="378" y="58" text-anchor="middle" font-size="8"  fill="#256f3a">YES → silent</text>
+  <text x="466" y="58" text-anchor="middle" font-size="8"  fill="#e76500">NO → pull</text>
+  <text x="422" y="72" text-anchor="middle" font-size="8"  fill="#6e7d9a">compare HEAD vs origin/main</text>
+
+  <line x1="498" y1="50" x2="520" y2="50" stroke="#0070f2" stroke-width="2" marker-end="url(#af)"/>
+
+  <rect x="520" y="20" width="160" height="60" rx="8" fill="#e8f2ff" stroke="#0070f2" stroke-width="1.5"/>
+  <text x="600" y="43" text-anchor="middle" font-size="10" font-weight="700" fill="#0050c8">git pull --ff-only</text>
+  <text x="600" y="58" text-anchor="middle" font-size="9"  fill="#3a4a6a">agents + commands updated</text>
+  <text x="600" y="72" text-anchor="middle" font-size="8"  fill="#6e7d9a">summary injected into context</text>
+
+  <line x1="680" y1="50" x2="702" y2="50" stroke="#0070f2" stroke-width="2" marker-end="url(#af)"/>
+
+  <rect x="702" y="20" width="148" height="60" rx="8" fill="#edfbf2" stroke="#6fcf97" stroke-width="1.5"/>
+  <text x="776" y="43" text-anchor="middle" font-size="10" font-weight="700" fill="#256f3a">Claude processes</text>
+  <text x="776" y="58" text-anchor="middle" font-size="10" font-weight="700" fill="#256f3a">prompt</text>
+  <text x="776" y="72" text-anchor="middle" font-size="8"  fill="#6e7d9a">always with latest files</text>
+</svg>
+</div>
+<div class="al al-i">ℹ️ Fast-forward-only pull (<code>--ff-only</code>) is used. If pull fails (e.g. unexpected local modification), the hook reports the error and Claude advises manual resolution. Protected files cannot be modified by team members, so pull conflicts are not expected in normal use.</div>
+</section>
+
+<!-- FILE INVENTORY -->
+<section id="files" class="sect">
+<div class="sect-h"><span class="ico">📁</span>File Inventory<a class="sect-anchor" href="#files" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+<p class="p">72 tracked files. <span class="chip cr">protected</span> files are blocked from Write/Edit by Claude Code permission rules — only the repo owner (C5199126) can update them via git push.</p>
+<div class="svg-card">
+  <div class="svg-lbl">Repository Tree</div>
+
+<svg viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:860px;display:block;margin:0 auto;font-family:'Cascadia Code',Consolas,monospace">
+
+  <rect x="0" y="0" width="860" height="440" rx="10" fill="#000d2e"/>
+
+  <!-- root -->
+  <text x="24" y="30"  font-size="11" fill="#7ec8ff" font-weight="700">Claude/</text>
+  <text x="700" y="30" font-size="10" fill="#5a7a9a">github.<YOUR-DOMAIN>//Claude</text>
+
+  <!-- root files -->
+  <text x="44" y="56"  font-size="11" fill="#e2ecff">├── CLAUDE.md</text>
+  <rect x="310" y="44" width="110" height="16" rx="3" fill="#aa0808" fill-opacity=".7"/>
+  <text x="365" y="55" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">protected</text>
+  <text x="440" y="56" font-size="10" fill="#5a7a9a">← auto-loaded · context · read-only rules</text>
+
+  <text x="44" y="78"  font-size="11" fill="#e2ecff">├── README.md</text>
+  <rect x="310" y="66" width="110" height="16" rx="3" fill="#aa0808" fill-opacity=".7"/>
+  <text x="365" y="77" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">protected</text>
+  <text x="440" y="78" font-size="10" fill="#5a7a9a">← technical reference</text>
+
+  <text x="44" y="100" font-size="11" fill="#e2ecff">├── ONBOARDING.md</text>
+  <rect x="310" y="88" width="110" height="16" rx="3" fill="#aa0808" fill-opacity=".7"/>
+  <text x="365" y="99" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">protected</text>
+  <text x="440" y="100" font-size="10" fill="#5a7a9a">← new team member guide · one-liner setup</text>
+
+  <text x="44" y="122" font-size="11" fill="#8a9ab8">├── .gitattributes</text>
+  <text x="440" y="122" font-size="10" fill="#5a7a9a">← LF line endings enforcement</text>
+
+  <text x="44" y="144" font-size="11" fill="#8a9ab8">└── .gitignore</text>
+  <text x="440" y="144" font-size="10" fill="#5a7a9a">← local excludes</text>
+
+  <!-- .claude/ -->
+  <text x="44" y="172" font-size="11" fill="#4db1ff" font-weight="700">├── .claude/</text>
+
+  <text x="64" y="194" font-size="11" fill="#e2ecff">│   ├── settings.json</text>
+  <rect x="310" y="182" width="110" height="16" rx="3" fill="#aa0808" fill-opacity=".7"/>
+  <text x="365" y="193" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">protected</text>
+  <text x="440" y="194" font-size="10" fill="#5a7a9a">← MCP config · deny rules · hook registration</text>
+
+  <text x="64" y="216" font-size="11" fill="#4db1ff" font-weight="700">│   ├── agents/</text>
+  <rect x="310" y="204" width="110" height="16" rx="3" fill="#aa0808" fill-opacity=".7"/>
+  <text x="365" y="215" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">protected</text>
+  <text x="440" y="216" font-size="10" fill="#5a7a9a">← 13 specialist subagents</text>
+
+  <text x="84" y="236" font-size="10" fill="#8a9ab8">│   │   -orchestrator.md  ·  -solution-manager.md  ·  -ste.md  ·  -delivery-lead.md</text>
+  <text x="84" y="252" font-size="10" fill="#8a9ab8">│   │   -program-manager.md  ·  -risk-manager.md  ·  -workstream-lead.md  ·  -cpit-lead.md</text>
+  <text x="84" y="268" font-size="10" fill="#8a9ab8">│   │   -solution-architect.md  ·  -devit.md  ·  -sales-cloud-v2.md  ·  -testing.md  ·  -html-report.md</text>
+
+  <text x="64" y="290" font-size="11" fill="#4db1ff" font-weight="700">│   ├── commands/</text>
+  <rect x="310" y="278" width="110" height="16" rx="3" fill="#256f3a" fill-opacity=".5"/>
+  <text x="365" y="289" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">read-only</text>
+  <text x="440" y="290" font-size="10" fill="#5a7a9a">← 8 slash commands</text>
+
+  <text x="84" y="310" font-size="10" fill="#8a9ab8">│   │   _tech-update.md  ·  -status.md  ·  -capability-check.md  ·  -feature-check.md</text>
+  <text x="84" y="326" font-size="10" fill="#8a9ab8">│   │   -bug-query.md  ·  -kdd-guidance.md  ·  -test-report.md  ·  _tech-request.md</text>
+
+  <text x="64" y="348" font-size="11" fill="#4db1ff" font-weight="700">│   └── hooks/</text>
+  <rect x="310" y="336" width="110" height="16" rx="3" fill="#256f3a" fill-opacity=".5"/>
+  <text x="365" y="347" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">read-only</text>
+
+  <text x="84" y="368" font-size="10" fill="#8a9ab8">│       git-sync-check.sh  ←  auto-pull on every prompt</text>
+
+  <!-- / -->
+  <text x="44" y="390" font-size="11" fill="#4db1ff" font-weight="700">└── /</text>
+  <rect x="310" y="378" width="110" height="16" rx="3" fill="#256f3a" fill-opacity=".5"/>
+  <text x="365" y="389" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">read-only</text>
+
+  <text x="64" y="410" font-size="10" fill="#8a9ab8">    └── setup/</text>
+  <text x="84" y="426" font-size="10" fill="#8a9ab8">        mcp-auth-guide.html  ·  Claude_Overview.html  ←  this file</text>
+</svg>
+</div>
+</section>
+
+<!-- TECHNICAL -->
+<section id="technical" class="sect">
+<div class="sect-h"><span class="ico">⚙️</span>Technical Background<a class="sect-anchor" href="#technical" title="Link to this section"><svg viewBox="0 0 16 16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg></a></div>
+
+<div class="sub">Claude Code Subagent System</div>
+<p class="p">Agents in <code>.claude/agents/</code> are markdown files with a YAML frontmatter block. Claude Code reads the <code>description</code> field to decide when to auto-spawn an agent. When spawned, the agent runs with its own context and system prompt.</p>
+<pre>---
+name: -solution-manager
+description: Use for capability backlog, WSJF scoring, quality gates...
+---
+Full system prompt with domain knowledge...</pre>
+
+<div class="sub">Slash Commands</div>
+<p class="p">Commands in <code>.claude/commands/</code> are invoked via <code>/name [args]</code>. The file body is the prompt template; <code>$ARGUMENTS</code> is replaced with whatever the user types after the command name.</p>
+
+<div class="sub">Permission Deny Rules (settings.json) — non-core members</div>
+<p class="p">For non-core team members, the following deny rules can be applied to prevent accidental Write/Edit on the central files. Core members do not need these rules — protection comes from git push access (only repo owner pushes) plus the auto-pull mechanism wiping any local edits on next prompt.</p>
+<pre>{
+  "permissions": {
+    "deny": [
+      "Write(CLAUDE.md)",  "Edit(CLAUDE.md)",
+      "Write(README.md)",  "Edit(README.md)",
+      "Write(.claude/agents/**)",   "Edit(.claude/agents/**)",
+      "Write(.claude/commands/**)", "Edit(.claude/commands/**)",
+      "Write(.claude/settings.json)","Edit(.claude/settings.json)",
+      "Write(.claude/hooks/**)",    "Edit(.claude/hooks/**)",
+      "Write(/**)",             "Edit(/**)",
+      "Bash(git push *)",           "Bash(git push)"
+    ]
+  }
+}</pre>
+
+<div class="sub">SAP Jira MCP Configuration</div>
+<pre>{
+  "mcpServers": {
+    "sap-jira": {
+      "type": "http",
+      "url": "https://mcp.jira.<YOUR-DOMAIN>/mcp"
+    }
+  }
+}</pre>
+<p class="p">OAuth 2.0 / SAP SSO. One-time auth per machine. Full walkthrough: <code>/setup/mcp-auth-guide.html</code>.</p>
+
+<div class="sub">One-Line Team Setup</div>
+<pre>git clone https://github.<YOUR-DOMAIN>//Claude.git ~/Claude &amp;&amp; code ~/Claude</pre>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links=document.querySelectorAll('.sb-lk');
+  var sects=document.querySelectorAll('section[id]');
+  function mark(){
+    var y=window.scrollY+100, active=null;
+    sects.forEach(function(s){if(s.offsetTop<=y)active=s.id});
+    links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+active)});
+  }
+  window.addEventListener('scroll',mark,{passive:true});mark();
+})();
+</script>
+</body>
+</html>

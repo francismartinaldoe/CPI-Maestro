@@ -1,0 +1,11 @@
+{
+  "_comment": "Configure your CPI team here. Each member needs: cid (SAP/employee user ID), name, email, role.",
+  "team": [
+    {
+      "cid": "CXXXXXXX",
+      "name": "Team Member Name",
+      "email": "email@company.com",
+      "role": "CPI Developer"
+    }
+  ]
+}

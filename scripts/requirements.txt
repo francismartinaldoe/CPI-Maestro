@@ -1,0 +1,4 @@
+requests>=2.28.0
+openpyxl>=3.1.0
+pywin32>=306
+python-pptx>=0.6.21

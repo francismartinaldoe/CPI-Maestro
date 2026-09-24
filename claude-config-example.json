@@ -1,0 +1,35 @@
+{
+  "_readme": "Copy this file to %APPDATA%\\Claude\\claude_desktop_config.json. Replace <YOUR-USERNAME> with your Windows username. Credentials stay in mcp/.env.dev/.env.test/.env.prod — never in this file.",
+  "mcpServers": {
+
+    "CPI-DEV": {
+      "command": "node",
+      "args": [
+        "--env-file=C:/Users/<YOUR-USERNAME>/repos/CPIMAESTRO/mcp/.env.dev",
+        "C:/Users/<YOUR-USERNAME>/repos/CPIMAESTRO/mcp/dist/index.js"
+      ]
+    },
+
+    "CPI-TEST": {
+      "command": "node",
+      "args": [
+        "--env-file=C:/Users/<YOUR-USERNAME>/repos/CPIMAESTRO/mcp/.env.test",
+        "C:/Users/<YOUR-USERNAME>/repos/CPIMAESTRO/mcp/dist/index.js"
+      ]
+    },
+
+    "CPI-PROD": {
+      "command": "node",
+      "args": [
+        "--env-file=C:/Users/<YOUR-USERNAME>/repos/CPIMAESTRO/mcp/.env.prod",
+        "C:/Users/<YOUR-USERNAME>/repos/CPIMAESTRO/mcp/dist/index.js"
+      ]
+    },
+
+    "sap-jira": {
+      "type": "http",
+      "url": "https://mcp.jira.<YOUR-DOMAIN>/mcp"
+    }
+
+  }
+}

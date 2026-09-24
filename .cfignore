@@ -1,0 +1,24 @@
+# TypeScript source — dist/ is pre-built before cf push
+src/
+*.ts
+tsconfig.json
+
+# Secrets — never deploy these
+.env*
+mcp-credentials.example
+mcp/
+
+# Claude Code workspace config
+.claude/
+
+# Sub-agent apps (not needed for the MCP gateway)
+agents/
+
+# Documentation and dev tools
+docs/
+*.sh
+*.log
+
+# Git
+.git/
+.gitignore
